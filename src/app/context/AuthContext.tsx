@@ -18,9 +18,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in (from sessionStorage)
-    const storedUser = sessionStorage.getItem('currentUser');
-    const storedIsAdmin = sessionStorage.getItem('isAdmin');
+    // Check if user is already logged in (from localStorage)
+    const storedUser = localStorage.getItem('currentUser');
+    const storedIsAdmin = localStorage.getItem('isAdmin');
 
     if (storedUser) {
       setCurrentUser(storedUser);
@@ -40,9 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAdmin(response.isAdmin || false);
     setIsLoggedIn(true);
 
-    // Persist to sessionStorage
-    sessionStorage.setItem('currentUser', response.username);
-    sessionStorage.setItem('isAdmin', String(response.isAdmin || false));
+    // Persist to localStorage
+    localStorage.setItem('currentUser', response.username);
+    localStorage.setItem('isAdmin', String(response.isAdmin || false));
   };
 
   const register = async (username: string, password: string) => {
@@ -56,17 +56,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false);
     setIsLoggedIn(true);
 
-    // Persist to sessionStorage
-    sessionStorage.setItem('currentUser', response.username);
-    sessionStorage.setItem('isAdmin', 'false');
+    // Persist to localStorage
+    localStorage.setItem('currentUser', response.username);
+    localStorage.setItem('isAdmin', 'false');
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setCurrentUser('');
     setIsAdmin(false);
-    sessionStorage.removeItem('currentUser');
-    sessionStorage.removeItem('isAdmin');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('isAdmin');
   };
 
   return (
