@@ -570,7 +570,6 @@ export function CharacterPage() {
                   />
                 </div>
               </div>
-              </div>
             </div>
 
             {/* Indicadores de Status */}

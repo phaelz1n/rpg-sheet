@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package, Plus, Edit, Trash2, X, Sparkles } from 'lucide-react';
+import { Package, Plus, Edit, Trash2, X, Sparkles, Search } from 'lucide-react';
 import { ttrpgApi } from '../../api/ttrpg-api';
 
 interface AdminItemsPanelProps {
@@ -140,6 +140,13 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       setLoading(false);
     }
   };
+
+  const filteredItems = items.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+    const matchesType = filterType === 'all' || item.type === filterType;
+    const matchesRarity = filterRarity === 'all' || item.rarity === filterRarity;
+    return matchesSearch && matchesType && matchesRarity;
+  });
 
   useEffect(() => {
     loadItems();
