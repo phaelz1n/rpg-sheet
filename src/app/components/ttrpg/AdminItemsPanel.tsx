@@ -208,7 +208,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       corruptionLimitBonus: 0,
       statBonus: '',
       beltCapacity: 0,
-      healingValue: '',,
+      healingValue: '',
       effect: ''
     });
   };
