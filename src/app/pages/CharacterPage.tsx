@@ -96,6 +96,7 @@ export function CharacterPage() {
   const [corruption, setCorruption] = useState(0);
   const [corruptionBaseMax, setCorruptionBaseMax] = useState(10);
   const [damageReduction, setDamageReduction] = useState(0);
+  const [inspiration, setInspiration] = useState(0);
 
   // Attribute states
   const [occultism, setOccultism] = useState(0);
@@ -306,6 +307,7 @@ export function CharacterPage() {
         corruption,
         corruptionBaseMax,
         damageReduction,
+        inspiration,
         occultism,
         dexterity,
         vigor,
@@ -360,7 +362,7 @@ export function CharacterPage() {
     skills, abilities, equipmentHead, equipmentNeck, equipmentChest,
     equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots,
     beltSlot1, beltSlot2, beltSlot3, beltSlot4, beltSlot5, beltSlot6, beltSlot7, beltSlot8,
-    mainWeapon, offWeapon, inventory, globalAttributes
+    mainWeapon, offWeapon, inventory, globalAttributes, inspiration
   ]);
 
   const loadCharacterData = async (username: string) => {
@@ -398,6 +400,7 @@ export function CharacterPage() {
       setCorruption(data.corruption ?? 0);
       setCorruptionBaseMax(data.corruptionBaseMax ?? 10);
       setDamageReduction(data.damageReduction ?? 0);
+      setInspiration(data.inspiration ?? 0);
       setOccultism(data.occultism ?? 0);
       setDexterity(data.dexterity ?? 0);
       setVigor(data.vigor ?? 0);
@@ -629,6 +632,32 @@ export function CharacterPage() {
                   />
                 );
               })()}
+            </div>
+
+            {/* Inspiração */}
+            <div className="w-full lg:w-auto flex flex-col items-center justify-center bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 sm:px-6 min-w-[120px] shadow-inner relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-2 text-amber-500 mb-1 relative z-10">
+                <Sparkles className="w-4 h-4 animate-pulse" />
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Inspiração</span>
+              </div>
+              <div className="flex items-center gap-4 relative z-10">
+                <button 
+                  onClick={() => setInspiration(Math.max(0, inspiration - 1))}
+                  className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold"
+                >
+                  -
+                </button>
+                <span className="text-3xl font-black text-amber-400 drop-shadow-[0_0_8_rgba(251,191,36,0.5)]">
+                  {inspiration}
+                </span>
+                <button 
+                  onClick={() => setInspiration(inspiration + 1)}
+                  className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>
