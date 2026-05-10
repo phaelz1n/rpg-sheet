@@ -22,7 +22,7 @@ import {
   Footprints, Pickaxe, Gem, Fish, Coins, Swords,
   LogOut, Plus, Trash2, User, Shield, Activity, EyeOff, Crosshair,
   Dumbbell, AlertTriangle, Search, Compass, Stethoscope,
-  Book, Radio, ChevronLeft, ChevronRight
+  Book, Radio, ChevronLeft, ChevronRight, Minus
 } from 'lucide-react';
 
 interface InventoryItem {
@@ -1140,15 +1140,24 @@ export function CharacterPage() {
                     </div>
                   )}
 
-                  {/* Capacity Increase */}
-                  <button 
-                    onClick={() => setInventoryCapacity(prev => Math.min(40, prev + 4))}
-                    className="flex items-center gap-1 px-2 py-1 bg-amber-900/20 border border-amber-900/40 rounded text-[10px] text-amber-400 hover:bg-amber-900/40 transition-all uppercase font-bold"
-                    title="Aumentar espaço da mochila"
-                  >
-                    <Plus className="w-3 h-3" />
-                    Expandir
-                  </button>
+                  <div className="flex items-center bg-amber-900/20 border border-amber-900/40 rounded overflow-hidden">
+                    <button 
+                      onClick={() => setInventoryCapacity(prev => Math.max(8, prev - 4))}
+                      className="px-2 py-1 text-amber-500 hover:bg-amber-900/40 transition-all border-r border-amber-900/40 disabled:text-zinc-700"
+                      disabled={inventoryCapacity <= 8}
+                      title="Diminuir espaço da mochila"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <button 
+                      onClick={() => setInventoryCapacity(prev => Math.min(40, prev + 4))}
+                      className="flex items-center gap-1 px-3 py-1 text-[10px] text-amber-400 hover:bg-amber-900/40 transition-all uppercase font-bold"
+                      title="Aumentar espaço da mochila"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Expandir
+                    </button>
+                  </div>
                 </div>
               </div>
 
