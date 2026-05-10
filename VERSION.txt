@@ -1,0 +1,10 @@
+v3.0 - React Router System
+Updated: 2026-04-22 21:35 UTC
+Build: 001
+
+Changes:
+- Full routing system with React Router 7
+- AuthContext for global auth state
+- Protected routes with authentication
+- /login, /character, /admin, /admin/items routes
+- Mobile responsive design

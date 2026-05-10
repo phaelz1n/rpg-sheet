@@ -1,0 +1,85 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { ttrpgApi } from '../api/ttrpg-api';
+
+interface AuthContextType {
+  isLoggedIn: boolean;
+  currentUser: string;
+  isAdmin: boolean;
+  login: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string) => Promise<void>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check if user is already logged in (from sessionStorage)
+    const storedUser = sessionStorage.getItem('currentUser');
+    const storedIsAdmin = sessionStorage.getItem('isAdmin');
+
+    if (storedUser) {
+      setCurrentUser(storedUser);
+      setIsLoggedIn(true);
+      setIsAdmin(storedIsAdmin === 'true');
+    }
+  }, []);
+
+  const login = async (username: string, password: string) => {
+    const response = await ttrpgApi.login(username, password);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    setCurrentUser(response.username);
+    setIsAdmin(response.isAdmin || false);
+    setIsLoggedIn(true);
+
+    // Persist to sessionStorage
+    sessionStorage.setItem('currentUser', response.username);
+    sessionStorage.setItem('isAdmin', String(response.isAdmin || false));
+  };
+
+  const register = async (username: string, password: string) => {
+    const response = await ttrpgApi.register(username, password);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    setCurrentUser(response.username);
+    setIsAdmin(false);
+    setIsLoggedIn(true);
+
+    // Persist to sessionStorage
+    sessionStorage.setItem('currentUser', response.username);
+    sessionStorage.setItem('isAdmin', 'false');
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setCurrentUser('');
+    setIsAdmin(false);
+    sessionStorage.removeItem('currentUser');
+    sessionStorage.removeItem('isAdmin');
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, currentUser, isAdmin, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}
