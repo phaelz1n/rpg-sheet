@@ -146,6 +146,9 @@ export function CharacterPage() {
   const [beltSlot7, setBeltSlot7] = useState('');
   const [beltSlot8, setBeltSlot8] = useState('');
 
+  // Curses/Marks states
+  const [curses, setCurses] = useState<{id: string, title: string, content: string}[]>([]);
+
   // Weapon states
   const [mainWeapon, setMainWeapon] = useState({
     name: '',
@@ -308,6 +311,7 @@ export function CharacterPage() {
         corruptionBaseMax,
         damageReduction,
         inspiration,
+        curses,
         occultism,
         dexterity,
         vigor,
@@ -362,7 +366,7 @@ export function CharacterPage() {
     skills, abilities, equipmentHead, equipmentNeck, equipmentChest,
     equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots,
     beltSlot1, beltSlot2, beltSlot3, beltSlot4, beltSlot5, beltSlot6, beltSlot7, beltSlot8,
-    mainWeapon, offWeapon, inventory, globalAttributes, inspiration
+    mainWeapon, offWeapon, inventory, globalAttributes, inspiration, curses
   ]);
 
   const loadCharacterData = async (username: string) => {
@@ -401,6 +405,7 @@ export function CharacterPage() {
       setCorruptionBaseMax(data.corruptionBaseMax ?? 10);
       setDamageReduction(data.damageReduction ?? 0);
       setInspiration(data.inspiration ?? 0);
+      setCurses(data.curses ?? []);
       setOccultism(data.occultism ?? 0);
       setDexterity(data.dexterity ?? 0);
       setVigor(data.vigor ?? 0);
@@ -1010,6 +1015,60 @@ export function CharacterPage() {
                     </div>
                   );
                 })()}
+            </section>
+
+            {/* EFEITOS & MARCAS */}
+            <section className="bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 border-red-900/40 rounded-xl p-4 sm:p-6 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-900/5 rounded-full blur-3xl -mr-16 -mt-16" />
+              <div className="flex items-center justify-between mb-4 relative z-10">
+                <h2 className="text-red-500 uppercase tracking-wider flex items-center gap-2 text-sm sm:text-base font-bold">
+                  <Skull className="w-5 h-5" />
+                  Efeitos & Marcas
+                </h2>
+                <button 
+                  onClick={() => setCurses([...curses, { id: Date.now().toString(), title: 'Nova Marca', content: '' }])}
+                  className="p-1 hover:bg-red-900/20 rounded text-red-500 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-4 relative z-10 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                {curses.length === 0 && (
+                  <p className="text-zinc-600 text-xs italic text-center py-4">Nenhuma maldição ativa...</p>
+                )}
+                {curses.map((curse, index) => (
+                  <div key={curse.id} className="bg-black/40 border border-red-900/20 rounded-lg p-3 group relative">
+                    <button 
+                      onClick={() => setCurses(curses.filter(c => c.id !== curse.id))}
+                      className="absolute top-2 right-2 text-zinc-700 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <input 
+                      type="text"
+                      value={curse.title}
+                      onChange={(e) => {
+                        const newCurses = [...curses];
+                        newCurses[index].title = e.target.value;
+                        setCurses(newCurses);
+                      }}
+                      className="bg-transparent border-none text-red-400 font-bold text-sm w-full focus:outline-none mb-1 uppercase tracking-tight"
+                      placeholder="Título da Marca"
+                    />
+                    <textarea 
+                      value={curse.content}
+                      onChange={(e) => {
+                        const newCurses = [...curses];
+                        newCurses[index].content = e.target.value;
+                        setCurses(newCurses);
+                      }}
+                      className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[60px] resize-none"
+                      placeholder="Descreva os efeitos..."
+                    />
+                  </div>
+                ))}
+              </div>
             </section>
 
             {/* MOCHILA */}
