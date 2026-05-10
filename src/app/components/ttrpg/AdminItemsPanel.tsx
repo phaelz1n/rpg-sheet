@@ -78,8 +78,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     effect: ''
   });
 
-  const seedMinerals = async () => {
-    if (!confirm('Deseja carregar a lista de minerais e cintos automaticamente?')) return;
+  const seedDefaultItems = async () => {
+    if (!confirm('Deseja carregar a lista de itens padrão (armas, armaduras e materiais)?')) return;
     
     const minerals = [
       // Materiais Base
@@ -127,14 +127,19 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     ];
 
     try {
+      setLoading(true);
+      let createdCount = 0;
       for (const item of minerals) {
-        await ttrpgApi.createItem(item);
+        const res = await ttrpgApi.createItem(item);
+        if (!res.error) createdCount++;
       }
-      alert('Minerais e cintos criados com sucesso!');
+      alert(`${createdCount} novos itens carregados com sucesso!`);
       loadItems();
     } catch (error) {
       console.error('Error seeding items:', error);
-      alert('Erro ao carregar minerais');
+      alert('Erro ao carregar itens padrão');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -489,12 +494,12 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={seedMinerals}
-              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-zinc-700"
-              title="Carregar Minerais Padrão"
+              onClick={seedDefaultItems}
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-zinc-700 shadow-lg group"
+              title="Carregar Itens Iniciais do RPG"
             >
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              Seed Minerais
+              <Sparkles className="w-4 h-4 text-amber-500 group-hover:animate-pulse" />
+              Itens Padrão
             </button>
             <button
               onClick={() => {
