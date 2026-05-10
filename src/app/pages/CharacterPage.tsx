@@ -61,6 +61,34 @@ interface RPGItem {
   rarity?: string;
 }
 
+function CompactSkillRow({ name, bonus, onBonusChange, color }: { 
+  name: string, bonus: number, onBonusChange: (v: number) => void, color: string 
+}) {
+  const iconColors = {
+    emerald: 'text-emerald-500',
+    orange: 'text-orange-500',
+    blue: 'text-blue-500',
+    purple: 'text-purple-500',
+    amber: 'text-amber-500'
+  };
+
+  return (
+    <div className="flex items-center justify-between py-1 border-b border-zinc-800/50 last:border-0 group">
+      <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium ${iconColors[color as keyof typeof iconColors] || 'text-zinc-400'}`}>
+        {name}
+      </span>
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          value={bonus}
+          onChange={(e) => onBonusChange(Number(e.target.value))}
+          className="w-10 bg-transparent border-none text-right text-amber-400 font-bold text-xs focus:outline-none focus:ring-1 focus:ring-amber-600/30 rounded"
+        />
+      </div>
+    </div>
+  );
+}
+
 export function CharacterPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -694,140 +722,56 @@ export function CharacterPage() {
             </section>
 
             {/* PERÍCIAS */}
-            <section>
-              <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2 text-sm sm:text-base">
-                <Brain className="w-5 h-5" />
+            <section className="bg-zinc-900/40 border border-zinc-800 rounded-xl p-4 sm:p-5">
+              <h2 className="text-amber-400 uppercase tracking-wider mb-6 flex items-center gap-2 text-sm sm:text-base font-bold">
+                <Shield className="w-5 h-5" />
                 Perícias
               </h2>
-              <div className="space-y-3">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 {/* Destreza */}
-                <div className="bg-gradient-to-br from-zinc-900/60 to-black/80 border border-emerald-900/40 rounded-lg p-3">
-                  <h3 className="text-emerald-400 text-sm font-bold mb-2 flex items-center gap-2">
-                    <Hand className="w-4 h-4" />
-                    Destreza
+                <div className="space-y-1">
+                  <h3 className="text-[10px] text-emerald-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-emerald-900/30 pb-1 flex items-center gap-2">
+                    <Hand className="w-3 h-3" /> Destreza
                   </h3>
-                  <div className="space-y-2">
-                    <SkillCard
-                      name="Acrobacia"
-                      description="Realiza proezas acrobáticas, equilibrar-se"
-                      bonus={skills.acrobacia}
-                      icon={Activity}
-                      color="emerald"
-                      onBonusChange={(value) => updateSkill('acrobacia', value)}
-                    />
-                    <SkillCard
-                      name="Furtividade"
-                      description="Esconder-se e seguir alguém sem ser notado"
-                      bonus={skills.furtividade}
-                      icon={EyeOff}
-                      color="emerald"
-                      onBonusChange={(value) => updateSkill('furtividade', value)}
-                    />
-                    <SkillCard
-                      name="Pontaria"
-                      description="Fazer ataques à distância"
-                      bonus={skills.pontaria}
-                      icon={Crosshair}
-                      color="emerald"
-                      onBonusChange={(value) => updateSkill('pontaria', value)}
-                    />
-                  </div>
+                  <CompactSkillRow name="Acrobacia" bonus={skills.acrobacia} color="emerald" onBonusChange={(v) => updateSkill('acrobacia', v)} />
+                  <CompactSkillRow name="Furtividade" bonus={skills.furtividade} color="emerald" onBonusChange={(v) => updateSkill('furtividade', v)} />
+                  <CompactSkillRow name="Pontaria" bonus={skills.pontaria} color="emerald" onBonusChange={(v) => updateSkill('pontaria', v)} />
                 </div>
 
-                {/* Força */}
-                <div className="bg-gradient-to-br from-zinc-900/60 to-black/80 border border-orange-900/40 rounded-lg p-3">
-                  <h3 className="text-orange-400 text-sm font-bold mb-2 flex items-center gap-2">
-                    <Sword className="w-4 h-4" />
-                    Força
+                {/* Força / Corpo */}
+                <div className="space-y-1">
+                  <h3 className="text-[10px] text-orange-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-orange-900/30 pb-1 flex items-center gap-2">
+                    <Sword className="w-3 h-3" /> Corpo
                   </h3>
-                  <div className="space-y-2">
-                    <SkillCard
-                      name="Atletismo"
-                      description="Correr, escalar e carregar peso"
-                      bonus={skills.atletismo}
-                      icon={Dumbbell}
-                      color="orange"
-                      onBonusChange={(value) => updateSkill('atletismo', value)}
-                    />
-                    <SkillCard
-                      name="Intimidação"
-                      description="Assustar ou coagir outros seres"
-                      bonus={skills.intimidacao}
-                      icon={AlertTriangle}
-                      color="orange"
-                      onBonusChange={(value) => updateSkill('intimidacao', value)}
-                    />
-                  </div>
+                  <CompactSkillRow name="Atletismo" bonus={skills.atletismo} color="orange" onBonusChange={(v) => updateSkill('atletismo', v)} />
+                  <CompactSkillRow name="Intimidação" bonus={skills.intimidacao} color="orange" onBonusChange={(v) => updateSkill('intimidacao', v)} />
                 </div>
 
-                {/* Vontade */}
-                <div className="bg-gradient-to-br from-zinc-900/60 to-black/80 border border-blue-900/40 rounded-lg p-3">
-                  <h3 className="text-blue-400 text-sm font-bold mb-2 flex items-center gap-2">
-                    <Brain className="w-4 h-4" />
-                    Vontade
+                {/* Vontade / Mente */}
+                <div className="space-y-1">
+                  <h3 className="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-blue-900/30 pb-1 flex items-center gap-2">
+                    <Brain className="w-3 h-3" /> Mente
                   </h3>
-                  <div className="space-y-2">
-                    <SkillCard
-                      name="Percepção"
-                      description="Notar coisas discretas, ouvir sussurros e ler lábios"
-                      bonus={skills.percepcao}
-                      icon={Search}
-                      color="blue"
-                      onBonusChange={(value) => updateSkill('percepcao', value)}
-                    />
-                    <SkillCard
-                      name="Sobrevivência"
-                      description="Navegar, acampar e rastrear"
-                      bonus={skills.sobrevivencia}
-                      icon={Compass}
-                      color="blue"
-                      onBonusChange={(value) => updateSkill('sobrevivencia', value)}
-                    />
-                    <SkillCard
-                      name="Medicina"
-                      description="Diagnosticar e tratar ferimentos e doenças"
-                      bonus={skills.medicina}
-                      icon={Stethoscope}
-                      color="blue"
-                      onBonusChange={(value) => updateSkill('medicina', value)}
-                    />
-                  </div>
+                  <CompactSkillRow name="Percepção" bonus={skills.percepcao} color="blue" onBonusChange={(v) => updateSkill('percepcao', v)} />
+                  <CompactSkillRow name="Sobrevivência" bonus={skills.sobrevivencia} color="blue" onBonusChange={(v) => updateSkill('sobrevivencia', v)} />
+                  <CompactSkillRow name="Medicina" bonus={skills.medicina} color="blue" onBonusChange={(v) => updateSkill('medicina', v)} />
                 </div>
 
-                {/* Ocultismo */}
-                <div className="bg-gradient-to-br from-zinc-900/60 to-black/80 border border-purple-900/40 rounded-lg p-3">
-                  <h3 className="text-purple-400 text-sm font-bold mb-2 flex items-center gap-2">
-                    <Eye className="w-4 h-4" />
-                    Ocultismo
+                {/* Ocultismo / Paranormal */}
+                <div className="space-y-1">
+                  <h3 className="text-[10px] text-purple-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-purple-900/30 pb-1 flex items-center gap-2">
+                    <Eye className="w-3 h-3" /> Paranormal
                   </h3>
-                  <div className="space-y-2">
-                    <SkillCard
-                      name="Corrupção"
-                      description="Estudar o paranormal, identificar criaturas e rituais"
-                      bonus={skills.corrupcao}
-                      icon={Book}
-                      color="purple"
-                      onBonusChange={(value) => updateSkill('corrupcao', value)}
-                    />
-                  </div>
+                  <CompactSkillRow name="Corrupção" bonus={skills.corrupcao} color="purple" onBonusChange={(v) => updateSkill('corrupcao', v)} />
                 </div>
 
-                {/* Fé */}
-                <div className="bg-gradient-to-br from-zinc-900/60 to-black/80 border border-amber-900/40 rounded-lg p-3">
-                  <h3 className="text-amber-400 text-sm font-bold mb-2 flex items-center gap-2">
-                    <Flame className="w-4 h-4" />
-                    Fé
+                {/* Fé / Espírito */}
+                <div className="space-y-1">
+                  <h3 className="text-[10px] text-amber-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-amber-900/30 pb-1 flex items-center gap-2">
+                    <Flame className="w-3 h-3" /> Espírito
                   </h3>
-                  <div className="space-y-2">
-                    <SkillCard
-                      name="Presença"
-                      description="Detecta seres de rituais e malignos"
-                      bonus={skills.presenca}
-                      icon={Radio}
-                      color="amber"
-                      onBonusChange={(value) => updateSkill('presenca', value)}
-                    />
-                  </div>
+                  <CompactSkillRow name="Presença" bonus={skills.presenca} color="amber" onBonusChange={(v) => updateSkill('presenca', v)} />
                 </div>
               </div>
             </section>
