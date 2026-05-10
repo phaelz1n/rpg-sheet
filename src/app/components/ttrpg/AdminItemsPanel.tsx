@@ -583,27 +583,35 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                     selectedIds.has(item.id) ? 'border-amber-500 bg-amber-900/10' : rarityColors[item.rarity]
                   } rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group cursor-pointer`}
                 >
-                  <div className="absolute top-3.5 right-12 z-10">
-                    <div className={`w-4 h-4 rounded border ${
-                      selectedIds.has(item.id) ? 'bg-amber-500 border-amber-400' : 'bg-black/40 border-zinc-600'
-                    } flex items-center justify-center transition-all shadow-lg`}>
-                      {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-sm" />}
+                  <div className="absolute top-2 right-2 flex items-center gap-2 z-10">
+                    <div 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleSelect(item.id);
+                      }}
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shadow-lg cursor-pointer ${
+                        selectedIds.has(item.id) 
+                          ? 'bg-amber-500 border-amber-300 scale-110' 
+                          : 'bg-black/40 border-zinc-700 hover:border-amber-900'
+                      }`}
+                    >
+                      {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-full" />}
                     </div>
-                  </div>
 
-                  <div className="absolute top-2 right-2 flex gap-1 z-10" onClick={e => e.stopPropagation()}>
-                    <button
-                      onClick={() => openEditModal(item)}
-                      className="w-7 h-7 bg-blue-900/80 border border-blue-700 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-800"
-                    >
-                      <Edit className="w-4 h-4 text-blue-100" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="w-7 h-7 bg-red-900/80 border border-red-700 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-800"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-100" />
-                    </button>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+                      <button
+                        onClick={() => openEditModal(item)}
+                        className="w-7 h-7 bg-blue-900/80 border border-blue-700 rounded flex items-center justify-center hover:bg-blue-800 transition-colors"
+                      >
+                        <Edit className="w-4 h-4 text-blue-100" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="w-7 h-7 bg-red-900/80 border border-red-700 rounded flex items-center justify-center hover:bg-red-800 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-100" />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mb-3">
