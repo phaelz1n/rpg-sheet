@@ -1,5 +1,5 @@
-import { LucideIcon, ChevronDown } from 'lucide-react';
-import { Zap, Eye } from 'lucide-react';
+import { LucideIcon, ChevronDown, Plus } from 'lucide-react';
+import { Zap, Eye, Droplet, Flame } from 'lucide-react';
 import { useState } from 'react';
 
 interface AbilityCardProps {
@@ -8,14 +8,16 @@ interface AbilityCardProps {
   icon: LucideIcon;
   manaCost?: number;
   corruptionCost?: number;
+  staminaCost?: number;
   test?: string;
   damage?: string;
   effect: string;
   backlash?: string;
   onNameChange?: (value: string) => void;
   onTypeChange?: (value: 'action' | 'passive') => void;
-  onManaCostChange?: (value: number) => void;
-  onCorruptionCostChange?: (value: number) => void;
+  onManaCostChange?: (value: number | undefined) => void;
+  onCorruptionCostChange?: (value: number | undefined) => void;
+  onStaminaCostChange?: (value: number | undefined) => void;
   onTestChange?: (value: string) => void;
   onDamageChange?: (value: string) => void;
   onEffectChange?: (value: string) => void;
@@ -28,6 +30,7 @@ export function AbilityCard({
   icon: Icon,
   manaCost,
   corruptionCost,
+  staminaCost,
   test,
   damage,
   effect,
@@ -36,6 +39,7 @@ export function AbilityCard({
   onTypeChange,
   onManaCostChange,
   onCorruptionCostChange,
+  onStaminaCostChange,
   onTestChange,
   onDamageChange,
   onEffectChange,
@@ -43,6 +47,25 @@ export function AbilityCard({
 }: AbilityCardProps) {
   const [showTypeSelector, setShowTypeSelector] = useState(false);
   const isActive = type === 'action';
+
+  const hasMana = manaCost !== undefined;
+  const hasCorruption = corruptionCost !== undefined;
+  const hasStamina = staminaCost !== undefined;
+
+  const toggleMana = () => {
+    if (hasMana) onManaCostChange?.(undefined);
+    else onManaCostChange?.(1);
+  };
+
+  const toggleCorruption = () => {
+    if (hasCorruption) onCorruptionCostChange?.(undefined);
+    else onCorruptionCostChange?.(1);
+  };
+
+  const toggleStamina = () => {
+    if (hasStamina) onStaminaCostChange?.(undefined);
+    else onStaminaCostChange?.(1);
+  };
 
   return (
     <div className={`relative ${
@@ -107,38 +130,86 @@ export function AbilityCard({
         </div>
       </div>
 
-      {/* Costs */}
-      {(manaCost !== undefined || corruptionCost !== undefined) && (
-        <div className="flex gap-2 mb-3">
-          {manaCost !== undefined && (
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-950/50 border border-blue-800/40 rounded text-xs">
-              <div className="w-2 h-2 rounded-full bg-blue-500" />
-              <input
-                type="number"
-                value={manaCost}
-                onChange={(e) => onManaCostChange?.(Number(e.target.value))}
-                className="w-8 bg-transparent text-blue-300 text-center focus:outline-none"
-                min={0}
-              />
-              <span className="text-blue-300">Mana</span>
-            </div>
-          )}
-          {corruptionCost !== undefined && (
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-purple-950/50 border border-purple-800/40 rounded text-xs">
-              <div className="w-2 h-2 rounded-full bg-purple-500" />
-              <span className="text-purple-300">+</span>
-              <input
-                type="number"
-                value={corruptionCost}
-                onChange={(e) => onCorruptionCostChange?.(Number(e.target.value))}
-                className="w-8 bg-transparent text-purple-300 text-center focus:outline-none"
-                min={0}
-              />
-              <span className="text-purple-300">Corr</span>
-            </div>
+      {/* Resource cost toggles */}
+      <div className="flex flex-wrap gap-2 mb-3">
+        {/* Mana toggle + input */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={toggleMana}
+            title={hasMana ? 'Remover custo de Mana' : 'Adicionar custo de Mana'}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs border transition-all ${
+              hasMana
+                ? 'bg-blue-950/60 border-blue-700/60 text-blue-300'
+                : 'bg-zinc-900/40 border-zinc-700/40 text-zinc-500 hover:border-blue-700/50 hover:text-blue-400'
+            }`}
+          >
+            <Droplet className="w-3 h-3" />
+            <span>Mana</span>
+            {!hasMana && <Plus className="w-2.5 h-2.5" />}
+          </button>
+          {hasMana && (
+            <input
+              type="number"
+              value={manaCost}
+              onChange={(e) => onManaCostChange?.(Number(e.target.value))}
+              className="w-8 bg-blue-950/40 border border-blue-800/40 rounded text-blue-300 text-center text-xs focus:outline-none focus:border-blue-500"
+              min={0}
+            />
           )}
         </div>
-      )}
+
+        {/* Corruption toggle + input */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={toggleCorruption}
+            title={hasCorruption ? 'Remover custo de Corrupção' : 'Adicionar custo de Corrupção'}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs border transition-all ${
+              hasCorruption
+                ? 'bg-purple-950/60 border-purple-700/60 text-purple-300'
+                : 'bg-zinc-900/40 border-zinc-700/40 text-zinc-500 hover:border-purple-700/50 hover:text-purple-400'
+            }`}
+          >
+            <Eye className="w-3 h-3" />
+            <span>Corr.</span>
+            {!hasCorruption && <Plus className="w-2.5 h-2.5" />}
+          </button>
+          {hasCorruption && (
+            <input
+              type="number"
+              value={corruptionCost}
+              onChange={(e) => onCorruptionCostChange?.(Number(e.target.value))}
+              className="w-8 bg-purple-950/40 border border-purple-800/40 rounded text-purple-300 text-center text-xs focus:outline-none focus:border-purple-500"
+              min={0}
+            />
+          )}
+        </div>
+
+        {/* Stamina toggle + input */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={toggleStamina}
+            title={hasStamina ? 'Remover custo de Fôlego' : 'Adicionar custo de Fôlego'}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs border transition-all ${
+              hasStamina
+                ? 'bg-green-950/60 border-green-700/60 text-green-300'
+                : 'bg-zinc-900/40 border-zinc-700/40 text-zinc-500 hover:border-green-700/50 hover:text-green-400'
+            }`}
+          >
+            <Flame className="w-3 h-3" />
+            <span>Fôlego</span>
+            {!hasStamina && <Plus className="w-2.5 h-2.5" />}
+          </button>
+          {hasStamina && (
+            <input
+              type="number"
+              value={staminaCost}
+              onChange={(e) => onStaminaCostChange?.(Number(e.target.value))}
+              className="w-8 bg-green-950/40 border border-green-800/40 rounded text-green-300 text-center text-xs focus:outline-none focus:border-green-500"
+              min={0}
+            />
+          )}
+        </div>
+      </div>
 
       {/* Test and Damage */}
       {(test || damage) && (

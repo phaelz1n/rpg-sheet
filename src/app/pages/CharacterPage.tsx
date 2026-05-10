@@ -40,6 +40,7 @@ interface Ability {
   icon: any;
   manaCost?: number;
   corruptionCost?: number;
+  staminaCost?: number;
   test?: string;
   damage?: string;
   effect: string;
@@ -54,6 +55,8 @@ interface RPGItem {
   bonus: number;
   damage: string;
   category: 'weapon' | 'armor' | 'consumable';
+  corruptionLimitBonus?: number;
+  statBonus?: string;
 }
 
 export function CharacterPage() {
@@ -73,30 +76,31 @@ export function CharacterPage() {
   }>({ isOpen: false, type: null });
 
   // Character info states
-  const [characterName, setCharacterName] = useState('Vespera, o Estigma do Arrependimento');
-  const [characterClass, setCharacterClass] = useState('Herege (Ocultista)');
-  const [characterFaction, setCharacterFaction] = useState('Os Descrentes');
-  const [characterCodename, setCharacterCodename] = useState('Estigma do Arrependimento');
+  const [characterName, setCharacterName] = useState('');
+  const [characterClass, setCharacterClass] = useState('');
+  const [characterFaction, setCharacterFaction] = useState('');
+  const [characterCodename, setCharacterCodename] = useState('');
   const [characterPortrait, setCharacterPortrait] = useState('');
 
   // Status states
-  const [health, setHealth] = useState(12);
-  const [maxHealth, setMaxHealth] = useState(12);
-  const [sanity, setSanity] = useState(10);
+  const [health, setHealth] = useState(0);
+  const [maxHealth, setMaxHealth] = useState(10);
+  const [sanity, setSanity] = useState(0);
   const [maxSanity, setMaxSanity] = useState(10);
-  const [mana, setMana] = useState(8);
-  const [maxMana, setMaxMana] = useState(8);
-  const [stamina, setStamina] = useState(6);
+  const [mana, setMana] = useState(0);
+  const [maxMana, setMaxMana] = useState(10);
+  const [stamina, setStamina] = useState(0);
   const [maxStamina, setMaxStamina] = useState(6);
   const [corruption, setCorruption] = useState(0);
+  const [damageReduction, setDamageReduction] = useState(0);
 
   // Attribute states
-  const [occultism, setOccultism] = useState(3);
-  const [dexterity, setDexterity] = useState(3);
-  const [vigor, setVigor] = useState(2);
+  const [occultism, setOccultism] = useState(0);
+  const [dexterity, setDexterity] = useState(0);
+  const [vigor, setVigor] = useState(0);
   const [willpower, setWillpower] = useState(0);
-  const [strength, setStrength] = useState(-1);
-  const [faith, setFaith] = useState(-1);
+  const [strength, setStrength] = useState(0);
+  const [faith, setFaith] = useState(0);
 
   // Skills states (Perícias)
   const [skills, setSkills] = useState({
@@ -117,69 +121,28 @@ export function CharacterPage() {
   };
 
   // Abilities state
-  const [abilities, setAbilities] = useState<Ability[]>([
-    {
-      id: '1',
-      name: 'Cinzas do Purgatório',
-      type: 'action',
-      icon: Flame,
-      manaCost: 3,
-      test: '2d6+3',
-      damage: '2d8 Sombrio',
-      effect: 'Conjura um vórtice giratório de cinzas escuras que queima inimigos por dentro. O alvo deve ter sucesso em um teste de Vontade ou sofrer dano total e ficar marcado por 1 turno.'
-    },
-    {
-      id: '2',
-      name: 'Fervor dos Condenados',
-      type: 'action',
-      icon: Droplet,
-      manaCost: 2,
-      corruptionCost: 1,
-      test: '2d6+3',
-      damage: '1d10 Fogo',
-      effect: 'Canaliza fervor profano em um golpe devastador. Causa dano de fogo e ganha pontos de vida temporários iguais à metade do dano causado.'
-    },
-    {
-      id: '3',
-      name: 'Maldição Imperius',
-      type: 'action',
-      icon: Skull,
-      manaCost: 4,
-      corruptionCost: 2,
-      test: '2d6+3',
-      damage: 'Especial',
-      effect: 'Tenta dominar a vontade de um alvo. Em caso de sucesso, controla o alvo por 1d4 rodadas. O alvo age na sua iniciativa.',
-      backlash: 'Em caso de falha, sofre 1d6 de dano psíquico e perde 1 de Sanidade.'
-    },
-    {
-      id: '4',
-      name: 'Colheita das Sombras',
-      type: 'passive',
-      icon: Moon,
-      effect: 'Sempre que um inimigo morre a até 9 metros de você, colhe sua essência dissipante. Restaura 2 de Mana imediatamente. Este efeito é ativado uma vez por inimigo e não pode exceder sua Mana máxima.'
-    }
-  ]);
+  const [abilities, setAbilities] = useState<Ability[]>([]);
 
   // Equipment states
-  const [equipmentHead, setEquipmentHead] = useState('Coroa de Ossos');
-  const [equipmentNeck, setEquipmentNeck] = useState('Foco de Fé');
+  const [equipmentHead, setEquipmentHead] = useState('');
+  const [equipmentNeck, setEquipmentNeck] = useState('');
   const [equipmentChest, setEquipmentChest] = useState('');
   const [equipmentGloves, setEquipmentGloves] = useState('');
-  const [equipmentBelt, setEquipmentBelt] = useState('Bainha de Acesso Rápido');
+  const [equipmentBelt, setEquipmentBelt] = useState('');
   const [equipmentPants, setEquipmentPants] = useState('');
   const [equipmentBoots, setEquipmentBoots] = useState('');
 
   // Belt slots state
-  const [beltSlot1, setBeltSlot1] = useState('Adaga de Ferro Frio');
-  const [beltSlot2, setBeltSlot2] = useState('Picareta');
+  const [beltSlot1, setBeltSlot1] = useState('');
+  const [beltSlot2, setBeltSlot2] = useState('');
   const [beltSlot3, setBeltSlot3] = useState('');
   const [beltSlot4, setBeltSlot4] = useState('');
 
   // Weapon states
   const [mainWeapon, setMainWeapon] = useState({
-    name: 'Chama do Arrependimento',
-    damage: '2d6+DES',
-    bonus: '+3'
+    name: '',
+    damage: '',
+    bonus: ''
   });
   const [offWeapon, setOffWeapon] = useState({
     name: '',
@@ -188,14 +151,7 @@ export function CharacterPage() {
   });
 
   // Inventory state
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    { id: '1', name: 'Pedras de Lodo', quantity: 5, icon: Gem, description: 'Essência cristalizada escura. Usada em rituais ocultos.' },
-    { id: '2', name: 'Pedras de Lodo', quantity: 2, icon: Gem, description: 'Essência cristalizada escura. Usada em rituais ocultos.' },
-    { id: '3', name: 'Pedra Cinza', quantity: 1, icon: Gem, description: 'Uma pedra cinza misteriosa com runas fracas.' },
-    { id: '4', name: 'Filés de Peixe', quantity: 5, icon: Fish, description: 'Peixe preservado. Restaura 1d4 de Vida quando consumido.' },
-    { id: '5', name: 'Filés de Peixe', quantity: 4, icon: Fish, description: 'Peixe preservado. Restaura 1d4 de Vida quando consumido.' },
-    { id: '6', name: 'Bolsa de Moedas', quantity: 1, icon: Coins, description: 'Contém 6 moedas de ouro.' },
-  ]);
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
   const updateItemQuantity = (id: string, newQuantity: number) => {
     setInventory(prev => prev.map(item =>
@@ -215,12 +171,12 @@ export function CharacterPage() {
 
   // Global Attributes for items
   const [globalAttributes, setGlobalAttributes] = useState({
-    occultism: 3,
-    dexterity: 3,
-    vigor: 2,
+    occultism: 0,
+    dexterity: 0,
+    vigor: 0,
     willpower: 0,
-    strength: -1,
-    faith: -1
+    strength: 0,
+    faith: 0
   });
 
   const updateGlobalAttribute = (attribute: string, value: number) => {
@@ -250,8 +206,10 @@ export function CharacterPage() {
           attributeType: item.attributeType || 'dexterity',
           attributeIcon: iconMap[item.attributeType] || Hand,
           bonus: item.bonus || 0,
-          damage: item.damage || '1d6',
-          category: item.type === 'weapon' ? 'weapon' : item.type === 'armor' ? 'armor' : 'consumable'
+          damage: item.damage || '',
+          category: item.type === 'weapon' ? 'weapon' : item.type === 'armor' ? 'armor' : 'consumable',
+          corruptionLimitBonus: item.corruptionLimitBonus || 0,
+          statBonus: item.statBonus || ''
         }));
 
         setRpgItems(convertedItems);
@@ -335,6 +293,7 @@ export function CharacterPage() {
         stamina,
         maxStamina,
         corruption,
+        damageReduction,
         occultism,
         dexterity,
         vigor,
@@ -392,26 +351,27 @@ export function CharacterPage() {
           faith: Flame
         };
 
-      setCharacterName(data.characterName || 'Vespera, o Estigma do Arrependimento');
-      setCharacterClass(data.characterClass || 'Herege (Ocultista)');
-      setCharacterFaction(data.characterFaction || 'Os Descrentes');
-      setCharacterCodename(data.characterCodename || 'Estigma do Arrependimento');
+      setCharacterName(data.characterName || '');
+      setCharacterClass(data.characterClass || '');
+      setCharacterFaction(data.characterFaction || '');
+      setCharacterCodename(data.characterCodename || '');
       setCharacterPortrait(data.characterPortrait || '');
-      setHealth(data.health || 12);
-      setMaxHealth(data.maxHealth || 12);
-      setSanity(data.sanity || 10);
-      setMaxSanity(data.maxSanity || 10);
-      setMana(data.mana || 8);
-      setMaxMana(data.maxMana || 8);
-      setStamina(data.stamina || 6);
-      setMaxStamina(data.maxStamina || 6);
-      setCorruption(data.corruption || 0);
-      setOccultism(data.occultism || 3);
-      setDexterity(data.dexterity || 3);
-      setVigor(data.vigor || 2);
-      setWillpower(data.willpower || 0);
-      setStrength(data.strength || -1);
-      setFaith(data.faith || -1);
+      setHealth(data.health ?? 0);
+      setMaxHealth(data.maxHealth ?? 10);
+      setSanity(data.sanity ?? 0);
+      setMaxSanity(data.maxSanity ?? 10);
+      setMana(data.mana ?? 0);
+      setMaxMana(data.maxMana ?? 10);
+      setStamina(data.stamina ?? 0);
+      setMaxStamina(data.maxStamina ?? 6);
+      setCorruption(data.corruption ?? 0);
+      setDamageReduction(data.damageReduction ?? 0);
+      setOccultism(data.occultism ?? 0);
+      setDexterity(data.dexterity ?? 0);
+      setVigor(data.vigor ?? 0);
+      setWillpower(data.willpower ?? 0);
+      setStrength(data.strength ?? 0);
+      setFaith(data.faith ?? 0);
       setSkills(data.skills || {
         acrobacia: 0,
         furtividade: 0,
@@ -428,7 +388,7 @@ export function CharacterPage() {
       const loadedAbilities = data.abilities ? data.abilities.map((ability: any) => ({
         ...ability,
         icon: ability.type === 'action' ? Flame : Eye
-      })) : abilities;
+      })) : [];
       setAbilities(loadedAbilities);
 
       setEquipmentHead(data.equipmentHead || '');
@@ -459,7 +419,7 @@ export function CharacterPage() {
 
       console.log('Dados carregados com sucesso');
       } else {
-        console.log('Nenhum dado salvo encontrado, usando valores padrão');
+        console.log('Nenhum dado salvo encontrado, ficha em branco.');
       }
     } catch (error) {
       console.error('Load error:', error);
@@ -539,6 +499,8 @@ export function CharacterPage() {
                   type="text"
                   value={characterName}
                   onChange={(e) => setCharacterName(e.target.value)}
+                  maxLength={40}
+                  placeholder="Nome do personagem"
                   className="text-base sm:text-xl md:text-2xl text-amber-400 tracking-wide bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none w-full"
                 />
                 <div className="flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm">
@@ -548,7 +510,9 @@ export function CharacterPage() {
                       type="text"
                       value={characterClass}
                       onChange={(e) => setCharacterClass(e.target.value)}
-                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none max-w-[120px] sm:max-w-none"
+                      maxLength={25}
+                      placeholder="Classe"
+                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none max-w-[120px] sm:max-w-[160px]"
                     />
                   </div>
                   <div className="w-px h-4 bg-zinc-700 hidden sm:block" />
@@ -558,7 +522,9 @@ export function CharacterPage() {
                       type="text"
                       value={characterFaction}
                       onChange={(e) => setCharacterFaction(e.target.value)}
-                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none max-w-[120px] sm:max-w-none"
+                      maxLength={25}
+                      placeholder="Facção"
+                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none max-w-[120px] sm:max-w-[160px]"
                     />
                   </div>
                   <div className="w-px h-4 bg-zinc-700 hidden sm:block" />
@@ -568,7 +534,9 @@ export function CharacterPage() {
                       type="text"
                       value={characterCodename}
                       onChange={(e) => setCharacterCodename(e.target.value)}
-                      className="text-purple-400 bg-transparent border-b border-transparent hover:border-purple-800/50 focus:border-purple-600 focus:outline-none max-w-[150px] sm:max-w-none"
+                      maxLength={30}
+                      placeholder="Codinome"
+                      className="text-purple-400 bg-transparent border-b border-transparent hover:border-purple-800/50 focus:border-purple-600 focus:outline-none max-w-[150px] sm:max-w-[180px]"
                     />
                   </div>
                 </div>
@@ -619,8 +587,10 @@ export function CharacterPage() {
             <div className="w-full lg:w-64">
               <CorruptionGauge
                 current={corruption}
-                max={10}
-                limit="Limite da Coroa de Ossos"
+                max={10 + rpgItems
+                  .filter(item => item.category === 'armor' && item.corruptionLimitBonus && item.corruptionLimitBonus > 0 &&
+                    [equipmentHead, equipmentNeck, equipmentChest, equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots].includes(item.name))
+                  .reduce((sum, item) => sum + (item.corruptionLimitBonus || 0), 0)}
                 onCurrentChange={setCorruption}
               />
             </div>
@@ -644,12 +614,12 @@ export function CharacterPage() {
                 <p className="text-xs text-zinc-500 italic hidden md:block">Evolução em +5 requer treinamento</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <HexAttributeCard name="Ocultismo" bonus={occultism} level="Especialista" icon={Eye} onBonusChange={setOccultism} />
-                <HexAttributeCard name="Destreza" bonus={dexterity} level="Especialista" icon={Hand} onBonusChange={setDexterity} />
-                <HexAttributeCard name="Vigor" bonus={vigor} level="Competente" icon={Heart} onBonusChange={setVigor} />
-                <HexAttributeCard name="Vontade" bonus={willpower} level="Humano" icon={Brain} onBonusChange={setWillpower} />
-                <HexAttributeCard name="Força" bonus={strength} level="Fraco" icon={Sword} onBonusChange={setStrength} />
-                <HexAttributeCard name="Fé" bonus={faith} level="Fraco" icon={Flame} onBonusChange={setFaith} />
+                <HexAttributeCard name="Ocultismo" bonus={occultism} icon={Eye} onBonusChange={setOccultism} />
+                <HexAttributeCard name="Destreza" bonus={dexterity} icon={Hand} onBonusChange={setDexterity} />
+                <HexAttributeCard name="Vigor" bonus={vigor} icon={Heart} onBonusChange={setVigor} />
+                <HexAttributeCard name="Vontade" bonus={willpower} icon={Brain} onBonusChange={setWillpower} />
+                <HexAttributeCard name="Força" bonus={strength} icon={Sword} onBonusChange={setStrength} />
+                <HexAttributeCard name="Fé" bonus={faith} icon={Flame} onBonusChange={setFaith} />
               </div>
             </section>
 
@@ -808,6 +778,7 @@ export function CharacterPage() {
                     onTypeChange={(value) => updateAbility(ability.id, 'type', value)}
                     onManaCostChange={(value) => updateAbility(ability.id, 'manaCost', value)}
                     onCorruptionCostChange={(value) => updateAbility(ability.id, 'corruptionCost', value)}
+                    onStaminaCostChange={(value) => updateAbility(ability.id, 'staminaCost', value)}
                     onTestChange={(value) => updateAbility(ability.id, 'test', value)}
                     onDamageChange={(value) => updateAbility(ability.id, 'damage', value)}
                     onEffectChange={(value) => updateAbility(ability.id, 'effect', value)}
@@ -848,7 +819,7 @@ export function CharacterPage() {
                   onClear={() => setOffWeapon({ name: '', damage: '', bonus: '' })}
                   onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'off' })}
                 />
-                <DamageReductionBadge value={1} />
+                <DamageReductionBadge value={damageReduction} onValueChange={setDamageReduction} />
               </div>
             </section>
           </div>

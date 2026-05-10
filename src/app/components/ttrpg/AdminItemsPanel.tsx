@@ -19,6 +19,9 @@ interface GlobalItem {
   damage?: string;
   attributeType?: string;
   bonus?: number;
+  // Armor/Equipment fields
+  corruptionLimitBonus?: number; // +N no limite de corrupção quando equipado
+  statBonus?: string;             // Texto livre: ex: "+1 nos testes de Corrupção e Fé"
   // Potion fields
   healingValue?: string;
   effect?: string;
@@ -61,6 +64,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     damage: '',
     attributeType: 'dexterity',
     bonus: 0,
+    corruptionLimitBonus: 0,
+    statBonus: '',
     healingValue: '',
     effect: ''
   });
@@ -149,6 +154,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       damage: '',
       attributeType: 'dexterity',
       bonus: 0,
+      corruptionLimitBonus: 0,
+      statBonus: '',
       healingValue: '',
       effect: ''
     });
@@ -258,14 +265,42 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
         {/* Armor-specific fields */}
         {type === 'armor' && (
-          <div>
-            <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Bônus de Defesa</label>
-            <input
-              type="number"
-              value={formData.bonus}
-              onChange={(e) => setFormData({ ...formData, bonus: Number(e.target.value) })}
-              className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
-            />
+          <div className="space-y-4">
+            <div>
+              <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Bônus de Defesa</label>
+              <input
+                type="number"
+                value={formData.bonus}
+                onChange={(e) => setFormData({ ...formData, bonus: Number(e.target.value) })}
+                className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+              />
+            </div>
+
+            <div>
+              <label className="text-purple-400 text-sm uppercase tracking-wide mb-1 block">
+                +Limite de Corrupção
+              </label>
+              <p className="text-zinc-500 text-xs mb-2">Quando equipado, aumenta o limite máximo de corrupção do personagem. Ex: Coroa de Ossos = 1</p>
+              <input
+                type="number"
+                value={formData.corruptionLimitBonus ?? 0}
+                onChange={(e) => setFormData({ ...formData, corruptionLimitBonus: Number(e.target.value) })}
+                className="w-full bg-black/40 border border-purple-900/40 rounded px-4 py-2 text-purple-200 focus:outline-none focus:border-purple-600"
+                min={0}
+              />
+            </div>
+
+            <div>
+              <label className="text-amber-400 text-sm uppercase tracking-wide mb-1 block">Bônus em Testes</label>
+              <p className="text-zinc-500 text-xs mb-2">Descreva bônus especiais em testes. Ex: "+1 nos testes de Corrupção e Fé"</p>
+              <input
+                type="text"
+                value={formData.statBonus ?? ''}
+                onChange={(e) => setFormData({ ...formData, statBonus: e.target.value })}
+                className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+                placeholder="Ex: +1 nos testes de Corrupção e Fé"
+              />
+            </div>
           </div>
         )}
 
@@ -392,8 +427,14 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                   )}
 
                   {item.type === 'armor' && (
-                    <div className="text-xs text-zinc-500">
-                      Defesa: <span className="text-blue-400">+{item.bonus}</span>
+                    <div className="text-xs text-zinc-500 space-y-1">
+                      {(item.bonus ?? 0) > 0 && <div>Defesa: <span className="text-blue-400">+{item.bonus}</span></div>}
+                      {(item.corruptionLimitBonus ?? 0) > 0 && (
+                        <div>Corrupção Limite: <span className="text-purple-400">+{item.corruptionLimitBonus}</span></div>
+                      )}
+                      {item.statBonus && (
+                        <div className="text-amber-400/80 italic">{item.statBonus}</div>
+                      )}
                     </div>
                   )}
 

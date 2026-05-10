@@ -3,12 +3,23 @@ import { LucideIcon } from 'lucide-react';
 interface HexAttributeCardProps {
   name: string;
   bonus: number;
-  level: string;
   icon: LucideIcon;
   onBonusChange?: (value: number) => void;
 }
 
-export function HexAttributeCard({ name, bonus, level, icon: Icon, onBonusChange }: HexAttributeCardProps) {
+function getLevelLabel(bonus: number): string {
+  if (bonus >= 5) return 'Lendário';
+  if (bonus >= 4) return 'Mestre';
+  if (bonus >= 3) return 'Especialista';
+  if (bonus >= 2) return 'Competente';
+  if (bonus >= 1) return 'Aprendiz';
+  if (bonus === 0) return 'Humano';
+  return 'Fraco';
+}
+
+export function HexAttributeCard({ name, bonus, icon: Icon, onBonusChange }: HexAttributeCardProps) {
+  const level = getLevelLabel(bonus);
+
   const bonusColor = bonus >= 3 ? 'text-emerald-400' :
                      bonus >= 1 ? 'text-amber-400' :
                      bonus === 0 ? 'text-zinc-400' :

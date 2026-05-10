@@ -3,12 +3,12 @@ import { Crown, Skull } from 'lucide-react';
 interface CorruptionGaugeProps {
   current: number;
   max: number;
-  limit: string;
   onCurrentChange?: (value: number) => void;
+  onMaxChange?: (value: number) => void;
 }
 
-export function CorruptionGauge({ current, max, limit, onCurrentChange }: CorruptionGaugeProps) {
-  const percentage = (current / max) * 100;
+export function CorruptionGauge({ current, max, onCurrentChange, onMaxChange }: CorruptionGaugeProps) {
+  const percentage = max > 0 ? (current / max) * 100 : 0;
 
   return (
     <div className="bg-gradient-to-br from-purple-950/40 to-black/60 border border-purple-900/50 rounded-lg p-3 shadow-lg w-full">
@@ -19,7 +19,15 @@ export function CorruptionGauge({ current, max, limit, onCurrentChange }: Corrup
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
           <Crown className="w-3.5 h-3.5 text-amber-600" />
-          <span className="text-amber-500 text-xs whitespace-nowrap">{limit}</span>
+          <span className="text-amber-500 text-xs whitespace-nowrap">Limite:</span>
+          <input
+            type="number"
+            value={max}
+            onChange={(e) => onMaxChange?.(Math.max(1, Number(e.target.value)))}
+            className="w-8 bg-transparent border-b border-amber-800/50 text-center text-xs text-amber-400 focus:outline-none focus:border-amber-500"
+            min={1}
+            title="Limite de Corrupção (automático via itens equipados)"
+          />
         </div>
       </div>
 
