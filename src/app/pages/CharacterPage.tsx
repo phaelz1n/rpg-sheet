@@ -58,6 +58,7 @@ interface RPGItem {
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number;
+  rarity?: string;
 }
 
 export function CharacterPage() {
@@ -216,7 +217,8 @@ export function CharacterPage() {
           category: item.type === 'weapon' ? 'weapon' : item.type === 'armor' ? 'armor' : 'consumable',
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
           statBonus: item.statBonus || '',
-          beltCapacity: item.beltCapacity || 0
+          beltCapacity: item.beltCapacity || 0,
+          rarity: item.rarity || 'common'
         }));
 
         setRpgItems(convertedItems);

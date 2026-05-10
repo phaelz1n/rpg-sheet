@@ -8,6 +8,7 @@ interface Item {
   bonus: number;
   damage: string;
   attributeType: string;
+  rarity?: string;
 }
 
 interface ItemSelectionModalProps {
@@ -70,24 +71,46 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                   onSelect(item);
                   onClose();
                 }}
-                className="w-full bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-amber-800/50 rounded-lg p-3 text-left hover:from-amber-900/30 hover:to-orange-900/30 transition-colors group"
+                className={`w-full bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-2 ${
+                  item.rarity === 'rare' ? 'border-blue-900/50' :
+                  item.rarity === 'legendary' ? 'border-amber-900/50' :
+                  'border-zinc-800/50'
+                } rounded-lg p-3 text-left hover:from-amber-900/30 hover:to-orange-900/30 transition-colors group`}
               >
                 <div className="flex items-start justify-between mb-1">
-                  <h4 className="text-amber-300 group-hover:text-amber-200">{item.name}</h4>
-                  <div className="flex gap-2 text-xs">
+                  <h4 className={`font-bold ${
+                    item.rarity === 'rare' ? 'text-blue-400' :
+                    item.rarity === 'legendary' ? 'text-amber-400' :
+                    'text-amber-300'
+                  } group-hover:text-amber-200`}>{item.name}</h4>
+                  <div className="flex gap-2 text-[10px] uppercase tracking-tighter">
+                    {item.rarity && (
+                      <span className={`px-1.5 py-0.5 rounded border ${
+                        item.rarity === 'rare' ? 'bg-blue-950/40 border-blue-800/50 text-blue-300' :
+                        item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-800/50 text-amber-300' :
+                        'bg-zinc-800/40 border-zinc-700/50 text-zinc-400'
+                      }`}>
+                        {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
+                      </span>
+                    )}
                     {item.damage && (
-                      <span className="px-2 py-0.5 bg-red-900/40 border border-red-800/50 rounded text-red-300">
+                      <span className="px-1.5 py-0.5 bg-red-950/40 border border-red-900/50 rounded text-red-400">
                         {item.damage}
                       </span>
                     )}
                     {item.bonus !== 0 && (
-                      <span className="px-2 py-0.5 bg-amber-900/40 border border-amber-800/50 rounded text-amber-300">
+                      <span className="px-1.5 py-0.5 bg-zinc-950/40 border border-zinc-800/50 rounded text-zinc-300">
                         +{item.bonus}
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="text-xs text-zinc-500 capitalize">
+                <div className="text-[10px] text-zinc-500 capitalize flex items-center gap-1">
+                  <div className={`w-1 h-1 rounded-full ${
+                    item.rarity === 'rare' ? 'bg-blue-500' :
+                    item.rarity === 'legendary' ? 'bg-amber-500' :
+                    'bg-zinc-600'
+                  }`} />
                   {item.attributeType}
                 </div>
               </button>

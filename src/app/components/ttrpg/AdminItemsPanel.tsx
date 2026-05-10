@@ -7,7 +7,7 @@ interface AdminItemsPanelProps {
 }
 
 type ItemType = 'weapon' | 'armor' | 'potion' | 'material' | 'collectible';
-type ItemRarity = 'common' | 'uncommon' | 'epic' | 'legendary';
+type ItemRarity = 'common' | 'rare' | 'legendary';
 
 interface GlobalItem {
   id: string;
@@ -30,15 +30,13 @@ interface GlobalItem {
 
 const rarityColors = {
   common: 'border-gray-500',
-  uncommon: 'border-green-500',
-  epic: 'border-purple-500',
-  legendary: 'border-orange-500'
+  rare: 'border-blue-500',
+  legendary: 'border-amber-500'
 };
 
 const rarityLabels = {
   common: 'Comum',
-  uncommon: 'Incomum',
-  epic: 'Épico',
+  rare: 'Raro',
   legendary: 'Lendário'
 };
 
@@ -71,6 +69,57 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     healingValue: '',
     effect: ''
   });
+
+  const seedMinerals = async () => {
+    if (!confirm('Deseja carregar a lista de minerais e cintos automaticamente?')) return;
+    
+    const minerals = [
+      { name: 'Ferro Velho', type: 'weapon', rarity: 'common', description: 'Minério comum usado para forjar e reparar armas básicas.', damage: '1d4', attributeType: 'strength', bonus: 0 },
+      { name: 'Pedra Cinzenta', type: 'material', rarity: 'common', description: 'Pedra básica usada em processos de alquimia simples.' },
+      { name: 'Carvão Negro', type: 'material', rarity: 'common', description: 'Combustível comum para forjas e rituais de fogo.' },
+      { name: 'Quartzo Opaco', type: 'material', rarity: 'common', description: 'Cristal fosco usado em misturas alquímicas.' },
+      { name: 'Argilita Sombria', type: 'material', rarity: 'common', description: 'Argila escura imbuída de leves traços de energia.' },
+      { name: 'Calcita Fria', type: 'material', rarity: 'common', description: 'Mineral que mantém uma temperatura baixa constante.' },
+      { name: 'Pedra de Lodo', type: 'weapon', rarity: 'common', description: 'Pedra viscosa que pode ser moldada em projéteis.', damage: '1d4', attributeType: 'dexterity', bonus: 0 },
+      { name: 'Sílex Rachado', type: 'weapon', rarity: 'common', description: 'Pedra afiada usada para criar faíscas.', damage: '1d4', attributeType: 'strength', bonus: 0 },
+      { name: 'Areia Ferrosa', type: 'material', rarity: 'common', description: 'Grãos de metal fino usados em alquimia.' },
+      { name: 'Rocha Bruta', type: 'weapon', rarity: 'common', description: 'Um pedaço de rocha pesado e irregular.', damage: '1d6', attributeType: 'strength', bonus: 0 },
+      { name: 'Estilhaço de Basalto', type: 'armor', rarity: 'common', description: 'Pedaço de rocha vulcânica densa.', bonus: 1 },
+      { name: 'Terra Endurecida', type: 'material', rarity: 'common', description: 'Solo compactado por pressões místicas.' },
+      { name: 'Fragmento Calcificado', type: 'material', rarity: 'common', description: 'Restos endurecidos usados em rituais.' },
+      { name: 'Pedra Turva', type: 'weapon', rarity: 'common', description: 'Uma pedra que parece absorver a luz.', damage: '1d4', attributeType: 'occultism', bonus: 0 },
+      { name: 'Minério Ferrugem', type: 'weapon', rarity: 'common', description: 'Metal oxidado.', damage: '1d4', attributeType: 'strength', bonus: 0 },
+      { name: 'Sangrita', type: 'material', rarity: 'rare', description: 'Cristal avermelhado que pulsa como um coração.' },
+      { name: 'Umbraferro', type: 'weapon', rarity: 'rare', description: 'Metal forjado nas sombras.', damage: '1d8', attributeType: 'dexterity', bonus: 1 },
+      { name: 'Virulita', type: 'weapon', rarity: 'rare', description: 'Mineral tóxico.', damage: '1d6', attributeType: 'occultism', bonus: 1 },
+      { name: 'Cinzalma', type: 'weapon', rarity: 'rare', description: 'Resíduo de almas incineradas.', damage: '1d6', attributeType: 'willpower', bonus: 1 },
+      { name: 'Raiz-Ferro', type: 'weapon', rarity: 'rare', description: 'Madeira petrificada.', damage: '1d8', attributeType: 'strength', bonus: 1 },
+      { name: 'Olho de Ébano', type: 'material', rarity: 'rare', description: 'Gema negra profunda.' },
+      { name: 'Lágrima do Véu', type: 'weapon', rarity: 'rare', description: 'Substância semi-líquida.', damage: '1d10', attributeType: 'faith', bonus: 1 },
+      { name: 'Brasa Profana', type: 'material', rarity: 'rare', description: 'Fragmento que queima eternamente.' },
+      { name: 'Necronita', type: 'weapon', rarity: 'rare', description: 'Metal que drena a vitalidade.', damage: '1d8', attributeType: 'occultism', bonus: 1 },
+      { name: 'Cristal de Ossário', type: 'weapon', rarity: 'rare', description: 'Cristal formado em locais de grande mortalidade.', damage: '1d6', attributeType: 'willpower', bonus: 1 },
+      { name: 'Aurorita', type: 'weapon', rarity: 'legendary', description: 'Metal que brilha com a luz de um sol esquecido.', damage: '2d8', attributeType: 'faith', bonus: 3 },
+      { name: 'Fragmento do Véu', type: 'material', rarity: 'legendary', description: 'Um pedaço da própria realidade.' },
+      { name: 'Coração Fóssil', type: 'material', rarity: 'legendary', description: 'O coração petrificado de uma entidade ancestral.' },
+      { name: 'Pedra do Luminar', type: 'weapon', rarity: 'legendary', description: 'Gema que contém a essência da luz pura.', damage: '2d10', attributeType: 'faith', bonus: 3 },
+      { name: 'Núcleo Abissal', type: 'weapon', rarity: 'legendary', description: 'O centro concentrado de um vazio absoluto.', damage: '2d12', attributeType: 'occultism', bonus: 3 },
+      { name: 'Coldre de Couro Simples', type: 'armor', rarity: 'common', description: 'Acesso rápido: 1 slot.', beltCapacity: 1 },
+      { name: 'Cinto de Utilidade do Explorador', type: 'armor', rarity: 'rare', description: 'Acesso rápido: 2 slots.', beltCapacity: 2 },
+      { name: 'Cinto de Arsenal Real', type: 'armor', rarity: 'legendary', description: 'Acesso rápido: 4 slots.', bonus: 1, beltCapacity: 4 }
+    ];
+
+    try {
+      for (const item of minerals) {
+        await ttrpgApi.createItem(item);
+      }
+      alert('Minerais e cintos criados com sucesso!');
+      loadItems();
+    } catch (error) {
+      console.error('Error seeding items:', error);
+      alert('Erro ao carregar minerais');
+    }
+  };
 
   const loadItems = async () => {
     try {
@@ -354,31 +403,41 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-amber-900/50 to-orange-900/50 border-2 border-amber-700/60 rounded-xl p-4 sm:p-6 mb-6 shadow-2xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
-              <div>
-                <h1 className="text-lg sm:text-2xl text-amber-300">Gerenciamento de Itens</h1>
-                <p className="text-amber-400/70 text-xs sm:text-sm">Itens disponíveis para todos os jogadores</p>
-              </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-zinc-900/60 p-4 rounded-xl border border-amber-900/40">
+          <div className="flex items-center gap-3">
+            <Package className="w-8 h-8 text-amber-500" />
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-amber-100 uppercase tracking-tight">Gerenciamento de Itens</h1>
+              <p className="text-zinc-500 text-sm">Itens disponíveis para todos os jogadores</p>
             </div>
-            <div className="flex gap-2 flex-wrap w-full sm:w-auto">
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-green-900/50 border border-green-700/50 rounded-lg text-green-300 hover:bg-green-900/70 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Novo Item
-              </button>
-              <button
-                onClick={onClose}
-                className="flex items-center gap-2 px-4 py-2 bg-red-900/50 border border-red-700/50 rounded-lg text-red-300 hover:bg-red-900/70 transition-colors"
-              >
-                <X className="w-4 h-4" />
-                Fechar
-              </button>
-            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={seedMinerals}
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-zinc-700"
+              title="Carregar Minerais Padrão"
+            >
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              Seed Minerais
+            </button>
+            <button
+              onClick={() => {
+                resetForm();
+                setEditingItem(null);
+                setShowCreateModal(true);
+              }}
+              className="bg-green-900/80 hover:bg-green-800 text-green-100 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-green-700"
+            >
+              <Plus className="w-4 h-4" />
+              Novo Item
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-red-900/80 hover:bg-red-800 text-red-100 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-red-700"
+            >
+              <X className="w-4 h-4" />
+              Fechar
+            </button>
           </div>
         </div>
 
