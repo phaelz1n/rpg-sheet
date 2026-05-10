@@ -1063,7 +1063,7 @@ export function CharacterPage() {
                         newCurses[index].content = e.target.value;
                         setCurses(newCurses);
                       }}
-                      className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[60px] resize-none"
+                      className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[100px] resize-none"
                       placeholder="Descreva os efeitos..."
                     />
                   </div>
