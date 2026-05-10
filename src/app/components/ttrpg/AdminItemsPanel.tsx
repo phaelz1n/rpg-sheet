@@ -583,10 +583,10 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                     selectedIds.has(item.id) ? 'border-amber-500 bg-amber-900/10' : rarityColors[item.rarity]
                   } rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group cursor-pointer`}
                 >
-                  <div className="absolute top-2 left-2 z-10">
+                  <div className="absolute top-3.5 right-12 z-10">
                     <div className={`w-4 h-4 rounded border ${
                       selectedIds.has(item.id) ? 'bg-amber-500 border-amber-400' : 'bg-black/40 border-zinc-600'
-                    } flex items-center justify-center transition-all`}>
+                    } flex items-center justify-center transition-all shadow-lg`}>
                       {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-sm" />}
                     </div>
                   </div>
