@@ -1,4 +1,4 @@
-import { LucideIcon, ChevronDown, Plus } from 'lucide-react';
+import { LucideIcon, ChevronDown, Plus, Trash2 } from 'lucide-react';
 import { Zap, Eye, Droplet, Flame } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,6 +22,7 @@ interface AbilityCardProps {
   onDamageChange?: (value: string) => void;
   onEffectChange?: (value: string) => void;
   onBacklashChange?: (value: string) => void;
+  onDelete?: () => void;
 }
 
 export function AbilityCard({
@@ -43,7 +44,8 @@ export function AbilityCard({
   onTestChange,
   onDamageChange,
   onEffectChange,
-  onBacklashChange
+  onBacklashChange,
+  onDelete
 }: AbilityCardProps) {
   const [showTypeSelector, setShowTypeSelector] = useState(false);
   const isActive = type === 'action';
@@ -74,8 +76,8 @@ export function AbilityCard({
         : 'bg-gradient-to-br from-purple-950/30 to-zinc-900/80 border-2 border-purple-800/50'
     } rounded-lg p-3 sm:p-4 shadow-xl hover:shadow-2xl transition-all`}>
 
-      {/* Type selector */}
-      <div className="absolute top-2 right-2 z-10">
+      {/* Type selector & Delete */}
+      <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
         <button
           onClick={() => setShowTypeSelector(!showTypeSelector)}
           className={`flex items-center gap-1 px-2 py-0.5 ${
@@ -86,6 +88,19 @@ export function AbilityCard({
           <span>{isActive ? 'AÇÃO' : 'PASSIVA'}</span>
           <ChevronDown className="w-3 h-3" />
         </button>
+
+        {onDelete && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className="w-6 h-6 bg-red-900/40 border border-red-700/40 rounded flex items-center justify-center text-red-400 hover:bg-red-900/60 transition-all"
+            title="Remover Habilidade"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        )}
 
         {showTypeSelector && (
           <div className="absolute top-full right-0 mt-1 bg-zinc-900 border border-amber-800/50 rounded-lg shadow-2xl overflow-hidden">
