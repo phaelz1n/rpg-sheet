@@ -592,42 +592,45 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                     selectedIds.has(item.id) ? 'border-amber-500 bg-amber-900/10' : rarityColors[item.rarity]
                   } rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group cursor-pointer`}
                 >
-                  <div className="absolute top-2 right-2 flex items-center gap-2 z-10">
-                    <div 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleSelect(item.id);
-                      }}
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shadow-lg cursor-pointer ${
-                        selectedIds.has(item.id) 
-                          ? 'bg-amber-500 border-amber-300 scale-110' 
-                          : 'bg-black/40 border-zinc-700 hover:border-amber-900'
-                      }`}
-                    >
-                      {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-full" />}
-                    </div>
-
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
-                      <button
-                        onClick={() => openEditModal(item)}
-                        className="w-7 h-7 bg-blue-900/80 border border-blue-700 rounded flex items-center justify-center hover:bg-blue-800 transition-colors"
-                      >
-                        <Edit className="w-4 h-4 text-blue-100" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="w-7 h-7 bg-red-900/80 border border-red-700 rounded flex items-center justify-center hover:bg-red-800 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-100" />
-                      </button>
-                    </div>
-                  </div>
-
                   <div className="mb-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Package className="w-4 h-4 text-amber-500" />
-                      <h3 className="text-amber-300 font-bold text-sm">{item.name}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <Package className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                        <h3 className="text-amber-300 font-bold text-sm truncate">{item.name}</h3>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+                          <button
+                            onClick={() => openEditModal(item)}
+                            className="w-7 h-7 bg-blue-900/40 border border-blue-700/40 rounded flex items-center justify-center hover:bg-blue-800 transition-colors"
+                          >
+                            <Edit className="w-4 h-4 text-blue-100" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="w-7 h-7 bg-red-900/40 border border-red-700/40 rounded flex items-center justify-center hover:bg-red-800 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-100" />
+                          </button>
+                        </div>
+
+                        <div 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSelect(item.id);
+                          }}
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shadow-inner cursor-pointer ${
+                            selectedIds.has(item.id) 
+                              ? 'bg-amber-500 border-amber-300 scale-110 shadow-[0_0_8px_rgba(245,158,11,0.4)]' 
+                              : 'bg-black/40 border-zinc-700 hover:border-amber-900'
+                          }`}
+                        >
+                          {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-full" />}
+                        </div>
+                      </div>
                     </div>
+
                     <div className="flex flex-wrap gap-2 mb-3 text-[10px] uppercase tracking-tighter">
                       <span className={`px-2 py-0.5 rounded border ${
                         item.rarity === 'rare' ? 'bg-blue-950/40 border-blue-800/50 text-blue-300' :
