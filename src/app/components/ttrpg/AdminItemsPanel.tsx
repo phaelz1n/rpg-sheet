@@ -58,6 +58,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [filterRarity, setFilterRarity] = useState<string>('all');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   // Form state
   const [formData, setFormData] = useState<Partial<GlobalItem>>({
@@ -205,6 +206,41 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     } catch (error) {
       console.error('Error deleting item:', error);
       alert('Erro ao deletar item');
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`Tem certeza que deseja deletar os ${selectedIds.size} itens selecionados?`)) return;
+
+    try {
+      setLoading(true);
+      for (const id of selectedIds) {
+        await ttrpgApi.deleteItem(id);
+      }
+      setSelectedIds(new Set());
+      await loadItems();
+      alert('Itens deletados com sucesso!');
+    } catch (error) {
+      console.error('Error bulk deleting items:', error);
+      alert('Erro ao deletar alguns itens');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) newSelected.delete(id);
+    else newSelected.add(id);
+    setSelectedIds(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredItems.length && filteredItems.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredItems.map(item => item.id)));
     }
   };
 
@@ -487,6 +523,34 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           </select>
         </div>
 
+        {/* Bulk Actions Bar */}
+        {items.length > 0 && (
+          <div className="flex items-center justify-between mb-4 bg-zinc-900/40 p-3 rounded-lg border border-zinc-800">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleSelectAll}
+                className="text-xs text-amber-400/80 hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              >
+                {selectedIds.size === filteredItems.length && filteredItems.length > 0 ? 'Desmarcar Todos' : 'Selecionar Todos'}
+              </button>
+              {selectedIds.size > 0 && (
+                <span className="text-[10px] text-zinc-500 uppercase tracking-widest">
+                  {selectedIds.size} selecionado(s)
+                </span>
+              )}
+            </div>
+            {selectedIds.size > 0 && (
+              <button
+                onClick={handleBulkDelete}
+                className="bg-red-900/60 hover:bg-red-900 border border-red-700 rounded px-3 py-1.5 text-xs text-red-200 flex items-center gap-2 transition-all"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Excluir Selecionados
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Items Grid */}
         <div className="bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 border-amber-900/60 rounded-xl p-6 shadow-xl">
           <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center justify-between">
@@ -514,9 +578,20 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
               {filteredItems.map((item) => (
                 <div
                   key={item.id}
-                  className={`bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border-2 ${rarityColors[item.rarity]} rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group`}
+                  onClick={() => toggleSelect(item.id)}
+                  className={`bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border-2 ${
+                    selectedIds.has(item.id) ? 'border-amber-500 bg-amber-900/10' : rarityColors[item.rarity]
+                  } rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group cursor-pointer`}
                 >
-                  <div className="absolute top-2 right-2 flex gap-1">
+                  <div className="absolute top-2 left-2 z-10">
+                    <div className={`w-4 h-4 rounded border ${
+                      selectedIds.has(item.id) ? 'bg-amber-500 border-amber-400' : 'bg-black/40 border-zinc-600'
+                    } flex items-center justify-center transition-all`}>
+                      {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-sm" />}
+                    </div>
+                  </div>
+
+                  <div className="absolute top-2 right-2 flex gap-1 z-10" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => openEditModal(item)}
                       className="w-7 h-7 bg-blue-900/80 border border-blue-700 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-800"
