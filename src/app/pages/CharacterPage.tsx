@@ -20,7 +20,7 @@ import {
   Sparkles, Zap, Skull, Droplet, Target, Moon,
   Crown, Circle, ShirtIcon, GripHorizontal, CircleDot,
   Footprints, Pickaxe, Gem, Fish, Coins, Swords,
-  LogOut, Save, User, Shield, Activity, EyeOff, Crosshair,
+  LogOut, Plus, Trash2, User, Shield, Activity, EyeOff, Crosshair,
   Dumbbell, AlertTriangle, Search, Compass, Stethoscope,
   Book, Radio
 } from 'lucide-react';
@@ -1109,11 +1109,12 @@ export function CharacterPage() {
             itemSelectionModal.type === 'armor' ? 'Selecionar Armadura' :
             'Selecionar Item'
           }
-          items={rpgItems.filter(item => 
-            itemSelectionModal.type === 'consumable' 
-              ? (item.category === 'consumable' || item.category === 'material')
-              : item.category === itemSelectionModal.type
-          )}
+          items={rpgItems.filter(item => {
+            if (itemSelectionModal.type === 'consumable') {
+              return item.category === 'potion' || item.category === 'material' || item.category === 'collectible' || item.category === 'consumable';
+            }
+            return item.category === itemSelectionModal.type;
+          })}
           onClose={() => setItemSelectionModal({ isOpen: false, type: null })}
           onSelect={(item) => {
             const rpgItem = item as RPGItem;
