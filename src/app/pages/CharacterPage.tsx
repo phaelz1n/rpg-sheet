@@ -54,7 +54,7 @@ interface RPGItem {
   attributeIcon: any;
   bonus: number;
   damage: string;
-  category: 'weapon' | 'armor' | 'consumable';
+  category: 'weapon' | 'armor' | 'consumable' | 'material';
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number;
@@ -214,7 +214,9 @@ export function CharacterPage() {
           attributeIcon: iconMap[item.attributeType] || Hand,
           bonus: item.bonus || 0,
           damage: item.damage || '',
-          category: item.type === 'weapon' ? 'weapon' : item.type === 'armor' ? 'armor' : 'consumable',
+          category: item.type === 'weapon' ? 'weapon' : 
+                    item.type === 'armor' ? 'armor' : 
+                    item.type === 'material' ? 'material' : 'consumable',
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
           statBonus: item.statBonus || '',
           beltCapacity: item.beltCapacity || 0,
@@ -341,10 +343,25 @@ export function CharacterPage() {
     }
   };
 
-  const saveCharacterDataManual = () => {
-    saveCharacterData();
-    alert('Ficha salva com sucesso!');
-  };
+  // Auto-save effect
+  useEffect(() => {
+    if (!activeUsername) return;
+
+    const timer = setTimeout(() => {
+      saveCharacterData();
+    }, 2000); // Salva após 2 segundos de inatividade
+
+    return () => clearTimeout(timer);
+  }, [
+    characterName, characterClass, characterFaction, characterCodename, characterPortrait,
+    health, maxHealth, sanity, maxSanity, mana, maxMana, stamina, maxStamina,
+    corruption, corruptionBaseMax, damageReduction,
+    occultism, dexterity, vigor, willpower, strength, faith,
+    skills, abilities, equipmentHead, equipmentNeck, equipmentChest,
+    equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots,
+    beltSlot1, beltSlot2, beltSlot3, beltSlot4, beltSlot5, beltSlot6, beltSlot7, beltSlot8,
+    mainWeapon, offWeapon, inventory, globalAttributes
+  ]);
 
   const loadCharacterData = async (username: string) => {
     console.log(`Carregando dados para o usuário: ${username}`);
@@ -485,14 +502,7 @@ export function CharacterPage() {
               <span className="sm:hidden">Admin</span>
             </button>
           )}
-          <button
-            onClick={saveCharacterDataManual}
-            className="flex items-center gap-1.5 px-3 py-2 bg-green-900/50 border border-green-700/50 rounded-lg text-green-300 hover:bg-green-900/70 transition-colors text-xs sm:text-sm"
-          >
-            <Save className="w-4 h-4" />
-            <span className="hidden sm:inline">Salvar</span>
-            <span className="sm:hidden">Salvar</span>
-          </button>
+
           <button
             onClick={handleLogout}
             className="flex items-center gap-1.5 px-3 py-2 bg-red-900/50 border border-red-700/50 rounded-lg text-red-300 hover:bg-red-900/70 transition-colors text-xs sm:text-sm"
@@ -522,7 +532,7 @@ export function CharacterPage() {
                   placeholder="Nome do personagem"
                   className="text-base sm:text-xl md:text-2xl text-amber-400 tracking-wide bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none w-full"
                 />
-                <div className="flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm">
+                <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm">
                   <div className="flex items-center gap-1.5">
                     <span className="text-zinc-500">Classe:</span>
                     <input
@@ -531,7 +541,7 @@ export function CharacterPage() {
                       onChange={(e) => setCharacterClass(e.target.value)}
                       maxLength={25}
                       placeholder="Classe"
-                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none max-w-[120px] sm:max-w-[160px]"
+                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none w-auto min-w-[80px]"
                     />
                   </div>
                   <div className="w-px h-4 bg-zinc-700 hidden sm:block" />
@@ -543,22 +553,23 @@ export function CharacterPage() {
                       onChange={(e) => setCharacterFaction(e.target.value)}
                       maxLength={25}
                       placeholder="Facção"
-                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none max-w-[120px] sm:max-w-[160px]"
-                    />
-                  </div>
-                  <div className="w-px h-4 bg-zinc-700 hidden sm:block" />
-                  <div className="flex items-center gap-1.5">
-                    <Skull className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500" />
-                    <input
-                      type="text"
-                      value={characterCodename}
-                      onChange={(e) => setCharacterCodename(e.target.value)}
-                      maxLength={30}
-                      placeholder="Codinome"
-                      className="text-purple-400 bg-transparent border-b border-transparent hover:border-purple-800/50 focus:border-purple-600 focus:outline-none max-w-[150px] sm:max-w-[180px]"
+                      className="text-amber-300 bg-transparent border-b border-transparent hover:border-amber-800/50 focus:border-amber-600 focus:outline-none w-auto min-w-[80px]"
                     />
                   </div>
                 </div>
+
+                <div className="flex items-center gap-1.5 pt-1">
+                  <Skull className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500" />
+                  <input
+                    type="text"
+                    value={characterCodename}
+                    onChange={(e) => setCharacterCodename(e.target.value)}
+                    maxLength={30}
+                    placeholder="Codinome"
+                    className="text-purple-400 bg-transparent border-b border-transparent hover:border-purple-800/50 focus:border-purple-600 focus:outline-none w-full italic"
+                  />
+                </div>
+              </div>
               </div>
             </div>
 
@@ -1011,7 +1022,11 @@ export function CharacterPage() {
             itemSelectionModal.type === 'armor' ? 'Selecionar Armadura' :
             'Selecionar Item'
           }
-          items={rpgItems.filter(item => item.category === itemSelectionModal.type)}
+          items={rpgItems.filter(item => 
+            itemSelectionModal.type === 'consumable' 
+              ? (item.category === 'consumable' || item.category === 'material')
+              : item.category === itemSelectionModal.type
+          )}
           onClose={() => setItemSelectionModal({ isOpen: false, type: null })}
           onSelect={(item) => {
             const rpgItem = item as RPGItem;

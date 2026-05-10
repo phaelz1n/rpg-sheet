@@ -54,6 +54,11 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const [editingItem, setEditingItem] = useState<GlobalItem | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
+  // Filters
+  const [search, setSearch] = useState('');
+  const [filterType, setFilterType] = useState<string>('all');
+  const [filterRarity, setFilterRarity] = useState<string>('all');
+
   // Form state
   const [formData, setFormData] = useState<Partial<GlobalItem>>({
     name: '',
@@ -441,24 +446,65 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           </div>
         </div>
 
+        {/* Filtros */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-zinc-900/60 p-4 rounded-xl border border-amber-900/40">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por nome..."
+              className="w-full bg-black/40 border border-amber-900/40 rounded-lg pl-10 pr-4 py-2 text-zinc-300 focus:outline-none focus:border-amber-600 text-sm"
+            />
+          </div>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="bg-black/40 border border-amber-900/40 rounded-lg px-4 py-2 text-zinc-300 focus:outline-none focus:border-amber-600 text-sm"
+          >
+            <option value="all">Todos os Tipos</option>
+            {Object.entries(typeLabels).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+          <select
+            value={filterRarity}
+            onChange={(e) => setFilterRarity(e.target.value)}
+            className="bg-black/40 border border-amber-900/40 rounded-lg px-4 py-2 text-zinc-300 focus:outline-none focus:border-amber-600 text-sm"
+          >
+            <option value="all">Todas as Raridades</option>
+            {Object.entries(rarityLabels).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Items Grid */}
         <div className="bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 border-amber-900/60 rounded-xl p-6 shadow-xl">
-          <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
-            Itens Criados ({items.length})
+          <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              Itens Criados ({filteredItems.length})
+            </div>
+            {filteredItems.length < items.length && (
+              <span className="text-zinc-500 text-[10px] normal-case">
+                Filtrado de {items.length} itens total
+              </span>
+            )}
           </h2>
 
           {loading ? (
             <div className="text-center py-12 text-zinc-500">
               Carregando itens...
             </div>
-          ) : items.length === 0 ? (
+          ) : filteredItems.length === 0 ? (
             <div className="text-center py-12 text-zinc-500">
-              Nenhum item criado ainda
+              Nenhum item corresponde aos filtros
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {items.map((item) => (
+              {filteredItems.map((item) => (
                 <div
                   key={item.id}
                   className={`bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border-2 ${rarityColors[item.rarity]} rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group`}
@@ -483,11 +529,15 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                       <Package className="w-4 h-4 text-amber-500" />
                       <h3 className="text-amber-300 font-bold text-sm">{item.name}</h3>
                     </div>
-                    <div className="flex gap-2 text-xs mb-2">
-                      <span className={`px-2 py-0.5 rounded ${rarityColors[item.rarity]} bg-black/40`}>
-                        {rarityLabels[item.rarity]}
+                    <div className="flex flex-wrap gap-2 mb-3 text-[10px] uppercase tracking-tighter">
+                      <span className={`px-2 py-0.5 rounded border ${
+                        item.rarity === 'rare' ? 'bg-blue-950/40 border-blue-800/50 text-blue-300' :
+                        item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-800/50 text-amber-300' :
+                        'bg-zinc-800/40 border-zinc-700/50 text-zinc-400'
+                      }`}>
+                        {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
                       </span>
-                      <span className="px-2 py-0.5 rounded border border-zinc-600 bg-black/40 text-zinc-400">
+                      <span className="px-2 py-0.5 bg-zinc-800/60 border border-zinc-700 rounded text-zinc-400">
                         {typeLabels[item.type]}
                       </span>
                     </div>

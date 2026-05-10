@@ -105,14 +105,21 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                     )}
                   </div>
                 </div>
-                <div className="text-[10px] text-zinc-500 capitalize flex items-center gap-1">
-                  <div className={`w-1 h-1 rounded-full ${
-                    item.rarity === 'rare' ? 'bg-blue-500' :
-                    item.rarity === 'legendary' ? 'bg-amber-500' :
-                    'bg-zinc-600'
-                  }`} />
-                  {item.attributeType}
-                </div>
+                {item.category === 'weapon' && (
+                  <div className="text-[10px] text-zinc-500 capitalize flex items-center gap-1">
+                    <div className={`w-1 h-1 rounded-full ${
+                      item.rarity === 'rare' ? 'bg-blue-500' :
+                      item.rarity === 'legendary' ? 'bg-amber-500' :
+                      'bg-zinc-600'
+                    }`} />
+                    {item.attributeType}
+                  </div>
+                )}
+                {item.category === 'material' && (
+                  <div className="text-[10px] text-zinc-600 italic">
+                    Material de Crafting
+                  </div>
+                )}
               </button>
             ))
           )}
