@@ -98,6 +98,27 @@ export function CharacterPage() {
   const adminViewUsername = searchParams.get('admin-view');
   const activeUsername = (isAdmin && adminViewUsername) ? adminViewUsername : currentUser;
 
+  const LORE_QUOTES = [
+    "Milagres ainda existem… mas têm preço.",
+    "A fé deixou de unir — agora divide, corrompe e enlouquece.",
+    "O céu se partiu, a luz desapareceu… e o divino sangrou.",
+    "Criaturas nascem da distorção espiritual, alimentadas por medo, culpa e pecado.",
+    "A linha entre bênção e maldição já não existe.",
+    "Fé ou loucura… ambas matam.",
+    "Fragmentos do corpo divino ainda caem do céu… e onde eles tocam, a realidade se quebra.",
+    "O mundo mergulhou em trevas constantes após a Noite da Ruína.",
+    "Servir, resistir ou sobreviver.",
+    "A Igreja prega ordem… mas muitos sussurram que sua 'luz' já não é pura.",
+    "O Culto não teme a escuridão… eles a abraçam."
+  ];
+
+  const [loreQuote, setLoreQuote] = useState('');
+
+  useEffect(() => {
+    const randomQuote = LORE_QUOTES[Math.floor(Math.random() * LORE_QUOTES.length)];
+    setLoreQuote(randomQuote);
+  }, []);
+
   // Modal state
   const [itemSelectionModal, setItemSelectionModal] = useState<{
     isOpen: boolean;
@@ -538,12 +559,12 @@ export function CharacterPage() {
       {/* Top Bar */}
       <div className="max-w-[1600px] mx-auto mb-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-zinc-900/50 to-black/50 border border-amber-900/40 rounded-lg p-3">
         <div className="flex items-center gap-2 text-amber-400">
-          <User className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-xs sm:text-sm">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)] mr-1" />
+          <span className="text-xs sm:text-sm font-medium">
             {adminViewUsername ? (
-              <>Admin visualizando: <span className="font-bold text-purple-400">{adminViewUsername}</span></>
+              <>Admin visualizando: <span className="font-bold text-purple-400 uppercase tracking-tight">{adminViewUsername}</span></>
             ) : (
-              <>Logado: <span className="font-bold">{currentUser}</span></>
+              <>Bem-vindo, <span className="font-bold uppercase tracking-tight text-amber-300">{currentUser}</span>!</>
             )}
           </span>
         </div>
@@ -571,6 +592,12 @@ export function CharacterPage() {
       </div>
 
       <div className="max-w-[1600px] mx-auto space-y-6">
+        {/* Lore Quote */}
+        <div className="flex justify-center -mt-2">
+          <div className="bg-black/40 border border-amber-900/20 rounded px-4 py-1.5 italic text-[10px] sm:text-xs text-zinc-500 tracking-wide text-center max-w-2xl">
+            "{loreQuote}"
+          </div>
+        </div>
 
         {/* CABEÇALHO */}
         <div className="bg-gradient-to-br from-zinc-900/90 to-black/95 border-2 border-amber-900/60 rounded-xl p-4 md:p-6 shadow-2xl">
@@ -697,16 +724,16 @@ export function CharacterPage() {
               <div className="flex items-center gap-4 relative z-10">
                 <button 
                   onClick={() => setInspiration(Math.max(0, inspiration - 1))}
-                  className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold"
+                  className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold px-2"
                 >
                   -
                 </button>
-                <span className="text-3xl font-black text-amber-400 drop-shadow-[0_0_8_rgba(251,191,36,0.5)]">
+                <span className="text-3xl font-black text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">
                   {inspiration}
                 </span>
                 <button 
                   onClick={() => setInspiration(inspiration + 1)}
-                  className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold"
+                  className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold px-2"
                 >
                   +
                 </button>

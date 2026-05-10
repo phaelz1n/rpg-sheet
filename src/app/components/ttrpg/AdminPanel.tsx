@@ -118,10 +118,7 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
             <div className="flex items-center gap-3">
               <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
               <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-lg sm:text-2xl text-purple-300">Painel Administrativo</h1>
-                  <span className="px-2 py-1 bg-green-900/50 border border-green-700/50 rounded text-green-300 text-xs">v3.0 ROTAS</span>
-                </div>
+                <h1 className="text-lg sm:text-2xl text-purple-300">Painel Administrativo</h1>
                 <p className="text-purple-400/70 text-xs sm:text-sm">Gerenciamento completo: usuários, fichas e itens</p>
               </div>
             </div>

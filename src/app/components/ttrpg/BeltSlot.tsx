@@ -14,14 +14,12 @@ export function BeltSlot({ itemName, rarity, icon: Icon, description, onItemName
   const isEmpty = !itemName;
 
   const rarityColors: Record<string, string> = {
-    'COMUM': 'border-zinc-500/50',
-    'INCOMUM': 'border-emerald-500/50',
-    'RARO': 'border-blue-500/50',
-    'ÉPICO': 'border-purple-500/50',
-    'LENDÁRIO': 'border-amber-500/50'
+    'common': 'border-zinc-500/50',
+    'rare': 'border-blue-500/50',
+    'legendary': 'border-amber-500/50'
   };
 
-  const borderClass = !isEmpty && rarity ? rarityColors[rarity.toUpperCase()] || 'border-amber-800/50' : 'border-zinc-700/40';
+  const borderClass = !isEmpty && rarity ? rarityColors[rarity.toLowerCase()] || 'border-amber-800/50' : 'border-zinc-700/40';
 
   return (
     <div className={`relative ${
