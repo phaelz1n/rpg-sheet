@@ -2,7 +2,7 @@ import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
 import * as kv from "./kv_store.ts";
-const app = new Hono();
+const app = new Hono().basePath('/server');
 
 // Enable logger
 app.use('*', logger(console.log));
@@ -20,14 +20,14 @@ app.use(
 );
 
 // Health check endpoint
-app.get("/make-server-3f9f9518/health", (c) => {
+app.get("/health", (c) => {
   return c.json({ status: "ok" });
 });
 
 // ============ AUTHENTICATION ============
 
 // Register new user
-app.post("/make-server-3f9f9518/register", async (c) => {
+app.post("/register", async (c) => {
   try {
     const { username, password } = await c.req.json();
 
@@ -63,7 +63,7 @@ app.post("/make-server-3f9f9518/register", async (c) => {
 });
 
 // Login
-app.post("/make-server-3f9f9518/login", async (c) => {
+app.post("/login", async (c) => {
   try {
     const { username, password } = await c.req.json();
 
@@ -97,7 +97,7 @@ app.post("/make-server-3f9f9518/login", async (c) => {
 // ============ CHARACTER DATA ============
 
 // Get character data
-app.get("/make-server-3f9f9518/character/:username", async (c) => {
+app.get("/character/:username", async (c) => {
   try {
     const username = c.req.param("username");
     const characterData = await kv.get(`character:${username}`);
@@ -114,7 +114,7 @@ app.get("/make-server-3f9f9518/character/:username", async (c) => {
 });
 
 // Save character data
-app.post("/make-server-3f9f9518/character/:username", async (c) => {
+app.post("/character/:username", async (c) => {
   try {
     const username = c.req.param("username");
     const characterData = await c.req.json();
@@ -132,7 +132,7 @@ app.post("/make-server-3f9f9518/character/:username", async (c) => {
 // ============ ADMIN ROUTES ============
 
 // Get all users
-app.get("/make-server-3f9f9518/admin/users", async (c) => {
+app.get("/admin/users", async (c) => {
   try {
     const allUsers = await kv.get("all_users") || [];
     const usersWithCharacters = [];
@@ -155,7 +155,7 @@ app.get("/make-server-3f9f9518/admin/users", async (c) => {
 });
 
 // Create user (admin)
-app.post("/make-server-3f9f9518/admin/users", async (c) => {
+app.post("/admin/users", async (c) => {
   try {
     const { username, password } = await c.req.json();
 
@@ -191,7 +191,7 @@ app.post("/make-server-3f9f9518/admin/users", async (c) => {
 });
 
 // Delete user (admin)
-app.delete("/make-server-3f9f9518/admin/users/:username", async (c) => {
+app.delete("/admin/users/:username", async (c) => {
   try {
     const username = c.req.param("username");
 
@@ -215,7 +215,7 @@ app.delete("/make-server-3f9f9518/admin/users/:username", async (c) => {
 });
 
 // Reset password (admin)
-app.post("/make-server-3f9f9518/admin/reset-password", async (c) => {
+app.post("/admin/reset-password", async (c) => {
   try {
     const { username, newPassword } = await c.req.json();
 
@@ -241,7 +241,7 @@ app.post("/make-server-3f9f9518/admin/reset-password", async (c) => {
 // ============ GLOBAL ITEMS (ADMIN) ============
 
 // Get all global items
-app.get("/make-server-3f9f9518/admin/items", async (c) => {
+app.get("/admin/items", async (c) => {
   try {
     const items = await kv.get("global_items") || [];
     return c.json({ items });
@@ -252,7 +252,7 @@ app.get("/make-server-3f9f9518/admin/items", async (c) => {
 });
 
 // Create global item (admin)
-app.post("/make-server-3f9f9518/admin/items", async (c) => {
+app.post("/admin/items", async (c) => {
   try {
     const itemData = await c.req.json();
 
@@ -274,7 +274,7 @@ app.post("/make-server-3f9f9518/admin/items", async (c) => {
 });
 
 // Update global item (admin)
-app.put("/make-server-3f9f9518/admin/items/:id", async (c) => {
+app.put("/admin/items/:id", async (c) => {
   try {
     const id = c.req.param("id");
     const updatedData = await c.req.json();
@@ -298,7 +298,7 @@ app.put("/make-server-3f9f9518/admin/items/:id", async (c) => {
 });
 
 // Delete global item (admin)
-app.delete("/make-server-3f9f9518/admin/items/:id", async (c) => {
+app.delete("/admin/items/:id", async (c) => {
   try {
     const id = c.req.param("id");
 

@@ -40,7 +40,6 @@ export function LoginModal({ isOpen, onLogin, onRegister }: LoginModalProps) {
           <p className="text-zinc-400 text-xs sm:text-sm">
             {isRegistering ? 'Criar nova conta' : 'Entre para acessar sua ficha'}
           </p>
-          <p className="text-purple-500 text-xs mt-2">Sistema de Rotas Atualizado ✓</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
