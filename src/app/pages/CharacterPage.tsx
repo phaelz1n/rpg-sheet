@@ -1142,7 +1142,12 @@ export function CharacterPage() {
 
                   <div className="flex items-center bg-amber-900/20 border border-amber-900/40 rounded overflow-hidden">
                     <button 
-                      onClick={() => setInventoryCapacity(prev => Math.max(8, prev - 4))}
+                      onClick={() => {
+                        const newCap = Math.max(8, inventoryCapacity - 4);
+                        setInventoryCapacity(newCap);
+                        const maxPage = Math.ceil(newCap / ITEMS_PER_PAGE) - 1;
+                        if (inventoryPage > maxPage) setInventoryPage(maxPage);
+                      }}
                       className="px-2 py-1 text-amber-500 hover:bg-amber-900/40 transition-all border-r border-amber-900/40 disabled:text-zinc-700"
                       disabled={inventoryCapacity <= 8}
                       title="Diminuir espaço da mochila"
