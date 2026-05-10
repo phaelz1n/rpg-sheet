@@ -290,7 +290,8 @@ export function CharacterPage() {
           damage: item.damage || '',
           category: item.type === 'weapon' ? 'weapon' : 
                     item.type === 'armor' ? 'armor' : 
-                    item.type === 'material' ? 'material' : 'consumable',
+                    item.type === 'material' ? 'material' : 
+                    item.type === 'potion' ? 'potion' : 'consumable',
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
           statBonus: item.statBonus || '',
           beltCapacity: item.beltCapacity || 0,
@@ -1038,7 +1039,7 @@ export function CharacterPage() {
                           rarity={getItemRarity(slot.val)}
                           onItemNameChange={slot.set}
                           onClear={() => slot.set('')}
-                          onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: slot.key })}
+                          onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'consumable', slot: slot.key })}
                         />
                       ))}
                     </div>
@@ -1139,11 +1140,17 @@ export function CharacterPage() {
             'Selecionar Item'
           }
           items={rpgItems.filter(item => {
-            if (itemSelectionModal.type === 'consumable') {
-              // No sistema, poções, materiais e colecionáveis entram na mochila (consumable)
-              return item.category === 'potion' || item.category === 'material' || item.category === 'collectible' || item.category === 'consumable';
+            if (itemSelectionModal.type === 'weapon') {
+              return item.category === 'weapon';
             }
-            return item.category === (itemSelectionModal.type as string);
+            if (itemSelectionModal.type === 'armor') {
+              return item.category === 'armor';
+            }
+            if (itemSelectionModal.type === 'consumable') {
+              // Mochila e Slots de Acesso Rápido mostram tudo que não é arma/armadura
+              return item.category === 'potion' || item.category === 'material' || item.category === 'consumable';
+            }
+            return false;
           })}
           onClose={() => setItemSelectionModal({ isOpen: false, type: null })}
           onSelect={(item) => {
