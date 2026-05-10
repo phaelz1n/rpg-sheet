@@ -23,8 +23,9 @@ interface GlobalItem {
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number; // Quantidade de slots de acesso rápido que o cinto oferece
-  // Potion fields
+  // Potion/Consumable fields
   healingValue?: string;
+  effectTarget?: 'health' | 'stamina' | 'sanity' | 'corruption' | 'none';
   effect?: string;
 }
 
@@ -73,6 +74,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     statBonus: '',
     beltCapacity: 0,
     healingValue: '',
+    effectTarget: 'health',
     effect: ''
   });
 
@@ -101,7 +103,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       
       // Itens de Axe
       { name: 'Gancho com Corrente', type: 'weapon', rarity: 'rare', damage: '1d4', attributeType: 'strength', description: 'Permite puxar inimigos (Teste FOR), escalar e interagir com o ambiente.' },
-      { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effect: '+2 Fôlego', description: 'Estimulante que recupera +2 de Fôlego instantaneamente.' },
+      { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effectTarget: 'stamina', healingValue: '+2', description: 'Estimulante que recupera +2 de Fôlego instantaneamente.' },
       { name: 'Medalhão Sussurrante', type: 'armor', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.' },
       { name: 'Pele de Urso', type: 'armor', rarity: 'rare', description: 'Manto pesado que oferece 3 de Redução de Dano (RD).' },
       { name: 'Amuleto Tosco', type: 'armor', rarity: 'rare', bonus: 1, description: 'Concede +1 em testes de Intimidação.' },
@@ -428,20 +430,37 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
         {/* Potion-specific fields */}
         {type === 'potion' && (
-          <>
-            <div>
-              <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Valor de Cura</label>
-              <input
-                type="text"
-                value={formData.healingValue}
-                onChange={(e) => setFormData({ ...formData, healingValue: e.target.value })}
-                className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
-                placeholder="Ex: 2d4+2"
-              />
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Alvo do Efeito</label>
+                <select
+                  value={formData.effectTarget ?? 'health'}
+                  onChange={(e) => setFormData({ ...formData, effectTarget: e.target.value as any })}
+                  className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+                >
+                  <option value="health">Vida</option>
+                  <option value="stamina">Fôlego</option>
+                  <option value="sanity">Sanidade</option>
+                  <option value="corruption">Corrupção</option>
+                  <option value="none">Outro / Especial</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Valor do Bônus/Cura</label>
+                <input
+                  type="text"
+                  value={formData.healingValue}
+                  onChange={(e) => setFormData({ ...formData, healingValue: e.target.value })}
+                  className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+                  placeholder="Ex: 2d4+2 ou +2"
+                />
+              </div>
             </div>
 
             <div>
-              <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Efeito Adicional</label>
+              <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Descrição do Efeito</label>
               <textarea
                 value={formData.effect}
                 onChange={(e) => setFormData({ ...formData, effect: e.target.value })}
@@ -449,7 +468,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                 placeholder="Efeitos adicionais da poção"
               />
             </div>
-          </>
+          </div>
         )}
       </>
     );
@@ -670,7 +689,13 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
                   {item.type === 'potion' && (
                     <div className="text-xs text-zinc-500 space-y-1">
-                      <div>Cura: <span className="text-green-400">{item.healingValue}</span></div>
+                      <div>Alvo: <span className="text-blue-400 uppercase">{
+                        item.effectTarget === 'health' ? 'Vida' :
+                        item.effectTarget === 'stamina' ? 'Fôlego' :
+                        item.effectTarget === 'sanity' ? 'Sanidade' :
+                        item.effectTarget === 'corruption' ? 'Corrupção' : 'Especial'
+                      }</span></div>
+                      <div>Valor: <span className="text-green-400">{item.healingValue}</span></div>
                       {item.effect && <div className="text-purple-400 line-clamp-1">{item.effect}</div>}
                     </div>
                   )}
