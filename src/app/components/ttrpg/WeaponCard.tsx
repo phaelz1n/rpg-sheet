@@ -94,14 +94,14 @@ export function WeaponCard({
 
             {synergy && (
               <div className="bg-orange-950/40 border border-orange-800/40 rounded p-2">
-                <div className="text-xs text-orange-400 uppercase mb-1">Sinergia de Fogo</div>
+                <div className="text-xs text-orange-400 uppercase mb-1">Sinergia</div>
                 <p className="text-orange-300 text-xs">{synergy}</p>
               </div>
             )}
 
             {special && (
               <div className="bg-purple-950/40 border border-purple-800/40 rounded p-2">
-                <div className="text-xs text-purple-400 uppercase mb-1">Sacrifício</div>
+                <div className="text-xs text-purple-400 uppercase mb-1">Efeito Especial</div>
                 <p className="text-purple-300 text-xs">{special}</p>
               </div>
             )}

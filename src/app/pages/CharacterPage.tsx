@@ -59,6 +59,7 @@ interface RPGItem {
   statBonus?: string;
   beltCapacity?: number;
   rarity?: string;
+  description?: string;
 }
 
 function CompactSkillRow({ name, bonus, onBonusChange, color }: { 
@@ -202,12 +203,16 @@ export function CharacterPage() {
   const [mainWeapon, setMainWeapon] = useState({
     name: '',
     damage: '',
-    bonus: ''
+    bonus: '',
+    synergy: '',
+    special: ''
   });
   const [offWeapon, setOffWeapon] = useState({
     name: '',
     damage: '',
-    bonus: ''
+    bonus: '',
+    synergy: '',
+    special: ''
   });
 
   // Inventory state
@@ -289,7 +294,8 @@ export function CharacterPage() {
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
           statBonus: item.statBonus || '',
           beltCapacity: item.beltCapacity || 0,
-          rarity: item.rarity || 'common'
+          rarity: item.rarity || 'common',
+          description: item.description || ''
         }));
 
         setRpgItems(convertedItems);
@@ -311,7 +317,9 @@ export function CharacterPage() {
     const weaponData = {
       name: item.name,
       damage: item.damage,
-      bonus: `+${item.bonus}`
+      bonus: `+${item.bonus}`,
+      synergy: '', // Podia vir do banco se tivéssemos campos específicos, por enquanto usamos a descrição se for longa?
+      special: item.description || ''
     };
 
     if (slot === 'main') {
@@ -345,8 +353,8 @@ export function CharacterPage() {
       id: Date.now().toString(),
       name: item.name,
       quantity: 1,
-      icon: iconMap[item.attributeType],
-      description: `Bônus: +${item.bonus}, Dano: ${item.damage}`
+      icon: iconMap[item.attributeType] || Sparkles,
+      description: item.description || `Bônus: +${item.bonus}, Dano: ${item.damage}`
     };
     setInventory(prev => [...prev, newInventoryItem]);
   };
@@ -881,12 +889,12 @@ export function CharacterPage() {
                   name={mainWeapon.name}
                   damage={mainWeapon.damage}
                   bonus={mainWeapon.bonus}
-                  synergy="Ao usar habilidades de dano de Fogo, adiciona +1d4 de dano bônus"
-                  special="+1 Corrupção para maximizar dano (define todos os dados no máximo: 12 base + 3 = 15 total)"
+                  synergy={mainWeapon.synergy}
+                  special={mainWeapon.special}
                   onNameChange={(value) => setMainWeapon(prev => ({ ...prev, name: value }))}
                   onDamageChange={(value) => setMainWeapon(prev => ({ ...prev, damage: value }))}
                   onBonusChange={(value) => setMainWeapon(prev => ({ ...prev, bonus: value }))}
-                  onClear={() => setMainWeapon({ name: '', damage: '', bonus: '' })}
+                  onClear={() => setMainWeapon({ name: '', damage: '', bonus: '', synergy: '', special: '' })}
                   onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'main' })}
                 />
                 <WeaponCard
@@ -894,10 +902,12 @@ export function CharacterPage() {
                   name={offWeapon.name}
                   damage={offWeapon.damage}
                   bonus={offWeapon.bonus}
+                  synergy={offWeapon.synergy}
+                  special={offWeapon.special}
                   onNameChange={(value) => setOffWeapon(prev => ({ ...prev, name: value }))}
                   onDamageChange={(value) => setOffWeapon(prev => ({ ...prev, damage: value }))}
                   onBonusChange={(value) => setOffWeapon(prev => ({ ...prev, bonus: value }))}
-                  onClear={() => setOffWeapon({ name: '', damage: '', bonus: '' })}
+                  onClear={() => setOffWeapon({ name: '', damage: '', bonus: '', synergy: '', special: '' })}
                   onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'off' })}
                 />
                 <DamageReductionBadge value={damageReduction} onValueChange={setDamageReduction} />
