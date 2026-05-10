@@ -22,7 +22,7 @@ import {
   Footprints, Pickaxe, Gem, Fish, Coins, Swords,
   LogOut, Plus, Trash2, User, Shield, Activity, EyeOff, Crosshair,
   Dumbbell, AlertTriangle, Search, Compass, Stethoscope,
-  Book, Radio
+  Book, Radio, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 interface InventoryItem {
@@ -217,6 +217,9 @@ export function CharacterPage() {
 
   // Inventory state
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [inventoryCapacity, setInventoryCapacity] = useState(8);
+  const [inventoryPage, setInventoryPage] = useState(0);
+  const ITEMS_PER_PAGE = 8;
 
   const updateItemQuantity = (id: string, newQuantity: number) => {
     setInventory(prev => prev.map(item =>
@@ -416,6 +419,7 @@ export function CharacterPage() {
         mainWeapon,
         offWeapon,
         inventory: inventoryForSave,
+        inventoryCapacity,
         rpgItems: rpgItemsForSave,
         globalAttributes
       };
@@ -444,7 +448,7 @@ export function CharacterPage() {
     skills, abilities, equipmentHead, equipmentNeck, equipmentChest,
     equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots,
     beltSlot1, beltSlot2, beltSlot3, beltSlot4, beltSlot5, beltSlot6, beltSlot7, beltSlot8,
-    mainWeapon, offWeapon, inventory, globalAttributes, inspiration, curses
+    mainWeapon, offWeapon, inventory, inventoryCapacity, globalAttributes, inspiration, curses
   ]);
 
   const loadCharacterData = async (username: string) => {
@@ -538,6 +542,8 @@ export function CharacterPage() {
       if (data.globalAttributes) {
         setGlobalAttributes(data.globalAttributes);
       }
+      
+      setInventoryCapacity(data.inventoryCapacity ?? 8);
 
       console.log('Dados carregados com sucesso');
       } else {
@@ -1103,30 +1109,81 @@ export function CharacterPage() {
 
             {/* MOCHILA */}
             <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">
-              <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2 text-sm sm:text-base">
-                <Sparkles className="w-5 h-5" />
-                Mochila
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-                {inventory.map((item) => (
-                  <InventorySlot
-                    key={item.id}
-                    itemName={item.name}
-                    quantity={item.quantity}
-                    icon={item.icon}
-                    description={item.description}
-                    onQuantityChange={(newQty) => updateItemQuantity(item.id, newQty)}
-                    onDelete={() => deleteItem(item.id)}
-                  />
-                ))}
-                {Array.from({ length: Math.max(0, 8 - inventory.length) }).map((_, i) => (
-                  <InventorySlot
-                    key={`empty-${i}`}
-                    onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'consumable' })}
-                  />
-                ))}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-amber-400 uppercase tracking-wider flex items-center gap-2 text-sm sm:text-base">
+                  <Sparkles className="w-5 h-5" />
+                  Mochila
+                  <span className="text-xs text-zinc-500 font-normal">({inventory.length}/{inventoryCapacity})</span>
+                </h2>
+                
+                <div className="flex items-center gap-3">
+                  {/* Pagination Controls */}
+                  {inventoryCapacity > ITEMS_PER_PAGE && (
+                    <div className="flex items-center gap-2 bg-black/40 border border-amber-900/20 rounded px-2 py-1">
+                      <button 
+                        onClick={() => setInventoryPage(prev => Math.max(0, prev - 1))}
+                        disabled={inventoryPage === 0}
+                        className="text-amber-600 hover:text-amber-400 disabled:text-zinc-700 transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <span className="text-[10px] text-amber-500/80 font-bold uppercase tracking-tighter">
+                        Pág {inventoryPage + 1}
+                      </span>
+                      <button 
+                        onClick={() => setInventoryPage(prev => Math.min(Math.ceil(inventoryCapacity / ITEMS_PER_PAGE) - 1, prev + 1))}
+                        disabled={inventoryPage >= Math.ceil(inventoryCapacity / ITEMS_PER_PAGE) - 1}
+                        className="text-amber-600 hover:text-amber-400 disabled:text-zinc-700 transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Capacity Increase */}
+                  <button 
+                    onClick={() => setInventoryCapacity(prev => Math.min(40, prev + 4))}
+                    className="flex items-center gap-1 px-2 py-1 bg-amber-900/20 border border-amber-900/40 rounded text-[10px] text-amber-400 hover:bg-amber-900/40 transition-all uppercase font-bold"
+                    title="Aumentar espaço da mochila"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Expandir
+                  </button>
+                </div>
               </div>
-              <EncumbranceBar current={inventory.length} max={8} />
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 min-h-[180px]">
+                {(() => {
+                  const pageItems = inventory.slice(inventoryPage * ITEMS_PER_PAGE, (inventoryPage + 1) * ITEMS_PER_PAGE);
+                  const emptySlotsCount = Math.max(0, ITEMS_PER_PAGE - pageItems.length);
+                  // Only show empty slots if we haven't reached the total capacity on this page
+                  const totalSlotsOnThisPage = Math.min(ITEMS_PER_PAGE, inventoryCapacity - (inventoryPage * ITEMS_PER_PAGE));
+                  const effectiveEmptySlots = Math.max(0, totalSlotsOnThisPage - pageItems.length);
+
+                  return (
+                    <>
+                      {pageItems.map((item) => (
+                        <InventorySlot
+                          key={item.id}
+                          itemName={item.name}
+                          quantity={item.quantity}
+                          icon={item.icon}
+                          description={item.description}
+                          onQuantityChange={(newQty) => updateItemQuantity(item.id, newQty)}
+                          onDelete={() => deleteItem(item.id)}
+                        />
+                      ))}
+                      {Array.from({ length: effectiveEmptySlots }).map((_, i) => (
+                        <InventorySlot
+                          key={`empty-${i}`}
+                          onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'consumable' })}
+                        />
+                      ))}
+                    </>
+                  );
+                })()}
+              </div>
+              <EncumbranceBar current={inventory.length} max={inventoryCapacity} />
             </section>
           </div>
         </div>
@@ -1147,8 +1204,8 @@ export function CharacterPage() {
               return item.category === 'armor';
             }
             if (itemSelectionModal.type === 'consumable') {
-              // Mochila e Slots de Acesso Rápido mostram tudo que não é arma/armadura
-              return item.category === 'potion' || item.category === 'material' || item.category === 'consumable';
+              // Na mochila agora pode tudo!
+              return true;
             }
             return false;
           })}
