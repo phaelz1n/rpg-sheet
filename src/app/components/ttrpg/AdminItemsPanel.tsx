@@ -80,36 +80,45 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     if (!confirm('Deseja carregar a lista de minerais e cintos automaticamente?')) return;
     
     const minerals = [
+      // Materiais Base
       { name: 'Ferro Velho', type: 'material', rarity: 'common', description: 'Minério comum usado para forjar e reparar armas básicas.' },
       { name: 'Pedra Cinzenta', type: 'material', rarity: 'common', description: 'Pedra básica usada em processos de alquimia simples.' },
-      { name: 'Carvão Negro', type: 'material', rarity: 'common', description: 'Combustível comum para forjas e rituais de fogo.' },
-      { name: 'Quartzo Opaco', type: 'material', rarity: 'common', description: 'Cristal fosco usado em misturas alquímicas.' },
-      { name: 'Argilita Sombria', type: 'material', rarity: 'common', description: 'Argila escura imbuída de leves traços de energia.' },
-      { name: 'Calcita Fria', type: 'material', rarity: 'common', description: 'Mineral que mantém uma temperatura baixa constante.' },
-      { name: 'Pedra de Lodo', type: 'material', rarity: 'common', description: 'Pedra viscosa que pode ser moldada em projéteis.' },
-      { name: 'Sílex Rachado', type: 'material', rarity: 'common', description: 'Pedra afiada usada para criar faíscas.' },
-      { name: 'Areia Ferrosa', type: 'material', rarity: 'common', description: 'Grãos de metal fino usados em alquimia.' },
-      { name: 'Rocha Bruta', type: 'material', rarity: 'common', description: 'Um pedaço de rocha pesado e irregular.' },
-      { name: 'Estilhaço de Basalto', type: 'material', rarity: 'common', description: 'Pedaço de rocha vulcânica densa.' },
-      { name: 'Terra Endurecida', type: 'material', rarity: 'common', description: 'Solo compactado por pressões místicas.' },
-      { name: 'Fragmento Calcificado', type: 'material', rarity: 'common', description: 'Restos endurecidos usados em rituais.' },
-      { name: 'Pedra Turva', type: 'material', rarity: 'common', description: 'Uma pedra que parece absorver a luz.' },
-      { name: 'Minério Ferrugem', type: 'material', rarity: 'common', description: 'Metal oxidado.' },
+      { name: 'Carvão Negro', type: 'material', rarity: 'common', description: 'Combustível comum para forjas.' },
       { name: 'Sangrita', type: 'material', rarity: 'rare', description: 'Cristal avermelhado que pulsa como um coração.' },
       { name: 'Umbraferro', type: 'material', rarity: 'rare', description: 'Metal forjado nas sombras.' },
-      { name: 'Virulita', type: 'material', rarity: 'rare', description: 'Mineral tóxico.' },
-      { name: 'Cinzalma', type: 'material', rarity: 'rare', description: 'Resíduo de almas incineradas.' },
-      { name: 'Raiz-Ferro', type: 'material', rarity: 'rare', description: 'Madeira petrificada.' },
-      { name: 'Olho de Ébano', type: 'material', rarity: 'rare', description: 'Gema negra profunda.' },
-      { name: 'Lágrima do Véu', type: 'material', rarity: 'rare', description: 'Substância semi-líquida.' },
-      { name: 'Brasa Profana', type: 'material', rarity: 'rare', description: 'Fragmento que queima eternamente.' },
-      { name: 'Necronita', type: 'material', rarity: 'rare', description: 'Metal que drena a vitalidade.' },
-      { name: 'Cristal de Ossário', type: 'material', rarity: 'rare', description: 'Cristal formado em locais de grande mortalidade.' },
       { name: 'Aurorita', type: 'material', rarity: 'legendary', description: 'Metal que brilha com a luz de um sol esquecido.' },
-      { name: 'Fragmento do Véu', type: 'material', rarity: 'legendary', description: 'Um pedaço da própria realidade.' },
-      { name: 'Coração Fóssil', type: 'material', rarity: 'legendary', description: 'O coração petrificado de uma entidade ancestral.' },
-      { name: 'Pedra do Luminar', type: 'material', rarity: 'legendary', description: 'Gema que contém a essência da luz pura.' },
-      { name: 'Núcleo Abissal', type: 'material', rarity: 'legendary', description: 'O centro concentrado de um vazio absoluto.' },
+      
+      // Equipamentos Iniciais (Gilbert / Akuma / Outros)
+      { name: 'Cestos (Manoplas)', type: 'weapon', rarity: 'common', damage: '1d6', description: 'Manoplas de combate usadas em ambas as mãos.' },
+      { name: 'Roupa de Couro Leve', type: 'armor', rarity: 'common', description: 'Proteção básica e leve para o corpo.' },
+      { name: 'Ataduras de Punho', type: 'armor', rarity: 'common', description: 'Envoltórios para as mãos.' },
+      { name: 'Botas Rústicas', type: 'armor', rarity: 'common', description: 'Calçado resistente para longas jornadas.' },
+      { name: 'Kimono de Pano', type: 'armor', rarity: 'common', description: 'Vestimenta leve e flexível.' },
+      { name: 'Calça de Pano', type: 'armor', rarity: 'common', description: 'Vestimenta básica para as pernas.' },
+      { name: 'Botas de Couro', type: 'armor', rarity: 'common', description: 'Calçado de couro curtido.' },
+      { name: 'Bandana de Combate', type: 'armor', rarity: 'common', description: 'Acessório simples para a cabeça.' },
+      { name: 'Faixas Vermelhas', type: 'armor', rarity: 'common', description: 'Envoltórios para os braços.' },
+      
+      // Itens de Axe
+      { name: 'Gancho com Corrente', type: 'weapon', rarity: 'rare', damage: '1d4', attributeType: 'strength', description: 'Permite puxar inimigos (Teste FOR), escalar e interagir com o ambiente.' },
+      { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effect: '+2 Fôlego', description: 'Estimulante que recupera +2 de Fôlego instantaneamente.' },
+      { name: 'Medalhão Sussurrante', type: 'armor', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.' },
+      { name: 'Pele de Urso', type: 'armor', rarity: 'rare', description: 'Manto pesado que oferece 3 de Redução de Dano (RD).' },
+      { name: 'Amuleto Tosco', type: 'armor', rarity: 'rare', bonus: 1, description: 'Concede +1 em testes de Intimidação.' },
+      
+      // Itens de Vespera
+      { name: 'Coroa de Ossos', type: 'armor', rarity: 'rare', corruptionLimitBonus: 1, description: 'Artefato macabro que expande o limite de corrupção em +1.' },
+      { name: 'Colar: Foco de Fé', type: 'armor', rarity: 'rare', description: 'Canalizador espiritual para ritos sagrados.' },
+      { name: 'Chama do Arrependimento', type: 'weapon', rarity: 'legendary', damage: '2d6', attributeType: 'dexterity', description: 'Espada herética. Sinergia: +1d10 Fogo se o alvo estiver [MARCADO]. Sacrifício: +1 Corr para dano máximo (12).' },
+      { name: 'Adaga de Ferro Frio', type: 'weapon', rarity: 'rare', damage: '1d6+3', attributeType: 'dexterity', description: 'Lâmina herética. Aplica o status [MARCADO] ao atingir.' },
+      { name: 'Picareta de Combate', type: 'weapon', rarity: 'common', damage: '1d6', description: 'Ferramenta adaptada para combate.' },
+      
+      // Itens de Akuma / Johann
+      { name: 'Cutello do Verdão', type: 'weapon', rarity: 'rare', damage: '1d8', description: 'Lâmina pesada e imponente.' },
+      { name: 'Extração da "Chama" :: A.B.S', type: 'weapon', rarity: 'rare', damage: '1d4', description: 'Dispositivo alquímico. Inflige "Chama" no alvo (1) e em si mesmo (2).' },
+      { name: 'Extração do Terno da "Chama" :: A.B.S', type: 'armor', rarity: 'rare', description: 'Armadura média imbuída de essência ígnea.' },
+      
+      // Cintos
       { name: 'Coldre de Couro Simples', type: 'armor', rarity: 'common', description: 'Acesso rápido: 1 slot.', beltCapacity: 1 },
       { name: 'Cinto de Utilidade do Explorador', type: 'armor', rarity: 'rare', description: 'Acesso rápido: 2 slots.', beltCapacity: 2 },
       { name: 'Cinto de Arsenal Real', type: 'armor', rarity: 'legendary', description: 'Acesso rápido: 4 slots.', bonus: 1, beltCapacity: 4 }
