@@ -54,7 +54,7 @@ interface RPGItem {
   attributeIcon: any;
   bonus: number;
   damage: string;
-  category: 'weapon' | 'armor' | 'consumable' | 'material';
+  category: 'weapon' | 'armor' | 'potion' | 'material' | 'collectible' | 'consumable';
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number;
@@ -1111,9 +1111,10 @@ export function CharacterPage() {
           }
           items={rpgItems.filter(item => {
             if (itemSelectionModal.type === 'consumable') {
+              // No sistema, poções, materiais e colecionáveis entram na mochila (consumable)
               return item.category === 'potion' || item.category === 'material' || item.category === 'collectible' || item.category === 'consumable';
             }
-            return item.category === itemSelectionModal.type;
+            return item.category === (itemSelectionModal.type as string);
           })}
           onClose={() => setItemSelectionModal({ isOpen: false, type: null })}
           onSelect={(item) => {
