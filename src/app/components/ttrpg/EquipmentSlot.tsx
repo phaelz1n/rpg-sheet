@@ -3,20 +3,31 @@ import { LucideIcon, X, Plus } from 'lucide-react';
 interface EquipmentSlotProps {
   slotName: string;
   itemName?: string;
+  rarity?: string;
   icon: LucideIcon;
   onItemNameChange?: (value: string) => void;
   onClear?: () => void;
   onAddClick?: () => void;
 }
 
-export function EquipmentSlot({ slotName, itemName, icon: Icon, onItemNameChange, onClear, onAddClick }: EquipmentSlotProps) {
+export function EquipmentSlot({ slotName, itemName, rarity, icon: Icon, onItemNameChange, onClear, onAddClick }: EquipmentSlotProps) {
   const isEmpty = !itemName;
+
+  const rarityColors: Record<string, string> = {
+    'COMUM': 'border-zinc-500/50',
+    'INCOMUM': 'border-emerald-500/50',
+    'RARO': 'border-blue-500/50',
+    'ÉPICO': 'border-purple-500/50',
+    'LENDÁRIO': 'border-amber-500/50'
+  };
+
+  const borderClass = !isEmpty && rarity ? rarityColors[rarity.toUpperCase()] || 'border-amber-800/50' : 'border-zinc-700/40';
 
   return (
     <div className={`relative group ${
       isEmpty
-        ? 'bg-zinc-900/40 border border-dashed border-zinc-700/40 cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60'
-        : 'bg-gradient-to-br from-amber-950/30 to-zinc-900/60 border border-amber-800/50 shadow-lg'
+        ? `bg-zinc-900/40 border border-dashed ${borderClass} cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60`
+        : `bg-gradient-to-br from-amber-950/30 to-zinc-900/60 border ${borderClass} shadow-lg`
     } rounded-lg p-3 transition-all`}
     onClick={isEmpty ? onAddClick : undefined}>
 

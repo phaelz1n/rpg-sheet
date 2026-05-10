@@ -2,6 +2,7 @@ import { LucideIcon, X, Plus } from 'lucide-react';
 
 interface BeltSlotProps {
   itemName?: string;
+  rarity?: string;
   icon?: LucideIcon;
   description?: string;
   onItemNameChange?: (value: string) => void;
@@ -9,14 +10,24 @@ interface BeltSlotProps {
   onAddClick?: () => void;
 }
 
-export function BeltSlot({ itemName, icon: Icon, description, onItemNameChange, onClear, onAddClick }: BeltSlotProps) {
+export function BeltSlot({ itemName, rarity, icon: Icon, description, onItemNameChange, onClear, onAddClick }: BeltSlotProps) {
   const isEmpty = !itemName;
+
+  const rarityColors: Record<string, string> = {
+    'COMUM': 'border-zinc-500/50',
+    'INCOMUM': 'border-emerald-500/50',
+    'RARO': 'border-blue-500/50',
+    'ÉPICO': 'border-purple-500/50',
+    'LENDÁRIO': 'border-amber-500/50'
+  };
+
+  const borderClass = !isEmpty && rarity ? rarityColors[rarity.toUpperCase()] || 'border-amber-800/50' : 'border-zinc-700/40';
 
   return (
     <div className={`relative ${
       isEmpty
-        ? 'bg-zinc-900/40 border-2 border-dashed border-zinc-700/40 cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60'
-        : 'bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 border-amber-800/50 shadow-lg'
+        ? `bg-zinc-900/40 border-2 border-dashed ${borderClass} cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60`
+        : `bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 ${borderClass} shadow-lg`
     } rounded-lg p-3 transition-all aspect-square flex flex-col items-center justify-center group`}
     onClick={isEmpty ? onAddClick : undefined}>
 

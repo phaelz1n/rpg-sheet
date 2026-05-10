@@ -266,6 +266,10 @@ export function CharacterPage() {
     loadGlobalItems();
   }, []);
 
+  const getItemRarity = (itemName: string) => {
+    return rpgItems.find(item => item.name === itemName)?.rarity;
+  };
+
   const equipItemAsWeapon = (item: RPGItem, slot: 'main' | 'off') => {
     const weaponData = {
       name: item.name,
@@ -851,6 +855,7 @@ export function CharacterPage() {
                 <EquipmentSlot
                   slotName="Cabeça"
                   itemName={equipmentHead}
+                  rarity={getItemRarity(equipmentHead)}
                   icon={Crown}
                   onItemNameChange={setEquipmentHead}
                   onClear={() => setEquipmentHead('')}
@@ -859,6 +864,7 @@ export function CharacterPage() {
                 <EquipmentSlot
                   slotName="Pescoço"
                   itemName={equipmentNeck}
+                  rarity={getItemRarity(equipmentNeck)}
                   icon={Circle}
                   onItemNameChange={setEquipmentNeck}
                   onClear={() => setEquipmentNeck('')}
@@ -867,6 +873,7 @@ export function CharacterPage() {
                 <EquipmentSlot
                   slotName="Peito"
                   itemName={equipmentChest}
+                  rarity={getItemRarity(equipmentChest)}
                   icon={ShirtIcon}
                   onItemNameChange={setEquipmentChest}
                   onClear={() => setEquipmentChest('')}
@@ -875,6 +882,7 @@ export function CharacterPage() {
                 <EquipmentSlot
                   slotName="Luvas"
                   itemName={equipmentGloves}
+                  rarity={getItemRarity(equipmentGloves)}
                   icon={Hand}
                   onItemNameChange={setEquipmentGloves}
                   onClear={() => setEquipmentGloves('')}
@@ -883,6 +891,7 @@ export function CharacterPage() {
                 <EquipmentSlot
                   slotName="Cinto"
                   itemName={equipmentBelt}
+                  rarity={getItemRarity(equipmentBelt)}
                   icon={GripHorizontal}
                   onItemNameChange={setEquipmentBelt}
                   onClear={() => setEquipmentBelt('')}
@@ -891,6 +900,7 @@ export function CharacterPage() {
                 <EquipmentSlot
                   slotName="Calças"
                   itemName={equipmentPants}
+                  rarity={getItemRarity(equipmentPants)}
                   icon={CircleDot}
                   onItemNameChange={setEquipmentPants}
                   onClear={() => setEquipmentPants('')}
@@ -900,6 +910,7 @@ export function CharacterPage() {
                   <EquipmentSlot
                     slotName="Botas"
                     itemName={equipmentBoots}
+                    rarity={getItemRarity(equipmentBoots)}
                     icon={Footprints}
                     onItemNameChange={setEquipmentBoots}
                     onClear={() => setEquipmentBoots('')}
@@ -951,6 +962,7 @@ export function CharacterPage() {
                         <BeltSlot
                           key={slot.key}
                           itemName={slot.val}
+                          rarity={getItemRarity(slot.val)}
                           onItemNameChange={slot.set}
                           onClear={() => slot.set('')}
                           onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: slot.key })}
