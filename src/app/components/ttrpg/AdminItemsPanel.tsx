@@ -20,8 +20,9 @@ interface GlobalItem {
   attributeType?: string;
   bonus?: number;
   // Armor/Equipment fields
-  corruptionLimitBonus?: number; // +N no limite de corrupção quando equipado
-  statBonus?: string;             // Texto livre: ex: "+1 nos testes de Corrupção e Fé"
+  corruptionLimitBonus?: number;
+  statBonus?: string;
+  beltCapacity?: number; // Quantidade de slots de acesso rápido que o cinto oferece
   // Potion fields
   healingValue?: string;
   effect?: string;
@@ -66,6 +67,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     bonus: 0,
     corruptionLimitBonus: 0,
     statBonus: '',
+    beltCapacity: 0,
     healingValue: '',
     effect: ''
   });
@@ -156,7 +158,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       bonus: 0,
       corruptionLimitBonus: 0,
       statBonus: '',
-      healingValue: '',
+      beltCapacity: 0,
+      healingValue: '',,
       effect: ''
     });
   };
@@ -301,6 +304,19 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                 placeholder="Ex: +1 nos testes de Corrupção e Fé"
               />
             </div>
+
+            <div>
+              <label className="text-amber-400 text-sm uppercase tracking-wide mb-1 block">Slots de Acesso Rápido (Cinto)</label>
+              <p className="text-zinc-500 text-xs mb-2">Se for um cinto, quantos slots de acesso rápido ele oferece. Deixe 0 se não for um cinto.</p>
+              <input
+                type="number"
+                value={formData.beltCapacity ?? 0}
+                onChange={(e) => setFormData({ ...formData, beltCapacity: Number(e.target.value) })}
+                className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+                min={0}
+                max={8}
+              />
+            </div>
           </div>
         )}
 
@@ -431,6 +447,9 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                       {(item.bonus ?? 0) > 0 && <div>Defesa: <span className="text-blue-400">+{item.bonus}</span></div>}
                       {(item.corruptionLimitBonus ?? 0) > 0 && (
                         <div>Corrupção Limite: <span className="text-purple-400">+{item.corruptionLimitBonus}</span></div>
+                      )}
+                      {(item.beltCapacity ?? 0) > 0 && (
+                        <div>Slots Cinto: <span className="text-amber-400">{item.beltCapacity}</span></div>
                       )}
                       {item.statBonus && (
                         <div className="text-amber-400/80 italic">{item.statBonus}</div>

@@ -57,6 +57,7 @@ interface RPGItem {
   category: 'weapon' | 'armor' | 'consumable';
   corruptionLimitBonus?: number;
   statBonus?: string;
+  beltCapacity?: number;
 }
 
 export function CharacterPage() {
@@ -92,6 +93,7 @@ export function CharacterPage() {
   const [stamina, setStamina] = useState(0);
   const [maxStamina, setMaxStamina] = useState(6);
   const [corruption, setCorruption] = useState(0);
+  const [corruptionBaseMax, setCorruptionBaseMax] = useState(10);
   const [damageReduction, setDamageReduction] = useState(0);
 
   // Attribute states
@@ -132,11 +134,15 @@ export function CharacterPage() {
   const [equipmentPants, setEquipmentPants] = useState('');
   const [equipmentBoots, setEquipmentBoots] = useState('');
 
-  // Belt slots state
+  // Belt slots state (up to 8 to support large belt capacity items)
   const [beltSlot1, setBeltSlot1] = useState('');
   const [beltSlot2, setBeltSlot2] = useState('');
   const [beltSlot3, setBeltSlot3] = useState('');
   const [beltSlot4, setBeltSlot4] = useState('');
+  const [beltSlot5, setBeltSlot5] = useState('');
+  const [beltSlot6, setBeltSlot6] = useState('');
+  const [beltSlot7, setBeltSlot7] = useState('');
+  const [beltSlot8, setBeltSlot8] = useState('');
 
   // Weapon states
   const [mainWeapon, setMainWeapon] = useState({
@@ -209,7 +215,8 @@ export function CharacterPage() {
           damage: item.damage || '',
           category: item.type === 'weapon' ? 'weapon' : item.type === 'armor' ? 'armor' : 'consumable',
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
-          statBonus: item.statBonus || ''
+          statBonus: item.statBonus || '',
+          beltCapacity: item.beltCapacity || 0
         }));
 
         setRpgItems(convertedItems);
@@ -293,6 +300,7 @@ export function CharacterPage() {
         stamina,
         maxStamina,
         corruption,
+        corruptionBaseMax,
         damageReduction,
         occultism,
         dexterity,
@@ -313,6 +321,10 @@ export function CharacterPage() {
         beltSlot2,
         beltSlot3,
         beltSlot4,
+        beltSlot5,
+        beltSlot6,
+        beltSlot7,
+        beltSlot8,
         mainWeapon,
         offWeapon,
         inventory: inventoryForSave,
@@ -365,6 +377,7 @@ export function CharacterPage() {
       setStamina(data.stamina ?? 0);
       setMaxStamina(data.maxStamina ?? 6);
       setCorruption(data.corruption ?? 0);
+      setCorruptionBaseMax(data.corruptionBaseMax ?? 10);
       setDamageReduction(data.damageReduction ?? 0);
       setOccultism(data.occultism ?? 0);
       setDexterity(data.dexterity ?? 0);
@@ -403,6 +416,10 @@ export function CharacterPage() {
       setBeltSlot2(data.beltSlot2 || '');
       setBeltSlot3(data.beltSlot3 || '');
       setBeltSlot4(data.beltSlot4 || '');
+      setBeltSlot5(data.beltSlot5 || '');
+      setBeltSlot6(data.beltSlot6 || '');
+      setBeltSlot7(data.beltSlot7 || '');
+      setBeltSlot8(data.beltSlot8 || '');
 
       setMainWeapon(data.mainWeapon || { name: '', damage: '', bonus: '' });
       setOffWeapon(data.offWeapon || { name: '', damage: '', bonus: '' });
@@ -585,14 +602,21 @@ export function CharacterPage() {
 
             {/* Corrupção */}
             <div className="w-full lg:w-64">
-              <CorruptionGauge
-                current={corruption}
-                max={10 + rpgItems
-                  .filter(item => item.category === 'armor' && item.corruptionLimitBonus && item.corruptionLimitBonus > 0 &&
+              {(() => {
+                const corruptionBonus = rpgItems
+                  .filter(item => item.category === 'armor' && (item.corruptionLimitBonus ?? 0) > 0 &&
                     [equipmentHead, equipmentNeck, equipmentChest, equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots].includes(item.name))
-                  .reduce((sum, item) => sum + (item.corruptionLimitBonus || 0), 0)}
-                onCurrentChange={setCorruption}
-              />
+                  .reduce((sum, item) => sum + (item.corruptionLimitBonus || 0), 0);
+                
+                return (
+                  <CorruptionGauge
+                    current={corruption}
+                    max={corruptionBaseMax + corruptionBonus}
+                    onCurrentChange={setCorruption}
+                    onMaxChange={(val) => setCorruptionBaseMax(val - corruptionBonus)}
+                  />
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -900,37 +924,51 @@ export function CharacterPage() {
               <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2 text-sm sm:text-base">
                 <GripHorizontal className="w-5 h-5" />
                 Cinto & Acesso Rápido
+                {(() => {
+                  const beltItem = rpgItems.find(i => i.name === equipmentBelt && i.beltCapacity && i.beltCapacity > 0);
+                  return beltItem ? (
+                    <span className="text-xs text-zinc-500 ml-1">({beltItem.beltCapacity} slots)</span>
+                  ) : null;
+                })()}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <BeltSlot
-                  itemName={beltSlot1}
-                  icon={beltSlot1 ? Swords : undefined}
-                  description="1d4 de dano perfurante. Eficaz contra criaturas mágicas."
-                  onItemNameChange={setBeltSlot1}
-                  onClear={() => setBeltSlot1('')}
-                  onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'belt1' })}
-                />
-                <BeltSlot
-                  itemName={beltSlot2}
-                  icon={beltSlot2 ? Pickaxe : undefined}
-                  description="1d6+FOR, 2 mãos. Ferramenta de mineiro."
-                  onItemNameChange={setBeltSlot2}
-                  onClear={() => setBeltSlot2('')}
-                  onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'belt2' })}
-                />
-                <BeltSlot
-                  itemName={beltSlot3}
-                  onItemNameChange={setBeltSlot3}
-                  onClear={() => setBeltSlot3('')}
-                  onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'belt3' })}
-                />
-                <BeltSlot
-                  itemName={beltSlot4}
-                  onItemNameChange={setBeltSlot4}
-                  onClear={() => setBeltSlot4('')}
-                  onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: 'belt4' })}
-                />
-              </div>
+                {(() => {
+                  const beltItem = rpgItems.find(i => i.name === equipmentBelt && i.beltCapacity && i.beltCapacity > 0);
+                  const capacity = beltItem?.beltCapacity ?? 0;
+                  
+                  if (capacity === 0) {
+                    return (
+                      <div className="col-span-full py-8 text-center border-2 border-dashed border-zinc-800 rounded-lg">
+                        <GripHorizontal className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                        <p className="text-zinc-500 text-sm italic">Equipe um Cinto no slot de Equipamento para liberar slots de acesso rápido.</p>
+                      </div>
+                    );
+                  }
+
+                  const allSlots = [
+                    { val: beltSlot1, set: setBeltSlot1, key: 'belt1' },
+                    { val: beltSlot2, set: setBeltSlot2, key: 'belt2' },
+                    { val: beltSlot3, set: setBeltSlot3, key: 'belt3' },
+                    { val: beltSlot4, set: setBeltSlot4, key: 'belt4' },
+                    { val: beltSlot5, set: setBeltSlot5, key: 'belt5' },
+                    { val: beltSlot6, set: setBeltSlot6, key: 'belt6' },
+                    { val: beltSlot7, set: setBeltSlot7, key: 'belt7' },
+                    { val: beltSlot8, set: setBeltSlot8, key: 'belt8' },
+                  ].slice(0, capacity);
+                  
+                  return (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {allSlots.map(slot => (
+                        <BeltSlot
+                          key={slot.key}
+                          itemName={slot.val}
+                          onItemNameChange={slot.set}
+                          onClear={() => slot.set('')}
+                          onAddClick={() => setItemSelectionModal({ isOpen: true, type: 'weapon', slot: slot.key })}
+                        />
+                      ))}
+                    </div>
+                  );
+                })()}
             </section>
 
             {/* MOCHILA */}
@@ -980,10 +1018,11 @@ export function CharacterPage() {
                 equipItemAsWeapon(rpgItem, itemSelectionModal.slot);
               } else if (itemSelectionModal.slot.startsWith('belt')) {
                 const beltNum = itemSelectionModal.slot.replace('belt', '');
-                if (beltNum === '1') setBeltSlot1(rpgItem.name);
-                else if (beltNum === '2') setBeltSlot2(rpgItem.name);
-                else if (beltNum === '3') setBeltSlot3(rpgItem.name);
-                else if (beltNum === '4') setBeltSlot4(rpgItem.name);
+                const setters: Record<string, (v: string) => void> = {
+                  '1': setBeltSlot1, '2': setBeltSlot2, '3': setBeltSlot3, '4': setBeltSlot4,
+                  '5': setBeltSlot5, '6': setBeltSlot6, '7': setBeltSlot7, '8': setBeltSlot8
+                };
+                setters[beltNum]?.(rpgItem.name);
               }
             } else if (itemSelectionModal.type === 'armor' && itemSelectionModal.slot) {
               equipItemAsArmor(rpgItem, itemSelectionModal.slot);
