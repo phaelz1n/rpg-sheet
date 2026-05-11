@@ -16,14 +16,14 @@ const TAG_SUGGESTIONS = [
   { text: '#vontade', icon: Brain, color: 'text-blue-500', label: 'Vontade' },
   { text: '#corrupção', icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
   
-  // Brackets (Status)
-  { text: '[marcado]', icon: Target, color: 'text-red-400', label: 'Marcado' },
-  { text: '[envenenado]', icon: Beaker, color: 'text-green-500', label: 'Envenenado' },
-  { text: '[queimando]', icon: Flame, color: 'text-orange-500', label: 'Queimando' },
-  { text: '[sangrando]', icon: Activity, color: 'text-red-600', label: 'Sangrando' },
-  { text: '[congelado]', icon: Droplets, color: 'text-cyan-400', label: 'Congelado' },
-  { text: '[paralisado]', icon: Zap, color: 'text-yellow-400', label: 'Paralisado' },
-  { text: '[vulnerável]', icon: Target, color: 'text-purple-400', label: 'Vulnerável' },
+  // Status (Badges)
+  { text: '#marcado', icon: Target, color: 'text-red-400', label: 'Marcado' },
+  { text: '#envenenado', icon: Beaker, color: 'text-green-500', label: 'Envenenado' },
+  { text: '#queimando', icon: Flame, color: 'text-orange-500', label: 'Queimando' },
+  { text: '#sangrando', icon: Activity, color: 'text-red-600', label: 'Sangrando' },
+  { text: '#congelado', icon: Droplets, color: 'text-cyan-400', label: 'Congelado' },
+  { text: '#paralisado', icon: Zap, color: 'text-yellow-400', label: 'Paralisado' },
+  { text: '#vulnerável', icon: Target, color: 'text-purple-400', label: 'Vulnerável' },
 ];
 
 export function AutocompleteTextarea({ value = '', onChange, className = '', ...props }: AutocompleteTextareaProps) {

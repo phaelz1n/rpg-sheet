@@ -16,7 +16,7 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
   // Pattern to match #hashtags and [brackets]
   const parts = text.split(/(#[a-záàâãéèêíïóôõöúç]+|\[[a-záàâãéèêíïóôõöúç\s]+\])/gi);
 
-  type TagType = 'hashtag' | 'bracket';
+  type TagType = 'hashtag' | 'badge';
   const iconMap: Record<string, { icon: any, color: string, label: string, type: TagType, bgColor?: string, borderColor?: string }> = {
     // Atributos
     '#corrupção': { icon: Skull, color: 'text-purple-500', label: 'Corrupção', type: 'hashtag' },
@@ -30,15 +30,15 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
     '#força': { icon: Dumbbell, color: 'text-orange-500', label: 'Força', type: 'hashtag' },
     '#forca': { icon: Dumbbell, color: 'text-orange-500', label: 'Força', type: 'hashtag' },
     
-    // Status / Condições (Brackets)
-    '[marcado]': { icon: Target, color: 'text-red-400', bgColor: 'bg-red-950/40', borderColor: 'border-red-900/50', label: 'Marcado', type: 'bracket' },
-    '[envenenado]': { icon: Beaker, color: 'text-green-500', bgColor: 'bg-green-950/40', borderColor: 'border-green-900/50', label: 'Envenenado', type: 'bracket' },
-    '[queimando]': { icon: Flame, color: 'text-orange-500', bgColor: 'bg-orange-950/40', borderColor: 'border-orange-900/50', label: 'Queimando', type: 'bracket' },
-    '[sangrando]': { icon: Activity, color: 'text-red-600', bgColor: 'bg-red-950/40', borderColor: 'border-red-900/50', label: 'Sangrando', type: 'bracket' },
-    '[congelado]': { icon: Droplets, color: 'text-cyan-400', bgColor: 'bg-cyan-950/40', borderColor: 'border-cyan-900/50', label: 'Congelado', type: 'bracket' },
-    '[paralisado]': { icon: Zap, color: 'text-yellow-400', bgColor: 'bg-yellow-950/40', borderColor: 'border-yellow-900/50', label: 'Paralisado', type: 'bracket' },
-    '[vulnerável]': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'bracket' },
-    '[vulneravel]': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'bracket' },
+    // Status / Condições (Badges)
+    '#marcado': { icon: Target, color: 'text-red-400', bgColor: 'bg-red-950/40', borderColor: 'border-red-900/50', label: 'Marcado', type: 'badge' },
+    '#envenenado': { icon: Beaker, color: 'text-green-500', bgColor: 'bg-green-950/40', borderColor: 'border-green-900/50', label: 'Envenenado', type: 'badge' },
+    '#queimando': { icon: Flame, color: 'text-orange-500', bgColor: 'bg-orange-950/40', borderColor: 'border-orange-900/50', label: 'Queimando', type: 'badge' },
+    '#sangrando': { icon: Activity, color: 'text-red-600', bgColor: 'bg-red-950/40', borderColor: 'border-red-900/50', label: 'Sangrando', type: 'badge' },
+    '#congelado': { icon: Droplets, color: 'text-cyan-400', bgColor: 'bg-cyan-950/40', borderColor: 'border-cyan-900/50', label: 'Congelado', type: 'badge' },
+    '#paralisado': { icon: Zap, color: 'text-yellow-400', bgColor: 'bg-yellow-950/40', borderColor: 'border-yellow-900/50', label: 'Paralisado', type: 'badge' },
+    '#vulnerável': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'badge' },
+    '#vulneravel': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'badge' },
   };
 
   return (
@@ -50,7 +50,7 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
         if (iconConfig) {
           const Icon = iconConfig.icon;
           
-          if (iconConfig.type === 'bracket') {
+          if (iconConfig.type === 'badge') {
             return (
               <span key={index} className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded ${iconConfig.bgColor} border ${iconConfig.borderColor} ${iconConfig.color} align-baseline text-[10px] font-bold uppercase tracking-wider`}>
                 <Icon className="w-3 h-3" />
