@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ttrpgApi } from '../api/ttrpg-api';
+import { ttrpgApi } from '../lib/ttrpg-api';
 
 interface AuthContextType {
   isLoggedIn: boolean;

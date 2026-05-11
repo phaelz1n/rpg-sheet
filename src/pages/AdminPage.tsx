@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
-import { AdminPanel } from '../components/ttrpg/AdminPanel';
-import { ttrpgApi } from '../api/ttrpg-api';
+import { AdminPanel } from '../components/rpg/AdminPanel';
+import { ttrpgApi } from '../lib/ttrpg-api';
 
 export function AdminPage() {
   const navigate = useNavigate();

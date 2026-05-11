@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
-import { LoginModal } from '../components/ttrpg/LoginModal';
+import { LoginModal } from '../components/rpg/LoginModal';
 
 export function LoginPage() {
   const navigate = useNavigate();

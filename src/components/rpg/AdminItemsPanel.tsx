@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Package, Plus, Edit, Trash2, X, Sparkles, Search } from 'lucide-react';
-import { ttrpgApi } from '../../api/ttrpg-api';
+import { Package, Plus, Edit, Trash2, X, Sparkles, Search, Info } from 'lucide-react';
+import { RichDescription } from './RichDescription';
+import { ttrpgApi } from '../../lib/ttrpg-api';
+import { seedDefaultItems } from '../../lib/seeding-service';
+
 
 interface AdminItemsPanelProps {
   onClose: () => void;
@@ -54,6 +57,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const [loading, setLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<GlobalItem | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showTips, setShowTips] = useState(false);
 
   // Filters
   const [search, setSearch] = useState('');
@@ -78,83 +82,15 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     effect: ''
   });
 
-  const seedDefaultItems = async () => {
-    if (!confirm('Deseja carregar a lista de itens padrão (armas, armaduras e materiais)?')) return;
-    
-    const minerals = [
-      // <--- MINÉRIOS COMUNS (15) --->
-      { name: 'Ferro Velho', type: 'material', rarity: 'common', description: 'Minério comum usado para forjar e reparar armas básicas.' },
-      { name: 'Pedra Cinzenta', type: 'material', rarity: 'common', description: 'Pedra básica usada em processos de alquimia simples.' },
-      { name: 'Carvão Negro', type: 'material', rarity: 'common', description: 'Combustível comum para forjas e rituais de fogo.' },
-      { name: 'Quartzo Opaco', type: 'material', rarity: 'common', description: 'Cristal fosco usado em misturas alquímicas.' },
-      { name: 'Argilita Sombria', type: 'material', rarity: 'common', description: 'Argila escura imbuída de leves traços de energia espiritual.' },
-      { name: 'Calcita Fria', type: 'material', rarity: 'common', description: 'Mineral que mantém uma temperatura baixa constante. Alquimia/Rituais.' },
-      { name: 'Pedra de Lodo', type: 'material', rarity: 'common', description: 'Pedra viscosa usada para forjar armas de natureza flexível.' },
-      { name: 'Sílex Rachado', type: 'material', rarity: 'common', description: 'Pedra afiada usada para criar faíscas e armas rudimentares.' },
-      { name: 'Areia Ferrosa', type: 'material', rarity: 'common', description: 'Grãos de metal fino usados em processos alquímicos.' },
-      { name: 'Rocha Bruta', type: 'material', rarity: 'common', description: 'Pedaço pesado e irregular usado em armas de impacto.' },
-      { name: 'Estilhaço de Basalto', type: 'material', rarity: 'common', description: 'Pedaço de rocha vulcânica densa usado em armaduras.' },
-      { name: 'Terra Endurecida', type: 'material', rarity: 'common', description: 'Solo compactado por pressões místicas. Alquimia/Rituais.' },
-      { name: 'Fragmento Calcificado', type: 'material', rarity: 'common', description: 'Restos endurecidos usados em rituais de ossos.' },
-      { name: 'Pedra Turva', type: 'material', rarity: 'common', description: 'Uma pedra que parece absorver a luz, usada em armas sombrias.' },
-      { name: 'Minério Ferrugem', type: 'material', rarity: 'common', description: 'Metal oxidado usado para armas de desgaste.' },
-
-      // <--- MINÉRIOS RAROS (10) --->
-      { name: 'Sangrita', type: 'material', rarity: 'rare', description: 'Cristal avermelhado que pulsa como um coração. Rituais.' },
-      { name: 'Umbraferro', type: 'material', rarity: 'rare', description: 'Metal forjado nas sombras para armas furtivas.' },
-      { name: 'Virulita', type: 'material', rarity: 'rare', description: 'Mineral tóxico usado em armas e rituais de praga.' },
-      { name: 'Cinzalma', type: 'material', rarity: 'rare', description: 'Resíduo de almas incineradas. Armas/Rituais/Alquimia.' },
-      { name: 'Raiz-Ferro', type: 'material', rarity: 'rare', description: 'Madeira petrificada extremamente dura usada em armas.' },
-      { name: 'Olho de Ébano', type: 'material', rarity: 'rare', description: 'Gema negra profunda usada em rituais de visão.' },
-      { name: 'Lágrima do Véu', type: 'material', rarity: 'rare', description: 'Substância semi-líquida usada para encantar armas.' },
-      { name: 'Brasa Profana', type: 'material', rarity: 'rare', description: 'Fragmento que queima eternamente. Rituais de fogo.' },
-      { name: 'Necronita', type: 'material', rarity: 'rare', description: 'Metal que drena a vitalidade. Armas/Rituais.' },
-      { name: 'Cristal de Ossário', type: 'material', rarity: 'rare', description: 'Cristal formado em locais de grande mortalidade.' },
-
-      // <--- MINÉRIOS LENDÁRIOS (5) --->
-      { name: 'Aurorita', type: 'material', rarity: 'legendary', description: 'Metal que brilha com a luz de um sol esquecido. Armas.' },
-      { name: 'Fragmento do Véu', type: 'material', rarity: 'legendary', description: 'Um pedaço da própria realidade usado em alquimia avançada.' },
-      { name: 'Coração Fóssil', type: 'material', rarity: 'legendary', description: 'O coração petrificado de uma entidade ancestral. Rituais.' },
-      { name: 'Pedra do Luminar', type: 'material', rarity: 'legendary', description: 'Gema que contém a essência da luz pura. Armas/Rituais.' },
-      { name: 'Núcleo Abissal', type: 'material', rarity: 'legendary', description: 'O centro concentrado de um vazio absoluto. Armas/Rituais.' },
-
-      // <--- ITENS DE PERSONAGEM --->
-      { name: 'Cestos (Manoplas)', type: 'weapon', rarity: 'common', damage: '1d6', description: 'Manoplas de combate usadas em ambas as mãos.' },
-      { name: 'Roupa de Couro Leve', type: 'armor', rarity: 'common', description: 'Proteção básica e leve para o corpo.' },
-      { name: 'Ataduras de Punho', type: 'armor', rarity: 'common', description: 'Envoltórios para as mãos.' },
-      { name: 'Botas Rústicas', type: 'armor', rarity: 'common', description: 'Calçado resistente para longas jornadas.' },
-      { name: 'Kimono de Pano', type: 'armor', rarity: 'common', description: 'Vestimenta leve e flexível.' },
-      { name: 'Calça de Pano', type: 'armor', rarity: 'common', description: 'Vestimenta básica para as pernas.' },
-      { name: 'Botas de Couro', type: 'armor', rarity: 'common', description: 'Calçado de couro curtido.' },
-      { name: 'Bandana de Combate', type: 'armor', rarity: 'common', description: 'Acessório simples para a cabeça.' },
-      { name: 'Faixas Vermelhas', type: 'armor', rarity: 'common', description: 'Envoltórios para os braços.' },
-      { name: 'Gancho com Corrente', type: 'weapon', rarity: 'rare', damage: '1d4', attributeType: 'strength', description: 'Permite puxar inimigos (Teste FOR), escalar e interagir com o ambiente.' },
-      { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effectTarget: 'stamina', healingValue: '+2', description: 'Estimulante que recupera +2 de Fôlego instantaneamente.' },
-      { name: 'Medalhão Sussurrante', type: 'armor', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.' },
-      { name: 'Pele de Urso', type: 'armor', rarity: 'rare', description: 'Manto pesado que oferece 3 de Redução de Dano (RD).' },
-      { name: 'Amuleto Tosco', type: 'armor', rarity: 'rare', bonus: 1, description: 'Concede +1 em testes de Intimidação.' },
-      { name: 'Coroa de Ossos', type: 'armor', rarity: 'rare', corruptionLimitBonus: 1, description: 'Artefato macabro que expande o limite de corrupção em +1.' },
-      { name: 'Colar: Foco de Fé', type: 'armor', rarity: 'rare', description: 'Canalizador espiritual para ritos sagrados.' },
-      { name: 'Chama do Arrependimento', type: 'weapon', rarity: 'legendary', damage: '2d6', attributeType: 'dexterity', description: 'Espada herética. Sinergia: +1d10 Fogo se o alvo estiver [MARCADO]. Sacrifício: +1 Corr para dano máximo (12).' },
-      { name: 'Adaga de Ferro Frio', type: 'weapon', rarity: 'rare', damage: '1d6+3', attributeType: 'dexterity', description: 'Lâmina herética. Aplica o status [MARCADO] ao atingir.' },
-      { name: 'Picareta de Combate', type: 'weapon', rarity: 'common', damage: '1d6', description: 'Ferramenta adaptada para combate.' },
-      { name: 'Cutello do Verdão', type: 'weapon', rarity: 'rare', damage: '1d8', description: 'Lâmina pesada e imponente.' },
-      { name: 'Extração da "Chama" :: A.B.S', type: 'weapon', rarity: 'rare', damage: '1d4', description: 'Dispositivo alquímico. Inflige "Chama" no alvo (1) e em si mesmo (2).' },
-      { name: 'Extração do Terno da "Chama" :: A.B.S', type: 'armor', rarity: 'rare', description: 'Armadura média imbuída de essência ígnea.' },
-      { name: 'Coldre de Couro Simples', type: 'armor', rarity: 'common', description: 'Acesso rápido: 1 slot.', beltCapacity: 1 },
-      { name: 'Cinto de Utilidade do Explorador', type: 'armor', rarity: 'rare', description: 'Acesso rápido: 2 slots.', beltCapacity: 2 },
-      { name: 'Cinto de Arsenal Real', type: 'armor', rarity: 'legendary', description: 'Acesso rápido: 4 slots.', bonus: 1, beltCapacity: 4 }
-    ];
-
+  const handleSeed = async () => {
     try {
       setLoading(true);
-      let createdCount = 0;
-      for (const item of minerals) {
-        const res = await ttrpgApi.createItem(item);
-        if (!res.error) createdCount++;
+      const createdCount = await seedDefaultItems();
+      
+      if (createdCount !== null) {
+        alert(`${createdCount} novos itens carregados com sucesso!`);
+        await loadItems();
       }
-      alert(`${createdCount} novos itens carregados com sucesso!`);
-      loadItems();
     } catch (error) {
       console.error('Error seeding items:', error);
       alert('Erro ao carregar itens padrão');
@@ -162,6 +98,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       setLoading(false);
     }
   };
+
 
   const loadItems = async () => {
     try {
@@ -514,12 +451,20 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={seedDefaultItems}
+              onClick={handleSeed}
               className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-zinc-700 shadow-lg group"
               title="Carregar Itens Iniciais do RPG"
             >
               <Sparkles className="w-4 h-4 text-amber-500 group-hover:animate-pulse" />
               Itens Padrão
+            </button>
+
+            <button
+              onClick={() => setShowTips(true)}
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-zinc-700 shadow-lg"
+            >
+              <Info className="w-4 h-4 text-amber-500" />
+              Dicas
             </button>
             <button
               onClick={() => {
@@ -687,7 +632,9 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                         {typeLabels[item.type]}
                       </span>
                     </div>
-                    <p className="text-zinc-400 text-xs line-clamp-2">{item.description}</p>
+                    <div className="text-zinc-400 text-xs line-clamp-3 min-h-[40px]">
+                      <RichDescription text={item.description} />
+                    </div>
                   </div>
 
                   {item.type === 'weapon' && (
@@ -707,7 +654,9 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                         <div>Slots Cinto: <span className="text-amber-400">{item.beltCapacity}</span></div>
                       )}
                       {item.statBonus && (
-                        <div className="text-amber-400/80 italic">{item.statBonus}</div>
+                        <div className="text-amber-400/80 italic text-[11px]">
+                          <RichDescription text={item.statBonus} />
+                        </div>
                       )}
                     </div>
                   )}
@@ -772,6 +721,67 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+        {/* Modal de Dicas */}
+        {showTips && (
+          <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
+            <div className="bg-gradient-to-br from-zinc-900 to-black border-2 border-amber-900/60 rounded-xl p-6 max-w-2xl w-full shadow-2xl relative">
+              <button 
+                onClick={() => setShowTips(false)}
+                className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h2 className="text-2xl font-bold text-amber-400 mb-6 flex items-center gap-3">
+                <Info className="w-7 h-7" />
+                Dicas para o Mestre
+              </h2>
+
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar text-left">
+                <section>
+                  <h3 className="text-amber-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-amber-900/30 pb-1">Uso de Hashtags</h3>
+                  <p className="text-zinc-400 text-xs mb-3">Ao criar itens, você pode usar hashtags no Nome, Descrição ou Bônus em Testes para gerar ícones visuais na ficha do jogador:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
+                      <span className="text-amber-400 font-mono">#força</span> → <RichDescription text="#força" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
+                      <span className="text-amber-400 font-mono">#destreza</span> → <RichDescription text="#destreza" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
+                      <span className="text-amber-400 font-mono">#fé</span> → <RichDescription text="#fé" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
+                      <span className="text-red-400 font-mono">[marcado]</span> → <RichDescription text="[marcado]" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
+                      <span className="text-green-400 font-mono">#envenenado</span> → <RichDescription text="#envenenado" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
+                      <span className="text-orange-500 font-mono">#queimadura</span> → <RichDescription text="#queimadura" />
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-zinc-400 font-bold mb-2 uppercase text-sm tracking-widest border-b border-zinc-800 pb-1">Dicas de Organização</h3>
+                  <ul className="text-[11px] text-zinc-500 list-disc pl-4 space-y-1">
+                    <li>A ficha dos jogadores sincroniza com o banco de dados. Mudanças aqui afetam todos os jogadores que possuem o item.</li>
+                    <li>Use a hashtag <span className="text-amber-400 font-mono">#corrupção</span> em itens raros para indicar o atributo.</li>
+                    <li>O campo "Bônus em Testes" também suporta hashtags! Ex: "+1 em testes de #fé".</li>
+                  </ul>
+                </section>
+              </div>
+
+              <button 
+                onClick={() => setShowTips(false)}
+                className="w-full mt-8 py-3 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg transition-colors"
+              >
+                Entendido!
+              </button>
             </div>
           </div>
         )}

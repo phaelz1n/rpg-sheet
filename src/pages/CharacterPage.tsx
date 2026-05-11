@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAuth } from '../context/AuthContext';
-import { ttrpgApi } from '../api/ttrpg-api';
-import { CharacterPortrait } from '../components/ttrpg/CharacterPortrait';
-import { StatusGauge } from '../components/ttrpg/StatusGauge';
-import { CorruptionGauge } from '../components/ttrpg/CorruptionGauge';
-import { HexAttributeCard } from '../components/ttrpg/HexAttributeCard';
-import { SkillCard } from '../components/ttrpg/SkillCard';
-import { AbilityCard } from '../components/ttrpg/AbilityCard';
-import { WeaponCard } from '../components/ttrpg/WeaponCard';
-import { DamageReductionBadge } from '../components/ttrpg/DamageReductionBadge';
-import { EquipmentSlot } from '../components/ttrpg/EquipmentSlot';
-import { BeltSlot } from '../components/ttrpg/BeltSlot';
-import { InventorySlot } from '../components/ttrpg/InventorySlot';
-import { EncumbranceBar } from '../components/ttrpg/EncumbranceBar';
-import { ItemSelectionModal } from '../components/ttrpg/ItemSelectionModal';
+import { ttrpgApi } from '../lib/ttrpg-api';
+import { seedDefaultItems } from '../lib/seeding-service';
+
+import { CharacterPortrait } from '../components/rpg/CharacterPortrait';
+import { StatusGauge } from '../components/rpg/StatusGauge';
+import { CorruptionGauge } from '../components/rpg/CorruptionGauge';
+import { HexAttributeCard } from '../components/rpg/HexAttributeCard';
+import { SkillCard } from '../components/rpg/SkillCard';
+import { AbilityCard } from '../components/rpg/AbilityCard';
+import { WeaponCard } from '../components/rpg/WeaponCard';
+import { DamageReductionBadge } from '../components/rpg/DamageReductionBadge';
+import { EquipmentSlot } from '../components/rpg/EquipmentSlot';
+import { BeltSlot } from '../components/rpg/BeltSlot';
+import { InventorySlot } from '../components/rpg/InventorySlot';
+import { EncumbranceBar } from '../components/rpg/EncumbranceBar';
+import { ItemSelectionModal } from '../components/rpg/ItemSelectionModal';
 import {
   Eye, Hand, Heart, Brain, Sword, Flame,
   Sparkles, Zap, Skull, Droplet, Target, Moon,
@@ -22,9 +24,10 @@ import {
   Footprints, Pickaxe, Gem, Fish, Coins, Swords,
   LogOut, Plus, Trash2, User, Shield, Activity, EyeOff, Crosshair,
   Dumbbell, AlertTriangle, Search, Compass, Stethoscope,
-  Book, Radio, ChevronLeft, ChevronRight, Minus
+  Book, Radio, ChevronLeft, ChevronRight, Minus, Info, Database, X
 } from 'lucide-react';
-import { RichDescription } from '../components/ttrpg/RichDescription';
+
+import { RichDescription } from '../components/rpg/RichDescription';
 
 interface InventoryItem {
   id: string;
@@ -127,6 +130,8 @@ export function CharacterPage() {
     type: 'weapon' | 'armor' | 'consumable' | null;
     slot?: string;
   }>({ isOpen: false, type: null });
+
+  const [showTips, setShowTips] = useState(false);
 
   // Character info states
   const [characterName, setCharacterName] = useState('');
@@ -278,24 +283,25 @@ export function CharacterPage() {
       if (response.items) {
         const iconMap: Record<string, any> = {
           occultism: Eye,
-          dexterity: Hand,
+          dexterity: Zap,
           vigor: Heart,
           willpower: Brain,
-          strength: Sword,
-          faith: Flame
+          strength: Dumbbell,
+          faith: Droplet
         };
 
         const convertedItems = response.items.map((item: any) => ({
           id: item.id,
           name: item.name,
           attributeType: item.attributeType || 'dexterity',
-          attributeIcon: iconMap[item.attributeType] || Hand,
+          attributeIcon: iconMap[item.attributeType] || Zap,
           bonus: item.bonus || 0,
           damage: item.damage || '',
-          category: item.type === 'weapon' ? 'weapon' : 
+          category: (item.type === 'weapon' ? 'weapon' : 
                     item.type === 'armor' ? 'armor' : 
                     item.type === 'material' ? 'material' : 
-                    item.type === 'potion' ? 'potion' : 'consumable',
+                    item.type === 'potion' ? 'potion' : 'consumable') as RPGItem['category'],
+
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
           statBonus: item.statBonus || '',
           beltCapacity: item.beltCapacity || 0,
@@ -351,11 +357,11 @@ export function CharacterPage() {
   const addItemToInventory = (item: RPGItem) => {
     const iconMap: Record<string, any> = {
       occultism: Eye,
-      dexterity: Hand,
+      dexterity: Zap,
       vigor: Heart,
       willpower: Brain,
-      strength: Sword,
-      faith: Flame
+      strength: Dumbbell,
+      faith: Droplet
     };
 
     const newInventoryItem: InventoryItem = {
@@ -504,11 +510,11 @@ export function CharacterPage() {
 
         const attributeIconMap: Record<string, any> = {
           occultism: Eye,
-          dexterity: Hand,
+          dexterity: Zap,
           vigor: Heart,
           willpower: Brain,
-          strength: Sword,
-          faith: Flame
+          strength: Dumbbell,
+          faith: Droplet
         };
 
       setCharacterName(data.characterName || '');
@@ -550,7 +556,7 @@ export function CharacterPage() {
 
       const loadedAbilities = data.abilities ? data.abilities.map((ability: any) => ({
         ...ability,
-        icon: ability.type === 'action' ? Flame : Eye
+        icon: ability.type === 'action' ? Zap : Eye
       })) : [];
       setAbilities(loadedAbilities);
 
@@ -610,6 +616,14 @@ export function CharacterPage() {
     navigate('/admin');
   };
 
+  const handleSeed = async () => {
+    const createdCount = await seedDefaultItems();
+    if (createdCount !== null) {
+      alert(`${createdCount} novos itens carregados com sucesso!`);
+      await loadGlobalItems();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-stone-950 to-black p-4 md:p-6 overflow-x-hidden">
       {/* Top Bar */}
@@ -627,6 +641,16 @@ export function CharacterPage() {
         <div className="flex gap-2 flex-wrap justify-center">
           {isAdmin && (
             <button
+              onClick={handleSeed}
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-sm border border-zinc-700 shadow-lg group"
+              title="Carregar Itens Iniciais do RPG"
+            >
+              <Database className="w-4 h-4 text-emerald-500" />
+            </button>
+          )}
+
+          {isAdmin && (
+            <button
               onClick={returnToAdminPanel}
               className="flex items-center gap-1.5 px-3 py-2 bg-purple-900/50 border border-purple-700/50 rounded-lg text-purple-300 hover:bg-purple-900/70 transition-colors text-xs sm:text-sm"
             >
@@ -635,6 +659,15 @@ export function CharacterPage() {
               <span className="sm:hidden">Admin</span>
             </button>
           )}
+
+          <button
+            onClick={() => setShowTips(true)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-zinc-300 hover:bg-zinc-700/70 transition-colors text-xs sm:text-sm"
+          >
+            <Info className="w-4 h-4 text-amber-500" />
+            <span className="hidden sm:inline">Dicas</span>
+            <span className="sm:hidden">Dicas</span>
+          </button>
 
           <button
             onClick={handleLogout}
@@ -816,11 +849,11 @@ export function CharacterPage() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <HexAttributeCard name="Ocultismo" bonus={occultism} icon={Eye} onBonusChange={setOccultism} />
-                <HexAttributeCard name="Destreza" bonus={dexterity} icon={Hand} onBonusChange={setDexterity} />
+                <HexAttributeCard name="Destreza" bonus={dexterity} icon={Zap} onBonusChange={setDexterity} />
                 <HexAttributeCard name="Vigor" bonus={vigor} icon={Heart} onBonusChange={setVigor} />
                 <HexAttributeCard name="Vontade" bonus={willpower} icon={Brain} onBonusChange={setWillpower} />
-                <HexAttributeCard name="Força" bonus={strength} icon={Sword} onBonusChange={setStrength} />
-                <HexAttributeCard name="Fé" bonus={faith} icon={Flame} onBonusChange={setFaith} />
+                <HexAttributeCard name="Força" bonus={strength} icon={Dumbbell} onBonusChange={setStrength} />
+                <HexAttributeCard name="Fé" bonus={faith} icon={Droplet} onBonusChange={setFaith} />
               </div>
             </section>
 
@@ -1298,6 +1331,93 @@ export function CharacterPage() {
             setItemSelectionModal({ isOpen: false, type: null });
           }}
         />
+
+        {/* Modal de Dicas */}
+        {showTips && (
+          <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100] p-4 backdrop-blur-sm text-left">
+            <div className="bg-gradient-to-br from-zinc-900 to-black border-2 border-amber-900/60 rounded-xl p-6 max-w-2xl w-full shadow-2xl relative">
+              <button 
+                onClick={() => setShowTips(false)}
+                className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h2 className="text-2xl font-bold text-amber-400 mb-6 flex items-center gap-3">
+                <Info className="w-7 h-7" />
+                Guia de Formatação e Tags
+              </h2>
+
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
+                <section>
+                  <h3 className="text-amber-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-amber-900/30 pb-1">Atributos (Ícones)</h3>
+                  <p className="text-zinc-400 text-xs mb-3">Use hashtags para inserir ícones de atributos em qualquer descrição:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#força</span> <RichDescription text="#força" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#destreza</span> <RichDescription text="#destreza" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#vigor</span> <RichDescription text="#vigor" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#vontade</span> <RichDescription text="#vontade" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#fé</span> <RichDescription text="#fé" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#ocultismo</span> <RichDescription text="#ocultismo" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#corrupção</span> <RichDescription text="#corrupção" />
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-red-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-red-900/30 pb-1">Status e Condições</h3>
+                  <p className="text-zinc-400 text-xs mb-3">Tags para condições especiais:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-red-400 font-mono">[marcado]</span> <RichDescription text="[marcado]" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-green-400 font-mono">#envenenado</span> <RichDescription text="#envenenado" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-orange-500 font-mono">#queimadura</span> <RichDescription text="#queimadura" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-blue-400 font-mono">#molhado</span> <RichDescription text="#molhado" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-red-600 font-mono">#sangramento</span> <RichDescription text="#sangramento" />
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-zinc-400 font-bold mb-2 uppercase text-sm tracking-widest border-b border-zinc-800 pb-1">Dicas de Uso</h3>
+                  <ul className="text-[11px] text-zinc-500 list-disc pl-4 space-y-1">
+                    <li>Ao editar um campo, as tags aparecerão como texto puro. Elas viram ícones assim que você termina de editar (quando o campo perde o foco).</li>
+                    <li>As descrições dos itens equipados e na mochila agora aparecem ao passar o mouse.</li>
+                    <li>Pressione <b>Enter</b> na descrição para criar novas linhas; o sistema agora respeita quebras de linha!</li>
+                  </ul>
+                </section>
+              </div>
+
+              <button 
+                onClick={() => setShowTips(false)}
+                className="w-full mt-8 py-3 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg transition-colors"
+              >
+                Entendido!
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Users, Trash2, Plus, Edit, Shield, X, Key, Package } from 'lucide-react';
-import { ttrpgApi } from '../../api/ttrpg-api';
+import { ttrpgApi } from '../../lib/ttrpg-api';
 
 interface AdminPanelProps {
   onAccessCharacter: (username: string) => void;

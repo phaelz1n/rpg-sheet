@@ -4,7 +4,7 @@ import { CharacterPage } from './pages/CharacterPage';
 import { AdminPage } from './pages/AdminPage';
 import { AdminItemsPage } from './pages/AdminItemsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
-import { ProtectedRoute } from './components/ProtectedRoute';
+import { ProtectedRoute } from './components/ui/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {

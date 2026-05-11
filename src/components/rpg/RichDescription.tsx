@@ -1,5 +1,9 @@
 import React from 'react';
-import { Skull, Flame, Eye, Hand, Heart, Brain, Sword, Target } from 'lucide-react';
+import { 
+  Skull, Flame, Eye, Hand, Heart, Brain, Sword, Target, 
+  Droplet, Zap, Dumbbell, Beaker, Thermometer, Droplets, 
+  Activity, Info
+} from 'lucide-react';
 
 interface RichDescriptionProps {
   text: string;
@@ -10,26 +14,35 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
   if (!text) return null;
 
   // Pattern to match #hashtags and [brackets]
-  // #corrupção, #fé, #ocultismo, #destreza, #vigor, #vontade, #força
-  // [marcado]
   const parts = text.split(/(#[a-záàâãéèêíïóôõöúç]+|\[marcado\])/gi);
 
   const iconMap: Record<string, { icon: any, color: string, label: string }> = {
+    // Atributos
     '#corrupção': { icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
     '#corrupcao': { icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
-    '#fé': { icon: Flame, color: 'text-amber-500', label: 'Fé' },
-    '#fe': { icon: Flame, color: 'text-amber-500', label: 'Fé' },
+    '#fé': { icon: Droplet, color: 'text-blue-400', label: 'Fé' },
+    '#fe': { icon: Droplet, color: 'text-blue-400', label: 'Fé' },
     '#ocultismo': { icon: Eye, color: 'text-purple-400', label: 'Ocultismo' },
-    '#destreza': { icon: Hand, color: 'text-emerald-500', label: 'Destreza' },
+    '#destreza': { icon: Zap, color: 'text-emerald-400', label: 'Destreza' },
     '#vigor': { icon: Heart, color: 'text-red-500', label: 'Vigor' },
     '#vontade': { icon: Brain, color: 'text-blue-500', label: 'Vontade' },
-    '#força': { icon: Sword, color: 'text-orange-500', label: 'Força' },
-    '#forca': { icon: Sword, color: 'text-orange-500', label: 'Força' },
+    '#força': { icon: Dumbbell, color: 'text-orange-500', label: 'Força' },
+    '#forca': { icon: Dumbbell, color: 'text-orange-500', label: 'Força' },
+    
+    // Status / Condições
     '[marcado]': { icon: Target, color: 'text-red-400', label: 'Marcado' },
+    '#envenenado': { icon: Beaker, color: 'text-green-500', label: 'Envenenado' },
+    '#queimadura': { icon: Flame, color: 'text-orange-600', label: 'Queimadura' },
+    '#queimado': { icon: Flame, color: 'text-orange-600', label: 'Queimado' },
+    '#molhado': { icon: Droplets, color: 'text-blue-400', label: 'Molhado' },
+    '#sangramento': { icon: Activity, color: 'text-red-600', label: 'Sangramento' },
+    '#sangrando': { icon: Activity, color: 'text-red-600', label: 'Sangrando' },
+    '#congelado': { icon: Droplets, color: 'text-cyan-300', label: 'Congelado' },
+    '#paralisado': { icon: Zap, color: 'text-yellow-400', label: 'Paralisado' },
   };
 
   return (
-    <span className={`inline ${className}`}>
+    <span className={`inline whitespace-pre-wrap ${className}`}>
       {parts.map((part, index) => {
         const lowerPart = part.toLowerCase();
         const iconConfig = iconMap[lowerPart];
