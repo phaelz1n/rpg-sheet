@@ -25,6 +25,7 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
     '#fe': { icon: Droplet, color: 'text-blue-400', label: 'Fé', type: 'hashtag' },
     '#fôlego': { icon: Flame, color: 'text-green-400', label: 'Fôlego', type: 'hashtag' },
     '#folego': { icon: Flame, color: 'text-green-400', label: 'Fôlego', type: 'hashtag' },
+    '#stamina': { icon: Flame, color: 'text-green-400', label: 'Stamina', type: 'hashtag' },
     '#ocultismo': { icon: Eye, color: 'text-purple-400', label: 'Ocultismo', type: 'hashtag' },
     '#destreza': { icon: Zap, color: 'text-emerald-400', label: 'Destreza', type: 'hashtag' },
     '#vigor': { icon: Heart, color: 'text-red-500', label: 'Vigor', type: 'hashtag' },
