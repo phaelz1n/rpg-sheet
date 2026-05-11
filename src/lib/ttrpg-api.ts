@@ -3,7 +3,8 @@ import { supabase } from './supabase';
 export const ttrpgApi = {
   // Authentication (using Supabase Auth)
   async register(username: string, password: string) {
-    const email = `${username}@ttrpg-sheet.local`;
+    const email = `${username}@ttrpg.com`;
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -21,7 +22,8 @@ export const ttrpgApi = {
       return { success: true, username: 'admin', isAdmin: true };
     }
 
-    const email = `${username}@ttrpg-sheet.local`;
+    const email = `${username}@ttrpg.com`;
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
