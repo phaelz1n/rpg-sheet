@@ -205,15 +205,15 @@ export function AbilityCard({
         <div className="flex items-center gap-1">
           <button
             onClick={toggleStamina}
-            title={hasStamina ? 'Remover custo de Fôlego' : 'Adicionar custo de Fôlego'}
+            title={hasStamina ? 'Remover custo de Stamina' : 'Adicionar custo de Stamina'}
             className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs border transition-all ${
               hasStamina
                 ? 'bg-green-950/60 border-green-700/60 text-green-300'
                 : 'bg-zinc-900/40 border-zinc-700/40 text-zinc-500 hover:border-green-700/50 hover:text-green-400'
             }`}
           >
-            <Flame className="w-3 h-3" />
-            <span>Fôlego</span>
+            <Zap className="w-3 h-3" />
+            <span>Stamina</span>
             {!hasStamina && <Plus className="w-2.5 h-2.5" />}
           </button>
           {hasStamina && (

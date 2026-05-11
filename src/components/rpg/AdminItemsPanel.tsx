@@ -403,7 +403,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                   className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
                 >
                   <option value="health">Vida</option>
-                  <option value="stamina">Fôlego</option>
+                  <option value="stamina">Stamina</option>
                   <option value="sanity">Sanidade</option>
                   <option value="corruption">Corrupção</option>
                   <option value="none">Outro / Especial</option>
@@ -666,7 +666,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                     <div className="text-xs text-zinc-500 space-y-1">
                       <div>Alvo: <span className="text-blue-400 uppercase">{
                         item.effectTarget === 'health' ? 'Vida' :
-                        item.effectTarget === 'stamina' ? 'Fôlego' :
+                        item.effectTarget === 'stamina' ? 'Stamina' :
                         item.effectTarget === 'sanity' ? 'Sanidade' :
                         item.effectTarget === 'corruption' ? 'Corrupção' : 'Especial'
                       }</span></div>
@@ -771,8 +771,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                   <h3 className="text-zinc-400 font-bold mb-2 uppercase text-sm tracking-widest border-b border-zinc-800 pb-1">Dicas de Organização</h3>
                   <ul className="text-[11px] text-zinc-500 list-disc pl-4 space-y-1">
                     <li>A ficha dos jogadores sincroniza com o banco de dados. Mudanças aqui afetam todos os jogadores que possuem o item.</li>
-                    <li>Use a hashtag <span className="text-amber-400 font-mono">#corrupção</span> em itens raros para indicar o atributo.</li>
-                    <li>O campo "Bônus em Testes" também suporta hashtags! Ex: "+1 em testes de #fé".</li>
+                    <li>Todas as perícias da ficha viraram tags! Ex: <span className="text-amber-400 font-mono">#acrobacia</span>, <span className="text-amber-400 font-mono">#medicina</span>.</li>
+                    <li>O campo "Bônus em Testes" também suporta hashtags! Ex: "+1 em testes de #intimidação".</li>
                   </ul>
                 </section>
               </div>

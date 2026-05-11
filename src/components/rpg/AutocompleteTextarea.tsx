@@ -15,7 +15,18 @@ const TAG_SUGGESTIONS = [
   { text: '#fé', icon: Droplet, color: 'text-blue-400', label: 'Fé' },
   { text: '#vontade', icon: Brain, color: 'text-blue-500', label: 'Vontade' },
   { text: '#corrupção', icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
-  { text: '#stamina', icon: Flame, color: 'text-green-400', label: 'Stamina' },
+  { text: '#stamina', icon: Zap, color: 'text-green-400', label: 'Stamina' },
+
+  // Perícias
+  { text: '#acrobacia', icon: Hand, color: 'text-emerald-500', label: 'Acrobacia' },
+  { text: '#furtividade', icon: Hand, color: 'text-emerald-500', label: 'Furtividade' },
+  { text: '#pontaria', icon: Hand, color: 'text-emerald-500', label: 'Pontaria' },
+  { text: '#atletismo', icon: Sword, color: 'text-orange-500', label: 'Atletismo' },
+  { text: '#intimidação', icon: Sword, color: 'text-orange-500', label: 'Intimidação' },
+  { text: '#percepção', icon: Brain, color: 'text-blue-500', label: 'Percepção' },
+  { text: '#sobrevivência', icon: Brain, color: 'text-blue-500', label: 'Sobrevivência' },
+  { text: '#medicina', icon: Brain, color: 'text-blue-500', label: 'Medicina' },
+  { text: '#presença', icon: Flame, color: 'text-amber-500', label: 'Presença' },
   
   // Status (Badges)
   { text: '#marcado', icon: Target, color: 'text-red-400', label: 'Marcado' },
