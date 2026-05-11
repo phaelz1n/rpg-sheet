@@ -264,14 +264,14 @@ export function AbilityCard({
           className="w-full bg-transparent text-zinc-300 text-sm leading-relaxed focus:outline-none resize-none min-h-[60px] absolute inset-0 p-3 z-10 opacity-0 focus:opacity-100"
           placeholder="Descrição da habilidade..."
         />
-        <div className="text-zinc-300 text-sm leading-relaxed min-h-[60px] pointer-events-none">
+        <div className="text-zinc-300 text-sm leading-relaxed min-h-[60px] pointer-events-none group-focus-within/effect:opacity-0 transition-opacity">
           <RichDescription text={effect || "Descrição da habilidade..."} />
         </div>
       </div>
 
       {/* Backlash */}
       {backlash !== undefined && (
-        <div className="bg-red-950/30 border border-red-900/40 rounded p-2 relative">
+        <div className="bg-red-950/30 border border-red-900/40 rounded p-2 relative group/backlash">
           <div className="text-xs text-red-400 uppercase mb-1">Contragolpe em Falha</div>
           <AutocompleteTextarea
             value={backlash}
@@ -279,7 +279,7 @@ export function AbilityCard({
             className="w-full bg-transparent text-red-300 text-xs leading-relaxed focus:outline-none resize-none min-h-[40px] absolute inset-x-0 bottom-0 p-2 pt-6 z-10 opacity-0 focus:opacity-100"
             placeholder="Efeito de falha..."
           />
-          <div className="text-red-300 text-xs leading-relaxed min-h-[40px] pointer-events-none">
+          <div className="text-red-300 text-xs leading-relaxed min-h-[40px] pointer-events-none group-focus-within/backlash:opacity-0 transition-opacity">
             <RichDescription text={backlash || "Efeito de falha..."} />
           </div>
         </div>
