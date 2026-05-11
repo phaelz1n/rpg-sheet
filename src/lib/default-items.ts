@@ -46,7 +46,7 @@ export const DEFAULT_ITEMS = [
   { name: 'Bandana de Combate', type: 'armor', rarity: 'common', description: 'Acessório simples para a cabeça.' },
   { name: 'Faixas Vermelhas', type: 'armor', rarity: 'common', description: 'Envoltórios para os braços.' },
   { name: 'Gancho com Corrente', type: 'weapon', rarity: 'rare', damage: '1d4', attributeType: 'strength', description: 'Permite puxar inimigos (Teste #força), escalar e interagir com o ambiente.' },
-  { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effectTarget: 'stamina', healingValue: '+2', description: 'Estimulante que recupera +2 de Fôlego instantaneamente.' },
+  { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effectTarget: 'stamina', healingValue: '+2', description: 'Estimulante que recupera +2 de #fôlego instantaneamente.' },
   { name: 'Medalhão Sussurrante', type: 'armor', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.' },
   { name: 'Pele de Urso', type: 'armor', rarity: 'rare', description: 'Manto pesado que oferece 3 de #rd.' },
   { name: 'Amuleto Tosco', type: 'armor', rarity: 'rare', bonus: 1, description: 'Concede +1 em testes de Intimidação.' },

@@ -15,6 +15,7 @@ const TAG_SUGGESTIONS = [
   { text: '#fé', icon: Droplet, color: 'text-blue-400', label: 'Fé' },
   { text: '#vontade', icon: Brain, color: 'text-blue-500', label: 'Vontade' },
   { text: '#corrupção', icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
+  { text: '#fôlego', icon: Flame, color: 'text-green-400', label: 'Fôlego' },
   
   // Status (Badges)
   { text: '#marcado', icon: Target, color: 'text-red-400', label: 'Marcado' },
