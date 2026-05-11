@@ -11,7 +11,16 @@ export const seedDefaultItems = async (): Promise<number | null> => {
   }
   
   let createdCount = 0;
+  
+  // Fetch existing items to avoid duplicates
+  const existingRes = await ttrpgApi.getAllItems();
+  const existingNames = new Set((existingRes.items || []).map(i => i.name));
+
   for (const item of DEFAULT_ITEMS) {
+    if (existingNames.has(item.name)) {
+      continue; // Skip if already exists
+    }
+
     try {
       const res = await ttrpgApi.createItem(item);
       if (!res.error) {
