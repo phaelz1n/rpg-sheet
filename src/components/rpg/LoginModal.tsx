@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { User, Lock, LogIn, UserPlus } from 'lucide-react';
+import logoImg from '../../assets/logo.png';
+
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -35,8 +37,8 @@ export function LoginModal({ isOpen, onLogin, onRegister }: LoginModalProps) {
     <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br from-zinc-900 to-black border-2 border-amber-900/60 rounded-xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
 
-        <div className="text-center mb-6 relative">
-          <h2 className="text-xl sm:text-2xl text-amber-400 mb-2">The Dark Path</h2>
+        <div className="text-center mb-6 relative flex flex-col items-center">
+          <img src={logoImg} alt="The Dark Path" className="h-24 sm:h-32 w-auto object-contain mb-2 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]" />
           <p className="text-zinc-400 text-xs sm:text-sm">
             {isRegistering ? 'Criar nova conta' : 'Entre para acessar sua ficha'}
           </p>
