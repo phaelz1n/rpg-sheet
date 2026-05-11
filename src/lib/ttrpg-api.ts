@@ -1,22 +1,24 @@
 import { supabase } from './supabase';
 
 export const ttrpgApi = {
-  // Authentication (using Supabase Auth)
+  // Authentication (using custom characters table auth)
   async register(username: string, password: string) {
-    const email = `${username}@ttrpg.com`;
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (!error && data.user) {
-      // Create a blank character record so the user immediately appears in the admin list
-      await this.saveCharacter(username, { characterName: "Nova Ficha" });
+    // Check if user already exists
+    const existing = await this.getCharacter(username);
+    if (existing.exists) {
+      return { success: false, error: 'Usuário já existe' };
     }
 
-    return { success: !error, error: error?.message, user: data?.user, username };
+    // Insert new user into characters table with password
+    const { error } = await supabase
+      .from('characters')
+      .insert({
+        username,
+        password,
+        character_data: { characterName: "Nova Ficha" }
+      });
 
+    return { success: !error, error: error?.message, user: { id: username }, username };
   },
 
   async createUser(username: string, password: string) {
@@ -29,13 +31,19 @@ export const ttrpgApi = {
       return { success: true, username: 'admin', isAdmin: true };
     }
 
-    const email = `${username}@ttrpg.com`;
+    // Query characters table for username and password
+    const { data, error } = await supabase
+      .from('characters')
+      .select('username')
+      .eq('username', username)
+      .eq('password', password)
+      .single();
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { success: !error, error: error?.message, user: data.user, username, isAdmin: false };
+    if (error || !data) {
+      return { success: false, error: 'Credenciais inválidas' };
+    }
+
+    return { success: true, user: { id: username }, username, isAdmin: false };
   },
 
   // Character Data
@@ -90,11 +98,13 @@ export const ttrpgApi = {
   },
 
   async resetPassword(username: string, password: string) {
-    // Note: This is a placeholder since client-side supabase.auth.updateUser 
-    // only works for the currently logged-in user. 
-    // In a real app, this would be an admin edge function.
     console.log(`Resetting password for ${username} to ${password}`);
-    return { success: true, error: undefined as string | undefined };
+    const { error } = await supabase
+      .from('characters')
+      .update({ password })
+      .eq('username', username);
+    
+    return { success: !error, error: error?.message };
   },
 
   // Admin: Global Items
