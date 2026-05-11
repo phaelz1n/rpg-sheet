@@ -1,6 +1,7 @@
 import { LucideIcon, ChevronDown, Plus, Trash2 } from 'lucide-react';
 import { Zap, Eye, Droplet, Flame } from 'lucide-react';
 import { useState } from 'react';
+import { RichDescription } from './RichDescription';
 
 interface AbilityCardProps {
   name: string;
@@ -255,25 +256,31 @@ export function AbilityCard({
       )}
 
       {/* Effect */}
-      <div className="bg-black/30 border border-amber-900/20 rounded p-3 mb-2">
+      <div className="bg-black/30 border border-amber-900/20 rounded p-3 mb-2 relative group/effect">
         <textarea
           value={effect}
           onChange={(e) => onEffectChange?.(e.target.value)}
-          className="w-full bg-transparent text-zinc-300 text-sm leading-relaxed focus:outline-none resize-none min-h-[60px]"
+          className="w-full bg-transparent text-zinc-300 text-sm leading-relaxed focus:outline-none resize-none min-h-[60px] absolute inset-0 p-3 z-10 opacity-0 focus:opacity-100"
           placeholder="Descrição da habilidade..."
         />
+        <div className="text-zinc-300 text-sm leading-relaxed min-h-[60px] pointer-events-none">
+          <RichDescription text={effect || "Descrição da habilidade..."} />
+        </div>
       </div>
 
       {/* Backlash */}
       {backlash !== undefined && (
-        <div className="bg-red-950/30 border border-red-900/40 rounded p-2">
+        <div className="bg-red-950/30 border border-red-900/40 rounded p-2 relative">
           <div className="text-xs text-red-400 uppercase mb-1">Contragolpe em Falha</div>
           <textarea
             value={backlash}
             onChange={(e) => onBacklashChange?.(e.target.value)}
-            className="w-full bg-transparent text-red-300 text-xs leading-relaxed focus:outline-none resize-none min-h-[40px]"
+            className="w-full bg-transparent text-red-300 text-xs leading-relaxed focus:outline-none resize-none min-h-[40px] absolute inset-x-0 bottom-0 p-2 pt-6 z-10 opacity-0 focus:opacity-100"
             placeholder="Efeito de falha..."
           />
+          <div className="text-red-300 text-xs leading-relaxed min-h-[40px] pointer-events-none">
+            <RichDescription text={backlash || "Efeito de falha..."} />
+          </div>
         </div>
       )}
     </div>

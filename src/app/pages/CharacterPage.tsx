@@ -24,6 +24,7 @@ import {
   Dumbbell, AlertTriangle, Search, Compass, Stethoscope,
   Book, Radio, ChevronLeft, ChevronRight, Minus
 } from 'lucide-react';
+import { RichDescription } from '../components/ttrpg/RichDescription';
 
 interface InventoryItem {
   id: string;
@@ -317,6 +318,10 @@ export function CharacterPage() {
     return rpgItems.find(item => item.name === itemName)?.rarity;
   };
 
+  const getItemDescription = (itemName: string) => {
+    return rpgItems.find(item => item.name === itemName)?.description;
+  };
+
   const equipItemAsWeapon = (item: RPGItem, slot: 'main' | 'off') => {
     const weaponData = {
       name: item.name,
@@ -450,6 +455,42 @@ export function CharacterPage() {
     beltSlot1, beltSlot2, beltSlot3, beltSlot4, beltSlot5, beltSlot6, beltSlot7, beltSlot8,
     mainWeapon, offWeapon, inventory, inventoryCapacity, globalAttributes, inspiration, curses
   ]);
+
+  // Synchronization effect: Ensure equipped items match latest global templates
+  useEffect(() => {
+    if (rpgItems.length === 0) return;
+
+    // Refresh Weapons
+    if (mainWeapon.name) {
+      const global = rpgItems.find(i => i.name === mainWeapon.name);
+      if (global) {
+        const bonusStr = `+${global.bonus}`;
+        if (mainWeapon.damage !== global.damage || mainWeapon.bonus !== bonusStr || mainWeapon.special !== global.description) {
+          setMainWeapon(prev => ({
+            ...prev,
+            damage: global.damage,
+            bonus: bonusStr,
+            special: global.description || ''
+          }));
+        }
+      }
+    }
+    
+    if (offWeapon.name) {
+      const global = rpgItems.find(i => i.name === offWeapon.name);
+      if (global) {
+        const bonusStr = `+${global.bonus}`;
+        if (offWeapon.damage !== global.damage || offWeapon.bonus !== bonusStr || offWeapon.special !== global.description) {
+          setOffWeapon(prev => ({
+            ...prev,
+            damage: global.damage,
+            bonus: bonusStr,
+            special: global.description || ''
+          }));
+        }
+      }
+    }
+  }, [rpgItems]);
 
   const loadCharacterData = async (username: string) => {
     console.log(`Carregando dados para o usuário: ${username}`);
@@ -936,6 +977,7 @@ export function CharacterPage() {
                   slotName="Cabeça"
                   itemName={equipmentHead}
                   rarity={getItemRarity(equipmentHead)}
+                  description={getItemDescription(equipmentHead)}
                   icon={Crown}
                   onItemNameChange={setEquipmentHead}
                   onClear={() => setEquipmentHead('')}
@@ -945,6 +987,7 @@ export function CharacterPage() {
                   slotName="Pescoço"
                   itemName={equipmentNeck}
                   rarity={getItemRarity(equipmentNeck)}
+                  description={getItemDescription(equipmentNeck)}
                   icon={Circle}
                   onItemNameChange={setEquipmentNeck}
                   onClear={() => setEquipmentNeck('')}
@@ -954,6 +997,7 @@ export function CharacterPage() {
                   slotName="Peito"
                   itemName={equipmentChest}
                   rarity={getItemRarity(equipmentChest)}
+                  description={getItemDescription(equipmentChest)}
                   icon={ShirtIcon}
                   onItemNameChange={setEquipmentChest}
                   onClear={() => setEquipmentChest('')}
@@ -963,6 +1007,7 @@ export function CharacterPage() {
                   slotName="Luvas"
                   itemName={equipmentGloves}
                   rarity={getItemRarity(equipmentGloves)}
+                  description={getItemDescription(equipmentGloves)}
                   icon={Hand}
                   onItemNameChange={setEquipmentGloves}
                   onClear={() => setEquipmentGloves('')}
@@ -972,6 +1017,7 @@ export function CharacterPage() {
                   slotName="Cinto"
                   itemName={equipmentBelt}
                   rarity={getItemRarity(equipmentBelt)}
+                  description={getItemDescription(equipmentBelt)}
                   icon={GripHorizontal}
                   onItemNameChange={setEquipmentBelt}
                   onClear={() => setEquipmentBelt('')}
@@ -981,6 +1027,7 @@ export function CharacterPage() {
                   slotName="Calças"
                   itemName={equipmentPants}
                   rarity={getItemRarity(equipmentPants)}
+                  description={getItemDescription(equipmentPants)}
                   icon={CircleDot}
                   onItemNameChange={setEquipmentPants}
                   onClear={() => setEquipmentPants('')}
@@ -991,6 +1038,7 @@ export function CharacterPage() {
                     slotName="Botas"
                     itemName={equipmentBoots}
                     rarity={getItemRarity(equipmentBoots)}
+                    description={getItemDescription(equipmentBoots)}
                     icon={Footprints}
                     onItemNameChange={setEquipmentBoots}
                     onClear={() => setEquipmentBoots('')}
@@ -1092,16 +1140,21 @@ export function CharacterPage() {
                       className="bg-transparent border-none text-red-400 font-bold text-sm w-full focus:outline-none mb-1 uppercase tracking-tight"
                       placeholder="Título da Marca"
                     />
-                    <textarea 
-                      value={curse.content}
-                      onChange={(e) => {
-                        const newCurses = [...curses];
-                        newCurses[index].content = e.target.value;
-                        setCurses(newCurses);
-                      }}
-                      className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[100px] resize-none"
-                      placeholder="Descreva os efeitos..."
-                    />
+                    <div className="relative">
+                      <textarea 
+                        value={curse.content}
+                        onChange={(e) => {
+                          const newCurses = [...curses];
+                          newCurses[index].content = e.target.value;
+                          setCurses(newCurses);
+                        }}
+                        className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[100px] resize-none opacity-0 focus:opacity-100 absolute inset-0 z-10"
+                        placeholder="Descreva os efeitos..."
+                      />
+                      <div className="text-zinc-400 text-xs min-h-[100px] pointer-events-none pb-2">
+                        <RichDescription text={curse.content || "Descreva os efeitos..."} />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
