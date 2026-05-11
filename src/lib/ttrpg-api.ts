@@ -9,7 +9,14 @@ export const ttrpgApi = {
       email,
       password,
     });
-    return { success: !error, error: error?.message, user: data.user, username };
+
+    if (!error && data.user) {
+      // Create a blank character record so the user immediately appears in the admin list
+      await this.saveCharacter(username, { characterName: "Nova Ficha" });
+    }
+
+    return { success: !error, error: error?.message, user: data?.user, username };
+
   },
 
   async createUser(username: string, password: string) {
