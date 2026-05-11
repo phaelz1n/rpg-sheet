@@ -690,7 +690,8 @@ export function CharacterPage() {
 
         {/* CABEÇALHO */}
         <div className="bg-gradient-to-br from-zinc-900/90 to-black/95 border-2 border-amber-900/60 rounded-xl p-4 md:p-6 shadow-2xl">
-          <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
+          <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
+
 
             {/* Retrato e Info */}
             <div className="flex gap-4 min-w-0">
@@ -785,7 +786,7 @@ export function CharacterPage() {
             </div>
 
             {/* Corrupção */}
-            <div className="w-full lg:w-64">
+            <div className="w-full xl:w-64">
               {(() => {
                 const corruptionBonus = rpgItems
                   .filter(item => item.category === 'armor' && (item.corruptionLimitBonus ?? 0) > 0 &&
@@ -804,7 +805,7 @@ export function CharacterPage() {
             </div>
 
             {/* Inspiração */}
-            <div className="w-full lg:w-auto flex flex-col items-center justify-center bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 sm:px-6 min-w-[120px] shadow-inner relative overflow-hidden group">
+            <div className="w-full xl:w-auto flex flex-col items-center justify-center bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 sm:px-6 min-w-[120px] shadow-inner relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="flex items-center gap-2 text-amber-500 mb-1 relative z-10">
                 <Sparkles className="w-4 h-4 animate-pulse" />
@@ -832,10 +833,10 @@ export function CharacterPage() {
         </div>
 
         {/* GRID DE CONTEÚDO PRINCIPAL */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
           {/* COLUNA ESQUERDA - Atributos & Combate */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-6">
 
             {/* ATRIBUTOS */}
             <section>
