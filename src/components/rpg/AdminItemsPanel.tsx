@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Package, Plus, Edit, Trash2, X, Sparkles, Search, Info } from 'lucide-react';
+import { Package, Plus, Edit, Trash2, X, Sparkles, Search, Info, CheckCircle2, AlertCircle } from 'lucide-react';
 import { RichDescription } from './RichDescription';
 import { AutocompleteTextarea } from './AutocompleteTextarea';
 import { ttrpgApi } from '../../lib/ttrpg-api';
 import { seedDefaultItems } from '../../lib/seeding-service';
+import { playCheckSound } from '../../lib/audio';
 
 
 interface AdminItemsPanelProps {
@@ -60,6 +61,18 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showTips, setShowTips] = useState(false);
 
+  // Toast & Confirm state
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error', visible: boolean}>({ message: '', type: 'success', visible: false });
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, message: string, onConfirm: () => void}>({ isOpen: false, message: '', onConfirm: () => {} });
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type, visible: true });
+    if (type === 'success') playCheckSound();
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, visible: false }));
+    }, 3000);
+  };
+
   // Filters
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
@@ -89,12 +102,12 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       const createdCount = await seedDefaultItems();
       
       if (createdCount !== null) {
-        alert(`${createdCount} novos itens carregados com sucesso!`);
+        showToast(`${createdCount} novos itens carregados!`, 'success');
         await loadItems();
       }
     } catch (error) {
       console.error('Error seeding items:', error);
-      alert('Erro ao carregar itens padrão');
+      showToast('Erro ao carregar itens padrão', 'error');
     } finally {
       setLoading(false);
     }
@@ -110,7 +123,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       }
     } catch (error) {
       console.error('Error loading items:', error);
-      alert('Erro ao carregar itens');
+      showToast('Erro ao carregar itens', 'error');
     } finally {
       setLoading(false);
     }
@@ -131,17 +144,17 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     try {
       const response = await ttrpgApi.createItem(formData);
       if (response.error) {
-        alert(response.error);
+        showToast(response.error, 'error');
         return;
       }
 
       await loadItems();
       setShowCreateModal(false);
       resetForm();
-      alert('Item criado com sucesso!');
+      showToast('Item criado com sucesso!', 'success');
     } catch (error) {
       console.error('Error creating item:', error);
-      alert('Erro ao criar item');
+      showToast('Erro ao criar item', 'error');
     }
   };
 
@@ -151,56 +164,65 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     try {
       const response = await ttrpgApi.updateItem(editingItem.id, formData);
       if (response.error) {
-        alert(response.error);
+        showToast(response.error, 'error');
         return;
       }
 
       await loadItems();
       setEditingItem(null);
       resetForm();
-      alert('Item atualizado com sucesso!');
+      showToast('Item atualizado com sucesso!', 'success');
     } catch (error) {
       console.error('Error updating item:', error);
-      alert('Erro ao atualizar item');
+      showToast('Erro ao atualizar item', 'error');
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja deletar este item?')) return;
+    setConfirmModal({
+      isOpen: true,
+      message: 'Tem certeza que deseja deletar este item?',
+      onConfirm: async () => {
+        try {
+          const response = await ttrpgApi.deleteItem(id);
+          if (response.error) {
+            showToast(response.error, 'error');
+            return;
+          }
 
-    try {
-      const response = await ttrpgApi.deleteItem(id);
-      if (response.error) {
-        alert(response.error);
-        return;
+          await loadItems();
+          showToast('Item deletado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Error deleting item:', error);
+          showToast('Erro ao deletar item', 'error');
+        }
       }
-
-      await loadItems();
-      alert('Item deletado com sucesso!');
-    } catch (error) {
-      console.error('Error deleting item:', error);
-      alert('Erro ao deletar item');
-    }
+    });
   };
 
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
-    if (!confirm(`Tem certeza que deseja deletar os ${selectedIds.size} itens selecionados?`)) return;
-
-    try {
-      setLoading(true);
-      for (const id of selectedIds) {
-        await ttrpgApi.deleteItem(id);
+    
+    setConfirmModal({
+      isOpen: true,
+      message: `Tem certeza que deseja deletar os ${selectedIds.size} itens selecionados?`,
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          for (const id of selectedIds) {
+            await ttrpgApi.deleteItem(id);
+          }
+          setSelectedIds(new Set());
+          await loadItems();
+          showToast('Itens deletados com sucesso!', 'success');
+        } catch (error) {
+          console.error('Error bulk deleting items:', error);
+          showToast('Erro ao deletar alguns itens', 'error');
+        } finally {
+          setLoading(false);
+        }
       }
-      setSelectedIds(new Set());
-      await loadItems();
-      alert('Itens deletados com sucesso!');
-    } catch (error) {
-      console.error('Error bulk deleting items:', error);
-      alert('Erro ao deletar alguns itens');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   const toggleSelect = (id: string) => {
@@ -786,6 +808,50 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
             </div>
           </div>
         )}
+        
+        {/* Custom Confirm Modal */}
+        {confirmModal.isOpen && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4 backdrop-blur-sm">
+            <div className="bg-zinc-950 border border-amber-900/40 rounded-xl p-6 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+              <h3 className="text-xl font-bold text-amber-400 mb-2">Confirmação</h3>
+              <p className="text-zinc-300 text-sm mb-6">{confirmModal.message}</p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                  className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-medium rounded-lg transition-colors text-sm border border-zinc-800"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    confirmModal.onConfirm();
+                    setConfirmModal({ ...confirmModal, isOpen: false });
+                  }}
+                  className="px-4 py-2 bg-red-950 hover:bg-red-900 text-red-400 font-medium rounded-lg transition-colors text-sm border border-red-900/50"
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Custom Toast */}
+        <div 
+          className={`fixed bottom-4 right-4 z-[300] transition-all duration-300 transform ${
+            toast.visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border backdrop-blur-md ${
+            toast.type === 'success' 
+              ? 'bg-green-950/90 border-green-900/50 text-green-400' 
+              : 'bg-red-950/90 border-red-900/50 text-red-400'
+          }`}>
+            {toast.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+            <span className="text-sm font-medium">{toast.message}</span>
+          </div>
+        </div>
+
       </div>
     </div>
   );

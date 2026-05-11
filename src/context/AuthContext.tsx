@@ -36,12 +36,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error(response.error);
     }
 
-    setCurrentUser(response.username);
+    setCurrentUser(response.username || '');
     setIsAdmin(response.isAdmin || false);
     setIsLoggedIn(true);
 
     // Persist to localStorage
-    localStorage.setItem('currentUser', response.username);
+    localStorage.setItem('currentUser', response.username || '');
     localStorage.setItem('isAdmin', String(response.isAdmin || false));
   };
 
@@ -52,12 +52,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error(response.error);
     }
 
-    setCurrentUser(response.username);
+    setCurrentUser(response.username || '');
     setIsAdmin(false);
     setIsLoggedIn(true);
 
     // Persist to localStorage
-    localStorage.setItem('currentUser', response.username);
+    localStorage.setItem('currentUser', response.username || '');
     localStorage.setItem('isAdmin', 'false');
   };
 
