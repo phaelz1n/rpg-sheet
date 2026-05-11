@@ -37,7 +37,7 @@ export const ttrpgApi = {
       .select('username')
       .eq('username', username)
       .eq('password', password)
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       return { success: false, error: 'Credenciais inválidas' };
