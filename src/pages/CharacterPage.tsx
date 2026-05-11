@@ -1380,22 +1380,25 @@ export function CharacterPage() {
 
                 <section>
                   <h3 className="text-red-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-red-900/30 pb-1">Status e Condições</h3>
-                  <p className="text-zinc-400 text-xs mb-3">Tags para condições especiais:</p>
+                  <p className="text-zinc-400 text-xs mb-3">Tags para condições e bônus especiais:</p>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
-                      <span className="text-red-400 font-mono">[marcado]</span> <RichDescription text="[marcado]" />
+                      <span className="text-red-400 font-mono">#marcado</span> <RichDescription text="#marcado" />
                     </div>
                     <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
                       <span className="text-green-400 font-mono">#envenenado</span> <RichDescription text="#envenenado" />
                     </div>
                     <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
-                      <span className="text-orange-500 font-mono">#queimadura</span> <RichDescription text="#queimadura" />
+                      <span className="text-orange-500 font-mono">#queimando</span> <RichDescription text="#queimando" />
                     </div>
                     <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
-                      <span className="text-blue-400 font-mono">#molhado</span> <RichDescription text="#molhado" />
+                      <span className="text-cyan-400 font-mono">#congelado</span> <RichDescription text="#congelado" />
                     </div>
                     <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
-                      <span className="text-red-600 font-mono">#sangramento</span> <RichDescription text="#sangramento" />
+                      <span className="text-red-600 font-mono">#sangrando</span> <RichDescription text="#sangrando" />
+                    </div>
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-zinc-400 font-mono">#rd</span> <RichDescription text="#rd" />
                     </div>
                   </div>
                 </section>

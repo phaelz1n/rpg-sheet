@@ -743,26 +743,26 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
               <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar text-left">
                 <section>
-                  <h3 className="text-amber-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-amber-900/30 pb-1">Uso de Hashtags</h3>
-                  <p className="text-zinc-400 text-xs mb-3">Ao criar itens, você pode usar hashtags no Nome, Descrição ou Bônus em Testes para gerar ícones visuais na ficha do jogador:</p>
+                  <h3 className="text-amber-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-amber-900/30 pb-1">Menu de Autocompletar</h3>
+                  <p className="text-zinc-400 text-xs mb-3">Ao criar itens, digite <span className="font-mono text-amber-400">#</span> no campo de Descrição para abrir o menu de ícones visuais:</p>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
-                      <span className="text-amber-400 font-mono">#força</span> → <RichDescription text="#força" />
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#força</span> <RichDescription text="#força" />
                     </div>
-                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
-                      <span className="text-amber-400 font-mono">#destreza</span> → <RichDescription text="#destreza" />
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#destreza</span> <RichDescription text="#destreza" />
                     </div>
-                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
-                      <span className="text-amber-400 font-mono">#fé</span> → <RichDescription text="#fé" />
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-amber-400 font-mono">#fé</span> <RichDescription text="#fé" />
                     </div>
-                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
-                      <span className="text-red-400 font-mono">[marcado]</span> → <RichDescription text="[marcado]" />
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-red-400 font-mono">#marcado</span> <RichDescription text="#marcado" />
                     </div>
-                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
-                      <span className="text-green-400 font-mono">#envenenado</span> → <RichDescription text="#envenenado" />
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-green-400 font-mono">#envenenado</span> <RichDescription text="#envenenado" />
                     </div>
-                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300">
-                      <span className="text-orange-500 font-mono">#queimadura</span> → <RichDescription text="#queimadura" />
+                    <div className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
+                      <span className="text-zinc-400 font-mono">#rd</span> <RichDescription text="#rd" />
                     </div>
                   </div>
                 </section>

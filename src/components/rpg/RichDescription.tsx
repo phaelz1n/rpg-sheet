@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   Skull, Flame, Eye, Hand, Heart, Brain, Sword, Target, 
   Droplet, Zap, Dumbbell, Beaker, Thermometer, Droplets, 
-  Activity, Info
+  Activity, Info, Shield
 } from 'lucide-react';
 
 interface RichDescriptionProps {
@@ -39,6 +39,7 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
     '#paralisado': { icon: Zap, color: 'text-yellow-400', bgColor: 'bg-yellow-950/40', borderColor: 'border-yellow-900/50', label: 'Paralisado', type: 'badge' },
     '#vulnerável': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'badge' },
     '#vulneravel': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'badge' },
+    '#rd': { icon: Shield, color: 'text-zinc-300', bgColor: 'bg-zinc-800', borderColor: 'border-zinc-600', label: 'Redução de Dano', type: 'badge' },
   };
 
   return (

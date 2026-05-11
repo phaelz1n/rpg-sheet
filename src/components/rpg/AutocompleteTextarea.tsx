@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, KeyboardEvent } from 'react';
-import { Skull, Flame, Eye, Hand, Heart, Brain, Sword, Target, Droplet, Zap, Dumbbell, Beaker, Droplets, Activity } from 'lucide-react';
+import { Skull, Flame, Eye, Hand, Heart, Brain, Sword, Target, Droplet, Zap, Dumbbell, Beaker, Droplets, Activity, Shield } from 'lucide-react';
 
 interface AutocompleteTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'> {
   value?: string;
@@ -24,6 +24,7 @@ const TAG_SUGGESTIONS = [
   { text: '#congelado', icon: Droplets, color: 'text-cyan-400', label: 'Congelado' },
   { text: '#paralisado', icon: Zap, color: 'text-yellow-400', label: 'Paralisado' },
   { text: '#vulnerável', icon: Target, color: 'text-purple-400', label: 'Vulnerável' },
+  { text: '#rd', icon: Shield, color: 'text-zinc-300', label: 'Redução de Dano' },
 ];
 
 export function AutocompleteTextarea({ value = '', onChange, className = '', ...props }: AutocompleteTextareaProps) {
