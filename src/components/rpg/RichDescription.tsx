@@ -14,31 +14,31 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
   if (!text) return null;
 
   // Pattern to match #hashtags and [brackets]
-  const parts = text.split(/(#[a-záàâãéèêíïóôõöúç]+|\[marcado\])/gi);
+  const parts = text.split(/(#[a-záàâãéèêíïóôõöúç]+|\[[a-záàâãéèêíïóôõöúç\s]+\])/gi);
 
-  const iconMap: Record<string, { icon: any, color: string, label: string }> = {
+  type TagType = 'hashtag' | 'bracket';
+  const iconMap: Record<string, { icon: any, color: string, label: string, type: TagType, bgColor?: string, borderColor?: string }> = {
     // Atributos
-    '#corrupção': { icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
-    '#corrupcao': { icon: Skull, color: 'text-purple-500', label: 'Corrupção' },
-    '#fé': { icon: Droplet, color: 'text-blue-400', label: 'Fé' },
-    '#fe': { icon: Droplet, color: 'text-blue-400', label: 'Fé' },
-    '#ocultismo': { icon: Eye, color: 'text-purple-400', label: 'Ocultismo' },
-    '#destreza': { icon: Zap, color: 'text-emerald-400', label: 'Destreza' },
-    '#vigor': { icon: Heart, color: 'text-red-500', label: 'Vigor' },
-    '#vontade': { icon: Brain, color: 'text-blue-500', label: 'Vontade' },
-    '#força': { icon: Dumbbell, color: 'text-orange-500', label: 'Força' },
-    '#forca': { icon: Dumbbell, color: 'text-orange-500', label: 'Força' },
+    '#corrupção': { icon: Skull, color: 'text-purple-500', label: 'Corrupção', type: 'hashtag' },
+    '#corrupcao': { icon: Skull, color: 'text-purple-500', label: 'Corrupção', type: 'hashtag' },
+    '#fé': { icon: Droplet, color: 'text-blue-400', label: 'Fé', type: 'hashtag' },
+    '#fe': { icon: Droplet, color: 'text-blue-400', label: 'Fé', type: 'hashtag' },
+    '#ocultismo': { icon: Eye, color: 'text-purple-400', label: 'Ocultismo', type: 'hashtag' },
+    '#destreza': { icon: Zap, color: 'text-emerald-400', label: 'Destreza', type: 'hashtag' },
+    '#vigor': { icon: Heart, color: 'text-red-500', label: 'Vigor', type: 'hashtag' },
+    '#vontade': { icon: Brain, color: 'text-blue-500', label: 'Vontade', type: 'hashtag' },
+    '#força': { icon: Dumbbell, color: 'text-orange-500', label: 'Força', type: 'hashtag' },
+    '#forca': { icon: Dumbbell, color: 'text-orange-500', label: 'Força', type: 'hashtag' },
     
-    // Status / Condições
-    '[marcado]': { icon: Target, color: 'text-red-400', label: 'Marcado' },
-    '#envenenado': { icon: Beaker, color: 'text-green-500', label: 'Envenenado' },
-    '#queimadura': { icon: Flame, color: 'text-orange-600', label: 'Queimadura' },
-    '#queimado': { icon: Flame, color: 'text-orange-600', label: 'Queimado' },
-    '#molhado': { icon: Droplets, color: 'text-blue-400', label: 'Molhado' },
-    '#sangramento': { icon: Activity, color: 'text-red-600', label: 'Sangramento' },
-    '#sangrando': { icon: Activity, color: 'text-red-600', label: 'Sangrando' },
-    '#congelado': { icon: Droplets, color: 'text-cyan-300', label: 'Congelado' },
-    '#paralisado': { icon: Zap, color: 'text-yellow-400', label: 'Paralisado' },
+    // Status / Condições (Brackets)
+    '[marcado]': { icon: Target, color: 'text-red-400', bgColor: 'bg-red-950/40', borderColor: 'border-red-900/50', label: 'Marcado', type: 'bracket' },
+    '[envenenado]': { icon: Beaker, color: 'text-green-500', bgColor: 'bg-green-950/40', borderColor: 'border-green-900/50', label: 'Envenenado', type: 'bracket' },
+    '[queimando]': { icon: Flame, color: 'text-orange-500', bgColor: 'bg-orange-950/40', borderColor: 'border-orange-900/50', label: 'Queimando', type: 'bracket' },
+    '[sangrando]': { icon: Activity, color: 'text-red-600', bgColor: 'bg-red-950/40', borderColor: 'border-red-900/50', label: 'Sangrando', type: 'bracket' },
+    '[congelado]': { icon: Droplets, color: 'text-cyan-400', bgColor: 'bg-cyan-950/40', borderColor: 'border-cyan-900/50', label: 'Congelado', type: 'bracket' },
+    '[paralisado]': { icon: Zap, color: 'text-yellow-400', bgColor: 'bg-yellow-950/40', borderColor: 'border-yellow-900/50', label: 'Paralisado', type: 'bracket' },
+    '[vulnerável]': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'bracket' },
+    '[vulneravel]': { icon: Target, color: 'text-purple-400', bgColor: 'bg-purple-950/40', borderColor: 'border-purple-900/50', label: 'Vulnerável', type: 'bracket' },
   };
 
   return (
@@ -49,15 +49,34 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
 
         if (iconConfig) {
           const Icon = iconConfig.icon;
-          return (
-            <span key={index} className="inline-flex items-center group/icon relative mx-0.5 align-middle">
-              <Icon className={`w-4 h-4 ${iconConfig.color} drop-shadow-[0_0_3px_rgba(0,0,0,0.5)]`} />
-              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-[10px] text-zinc-200 opacity-0 group-hover/icon:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
+          
+          if (iconConfig.type === 'bracket') {
+            return (
+              <span key={index} className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded ${iconConfig.bgColor} border ${iconConfig.borderColor} ${iconConfig.color} align-baseline text-[10px] font-bold uppercase tracking-wider`}>
+                <Icon className="w-3 h-3" />
                 {iconConfig.label}
               </span>
+            );
+          } else {
+            return (
+              <span key={index} className="inline-flex items-center gap-1 mx-0.5 font-semibold align-baseline">
+                <Icon className={`w-3.5 h-3.5 ${iconConfig.color} drop-shadow-[0_0_3px_rgba(0,0,0,0.5)]`} />
+                <span className={`${iconConfig.color}`}>{iconConfig.label}</span>
+              </span>
+            );
+          }
+        }
+
+        // Se for um bracket que não está mapeado, renderizar como tag cinza
+        if (lowerPart.startsWith('[') && lowerPart.endsWith(']')) {
+          const content = part.slice(1, -1);
+          return (
+            <span key={index} className="inline-flex items-center mx-1 px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 align-baseline text-[10px] font-bold uppercase tracking-wider">
+              {content}
             </span>
           );
         }
+
         return <React.Fragment key={index}>{part}</React.Fragment>;
       })}
     </span>

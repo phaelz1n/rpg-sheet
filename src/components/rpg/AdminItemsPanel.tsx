@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Package, Plus, Edit, Trash2, X, Sparkles, Search, Info } from 'lucide-react';
 import { RichDescription } from './RichDescription';
+import { AutocompleteTextarea } from './AutocompleteTextarea';
 import { ttrpgApi } from '../../lib/ttrpg-api';
 import { seedDefaultItems } from '../../lib/seeding-service';
 
@@ -286,7 +287,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
         <div>
           <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Descrição</label>
-          <textarea
+          <AutocompleteTextarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600 min-h-[80px]"
@@ -423,7 +424,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
             <div>
               <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Descrição do Efeito</label>
-              <textarea
+              <AutocompleteTextarea
                 value={formData.effect}
                 onChange={(e) => setFormData({ ...formData, effect: e.target.value })}
                 className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600 min-h-[60px]"

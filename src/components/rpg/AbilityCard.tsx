@@ -2,6 +2,7 @@ import { LucideIcon, ChevronDown, Plus, Trash2 } from 'lucide-react';
 import { Zap, Eye, Droplet, Flame } from 'lucide-react';
 import { useState } from 'react';
 import { RichDescription } from './RichDescription';
+import { AutocompleteTextarea } from './AutocompleteTextarea';
 
 interface AbilityCardProps {
   name: string;
@@ -257,7 +258,7 @@ export function AbilityCard({
 
       {/* Effect */}
       <div className="bg-black/30 border border-amber-900/20 rounded p-3 mb-2 relative group/effect">
-        <textarea
+        <AutocompleteTextarea
           value={effect}
           onChange={(e) => onEffectChange?.(e.target.value)}
           className="w-full bg-transparent text-zinc-300 text-sm leading-relaxed focus:outline-none resize-none min-h-[60px] absolute inset-0 p-3 z-10 opacity-0 focus:opacity-100"
@@ -272,7 +273,7 @@ export function AbilityCard({
       {backlash !== undefined && (
         <div className="bg-red-950/30 border border-red-900/40 rounded p-2 relative">
           <div className="text-xs text-red-400 uppercase mb-1">Contragolpe em Falha</div>
-          <textarea
+          <AutocompleteTextarea
             value={backlash}
             onChange={(e) => onBacklashChange?.(e.target.value)}
             className="w-full bg-transparent text-red-300 text-xs leading-relaxed focus:outline-none resize-none min-h-[40px] absolute inset-x-0 bottom-0 p-2 pt-6 z-10 opacity-0 focus:opacity-100"
