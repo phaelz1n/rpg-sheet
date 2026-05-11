@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { LoginModal } from '../components/rpg/LoginModal';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { login, register, isAdmin } = useAuth();
+  const { showToast } = useUI();
 
   const handleLogin = async (username: string, password: string) => {
     try {
@@ -17,7 +19,7 @@ export function LoginPage() {
         navigate('/character');
       }
     } catch (error) {
-      alert('Usuário ou senha incorretos!');
+      showToast('Usuário ou senha incorretos!', 'error');
     }
   };
 
@@ -26,7 +28,7 @@ export function LoginPage() {
       await register(username, password);
       navigate('/character');
     } catch (error) {
-      alert('Erro ao registrar usuário!');
+      showToast('Erro ao registrar usuário!', 'error');
     }
   };
 

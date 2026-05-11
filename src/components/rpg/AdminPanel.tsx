@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Users, Trash2, Plus, Edit, Shield, X, Key, Package } from 'lucide-react';
 import { ttrpgApi } from '../../lib/ttrpg-api';
+import { useUI } from '../../context/UIContext';
 
 interface AdminPanelProps {
   onAccessCharacter: (username: string) => void;
@@ -20,6 +21,7 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
   const [newPassword, setNewPassword] = useState('');
   const [userList, setUserList] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { showToast, showConfirm, showPrompt } = useUI();
 
   const loadUsers = async () => {
     try {
@@ -30,7 +32,7 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
       }
     } catch (error) {
       console.error('Error loading users:', error);
-      alert('Erro ao carregar usuários');
+      showToast('Erro ao carregar usuários', 'error');
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,7 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
     const cleanPassword = newPassword.trim();
 
     if (!cleanUsername || !cleanPassword) {
-      alert('Preencha usuário e senha!');
+      showToast('Preencha usuário e senha!', 'error');
       return;
     }
 
@@ -53,58 +55,55 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
       const response = await ttrpgApi.createUser(cleanUsername, cleanPassword);
 
       if (response.error) {
-        alert(response.error);
+        showToast(response.error, 'error');
         return;
       }
 
       setNewUsername('');
       setNewPassword('');
       await loadUsers();
-      alert(`Usuário "${cleanUsername}" criado com sucesso!`);
+      showToast(`Usuário "${cleanUsername}" criado com sucesso!`, 'success');
     } catch (error) {
       console.error('Error creating user:', error);
-      alert('Erro ao criar usuário');
+      showToast('Erro ao criar usuário', 'error');
     }
   };
 
   const deleteUser = async (username: string) => {
-    if (!confirm(`Tem certeza que deseja deletar o usuário "${username}"?`)) {
-      return;
-    }
-
-    try {
-      const response = await ttrpgApi.deleteUser(username);
-
-      if (response.error) {
-        alert(response.error);
-        return;
-      }
-
-      await loadUsers();
-      alert(`Usuário "${username}" deletado com sucesso!`);
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      alert('Erro ao deletar usuário');
-    }
-  };
-
-  const resetPassword = async (username: string) => {
-    const newPassword = prompt(`Digite a nova senha para o usuário "${username}":`);
-    if (newPassword && newPassword.trim()) {
+    showConfirm(`Tem certeza que deseja deletar o usuário "${username}"?`, async () => {
       try {
-        const response = await ttrpgApi.resetPassword(username, newPassword.trim());
+        const response = await ttrpgApi.deleteUser(username);
 
         if (response.error) {
-          alert(response.error);
+          showToast(response.error, 'error');
           return;
         }
 
-        alert(`Senha alterada com sucesso para "${username}"!`);
+        await loadUsers();
+        showToast(`Usuário "${username}" deletado com sucesso!`, 'success');
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        showToast('Erro ao deletar usuário', 'error');
+      }
+    });
+  };
+
+  const resetPassword = async (username: string) => {
+    showPrompt(`Digite a nova senha para o usuário "${username}":`, async (newPassword) => {
+      try {
+        const response = await ttrpgApi.resetPassword(username, newPassword);
+
+        if (response.error) {
+          showToast(response.error, 'error');
+          return;
+        }
+
+        showToast(`Senha alterada com sucesso para "${username}"!`, 'success');
       } catch (error) {
         console.error('Error resetting password:', error);
-        alert('Erro ao resetar senha');
+        showToast('Erro ao resetar senha', 'error');
       }
-    }
+    });
   };
 
   // v2.1 - Skills + Items Management + Routing

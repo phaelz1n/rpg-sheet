@@ -6,9 +6,6 @@ import { DEFAULT_ITEMS } from './default-items';
  * Returns the number of successfully created items.
  */
 export const seedDefaultItems = async (): Promise<number | null> => {
-  if (!confirm('Deseja carregar a lista de itens padrão (armas, armaduras e materiais)?')) {
-    return null;
-  }
   
   let createdCount = 0;
   

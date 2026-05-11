@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { ttrpgApi } from '../lib/ttrpg-api';
 import { seedDefaultItems } from '../lib/seeding-service';
 
@@ -98,6 +99,7 @@ export function CharacterPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { currentUser, isAdmin, logout } = useAuth();
+  const { showToast, showConfirm } = useUI();
 
   // Check if admin is viewing another user's character
   const adminViewUsername = searchParams.get('admin-view');
@@ -617,11 +619,13 @@ export function CharacterPage() {
   };
 
   const handleSeed = async () => {
-    const createdCount = await seedDefaultItems();
-    if (createdCount !== null) {
-      alert(`${createdCount} novos itens carregados com sucesso!`);
-      await loadGlobalItems();
-    }
+    showConfirm('Deseja carregar a lista de itens padrão (armas, armaduras e materiais)?', async () => {
+      const createdCount = await seedDefaultItems();
+      if (createdCount !== null) {
+        showToast(`${createdCount} novos itens carregados com sucesso!`, 'success');
+        await loadGlobalItems();
+      }
+    });
   };
 
   return (

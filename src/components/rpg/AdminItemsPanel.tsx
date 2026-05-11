@@ -97,20 +97,26 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   });
 
   const handleSeed = async () => {
-    try {
-      setLoading(true);
-      const createdCount = await seedDefaultItems();
-      
-      if (createdCount !== null) {
-        showToast(`${createdCount} novos itens carregados!`, 'success');
-        await loadItems();
+    setConfirmModal({
+      isOpen: true,
+      message: 'Deseja carregar a lista de itens padrão (armas, armaduras e materiais)?',
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          const createdCount = await seedDefaultItems();
+          
+          if (createdCount !== null) {
+            showToast(`${createdCount} novos itens carregados!`, 'success');
+            await loadItems();
+          }
+        } catch (error) {
+          console.error('Error seeding items:', error);
+          showToast('Erro ao carregar itens padrão', 'error');
+        } finally {
+          setLoading(false);
+        }
       }
-    } catch (error) {
-      console.error('Error seeding items:', error);
-      showToast('Erro ao carregar itens padrão', 'error');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
 
