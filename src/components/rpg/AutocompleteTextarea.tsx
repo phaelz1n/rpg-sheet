@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, KeyboardEvent } from 'react';
 import { Skull, Flame, Eye, Hand, Heart, Brain, Sword, Target, Droplet, Zap, Dumbbell, Beaker, Droplets, Activity } from 'lucide-react';
 
-interface AutocompleteTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  value: string;
+interface AutocompleteTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'> {
+  value?: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
@@ -26,7 +26,7 @@ const TAG_SUGGESTIONS = [
   { text: '[vulnerável]', icon: Target, color: 'text-purple-400', label: 'Vulnerável' },
 ];
 
-export function AutocompleteTextarea({ value, onChange, className = '', ...props }: AutocompleteTextareaProps) {
+export function AutocompleteTextarea({ value = '', onChange, className = '', ...props }: AutocompleteTextareaProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
