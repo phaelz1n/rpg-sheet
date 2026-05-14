@@ -59,7 +59,7 @@ interface RPGItem {
   attributeIcon: any;
   bonus: number;
   damage: string;
-  category: 'weapon' | 'armor' | 'potion' | 'material' | 'collectible' | 'consumable';
+  category: 'weapon' | 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots' | 'potion' | 'material' | 'collectible' | 'consumable';
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number;
@@ -300,7 +300,7 @@ export function CharacterPage() {
           bonus: item.bonus || 0,
           damage: item.damage || '',
           category: (item.type === 'weapon' ? 'weapon' : 
-                    item.type === 'armor' ? 'armor' : 
+                    ['head', 'chest', 'neck', 'gloves', 'belt', 'pants', 'boots'].includes(item.type) ? item.type :
                     item.type === 'material' ? 'material' : 
                     item.type === 'potion' ? 'potion' : 'consumable') as RPGItem['category'],
 
@@ -1306,7 +1306,7 @@ export function CharacterPage() {
               return item.category === 'weapon';
             }
             if (itemSelectionModal.type === 'armor') {
-              return item.category === 'armor';
+              return item.category === itemSelectionModal.slot;
             }
             if (itemSelectionModal.type === 'consumable') {
               // Na mochila agora pode tudo!
@@ -1317,16 +1317,16 @@ export function CharacterPage() {
           onClose={() => setItemSelectionModal({ isOpen: false, type: null })}
           onSelect={(item) => {
             const rpgItem = item as RPGItem;
-            if (itemSelectionModal.type === 'weapon' && itemSelectionModal.slot) {
+            if (itemSelectionModal.slot?.startsWith('belt') && itemSelectionModal.slot !== 'belt') {
+              const beltNum = itemSelectionModal.slot.replace('belt', '');
+              const setters: Record<string, (v: string) => void> = {
+                '1': setBeltSlot1, '2': setBeltSlot2, '3': setBeltSlot3, '4': setBeltSlot4,
+                '5': setBeltSlot5, '6': setBeltSlot6, '7': setBeltSlot7, '8': setBeltSlot8
+              };
+              setters[beltNum]?.(rpgItem.name);
+            } else if (itemSelectionModal.type === 'weapon' && itemSelectionModal.slot) {
               if (itemSelectionModal.slot === 'main' || itemSelectionModal.slot === 'off') {
                 equipItemAsWeapon(rpgItem, itemSelectionModal.slot);
-              } else if (itemSelectionModal.slot.startsWith('belt')) {
-                const beltNum = itemSelectionModal.slot.replace('belt', '');
-                const setters: Record<string, (v: string) => void> = {
-                  '1': setBeltSlot1, '2': setBeltSlot2, '3': setBeltSlot3, '4': setBeltSlot4,
-                  '5': setBeltSlot5, '6': setBeltSlot6, '7': setBeltSlot7, '8': setBeltSlot8
-                };
-                setters[beltNum]?.(rpgItem.name);
               }
             } else if (itemSelectionModal.type === 'armor' && itemSelectionModal.slot) {
               equipItemAsArmor(rpgItem, itemSelectionModal.slot);

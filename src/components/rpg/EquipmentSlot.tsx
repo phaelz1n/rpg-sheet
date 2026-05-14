@@ -70,7 +70,7 @@ export function EquipmentSlot({ slotName, itemName, rarity, icon: Icon, descript
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-zinc-950 border border-amber-800/50 rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-20 shadow-2xl scale-95 group-hover:scale-100 origin-bottom">
           <div className="text-amber-500 text-[10px] uppercase tracking-widest font-bold mb-1 border-b border-amber-900/30 pb-1 flex items-center justify-between">
             <span>{slotName}</span>
-            <span className="text-zinc-500">{rarity}</span>
+            <span className="text-zinc-500">{rarity === 'rare' ? 'Raro' : rarity === 'legendary' ? 'Lendário' : rarity ? 'Comum' : ''}</span>
           </div>
           <div className="text-zinc-300 text-xs leading-relaxed">
             <RichDescription text={description} />

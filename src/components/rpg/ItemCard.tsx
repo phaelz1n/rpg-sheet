@@ -60,6 +60,15 @@ export function ItemCard({
     consumable: 'Consumível'
   };
 
+  const attributeLabels = {
+    occultism: 'Ocultismo',
+    dexterity: 'Destreza',
+    vigor: 'Vigor',
+    willpower: 'Vontade',
+    strength: 'Força',
+    faith: 'Fé'
+  };
+
   const categoryIcons = {
     weapon: Swords,
     armor: ShirtIcon,
@@ -142,7 +151,7 @@ export function ItemCard({
         >
           <div className="flex items-center gap-2">
             <Icon className={`w-4 h-4 ${color.split(' ')[0]}`} />
-            <span className={`text-sm ${color.split(' ')[0]} capitalize`}>{attributeType}</span>
+            <span className={`text-sm ${color.split(' ')[0]} capitalize`}>{attributeLabels[attributeType]}</span>
           </div>
           <ChevronDown className="w-4 h-4 text-zinc-500" />
         </button>
@@ -158,7 +167,7 @@ export function ItemCard({
                 }}
                 className="w-full flex items-center gap-2 px-3 py-2 hover:bg-amber-900/20 transition-colors text-left capitalize text-sm text-zinc-300"
               >
-                {attr}
+                {attributeLabels[attr as keyof typeof attributeLabels]}
               </button>
             ))}
           </div>

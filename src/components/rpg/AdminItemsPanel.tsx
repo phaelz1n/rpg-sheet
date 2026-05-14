@@ -11,7 +11,7 @@ interface AdminItemsPanelProps {
   onClose: () => void;
 }
 
-type ItemType = 'weapon' | 'armor' | 'potion' | 'material' | 'collectible';
+type ItemType = 'weapon' | 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots' | 'potion' | 'material' | 'collectible';
 type ItemRarity = 'common' | 'rare' | 'legendary';
 
 interface GlobalItem {
@@ -48,11 +48,19 @@ const rarityLabels = {
 
 const typeLabels = {
   weapon: 'Arma',
-  armor: 'Armadura',
+  head: 'Cabeça',
+  neck: 'Pescoço',
+  chest: 'Peito',
+  gloves: 'Luvas',
+  belt: 'Cinto',
+  pants: 'Calças',
+  boots: 'Botas',
   potion: 'Poção',
   material: 'Material',
   collectible: 'Colecionável'
 };
+
+const armorTypes = ['head', 'neck', 'chest', 'gloves', 'belt', 'pants', 'boots'];
 
 export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const [items, setItems] = useState<GlobalItem[]>([]);
@@ -366,7 +374,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
         )}
 
         {/* Armor-specific fields */}
-        {type === 'armor' && (
+        {armorTypes.includes(type as string) && (
           <div className="space-y-4">
             <div>
               <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Bônus de Defesa</label>
@@ -673,7 +681,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                     </div>
                   )}
 
-                  {item.type === 'armor' && (
+                  {armorTypes.includes(item.type) && (
                     <div className="text-xs text-zinc-500 space-y-1">
                       {(item.bonus ?? 0) > 0 && <div>Defesa: <span className="text-blue-400">+{item.bonus}</span></div>}
                       {(item.corruptionLimitBonus ?? 0) > 0 && (

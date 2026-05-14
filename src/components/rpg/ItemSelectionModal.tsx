@@ -112,7 +112,12 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                       item.rarity === 'legendary' ? 'bg-amber-500' :
                       'bg-zinc-600'
                     }`} />
-                    {item.attributeType}
+                    {item.attributeType === 'dexterity' ? 'Destreza' :
+                     item.attributeType === 'strength' ? 'Força' :
+                     item.attributeType === 'occultism' ? 'Ocultismo' :
+                     item.attributeType === 'faith' ? 'Fé' :
+                     item.attributeType === 'vigor' ? 'Vigor' :
+                     item.attributeType === 'willpower' ? 'Vontade' : item.attributeType}
                   </div>
                 )}
                 {item.category === 'material' && (
