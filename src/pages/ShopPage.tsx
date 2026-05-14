@@ -70,6 +70,24 @@ export function ShopPage() {
 
   const currentShop = visibleShops.find(s => s.id === selectedShopId) || (visibleShops.length > 0 ? visibleShops[0] : null);
 
+  // Typewriter effect state
+  const [displayedMessage, setDisplayedMessage] = useState('');
+  
+  useEffect(() => {
+    if (!currentShop?.welcomeMessage) return;
+    
+    setDisplayedMessage('');
+    let i = 0;
+    const message = currentShop.welcomeMessage;
+    const interval = setInterval(() => {
+      setDisplayedMessage(prev => prev + message.charAt(i));
+      i++;
+      if (i >= message.length) clearInterval(interval);
+    }, 30);
+    
+    return () => clearInterval(interval);
+  }, [selectedShopId, currentShop?.welcomeMessage]);
+
   const formatPrice = (bronze: number) => {
     const g = Math.floor(bronze / 100);
     const s = Math.floor((bronze % 100) / 10);
@@ -78,7 +96,7 @@ export function ShopPage() {
       <div className="flex items-center gap-2">
         {g > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_#facc15]" />
+            <div className="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_#facc15] animate-pulse" />
             <span className="text-yellow-400 font-bold">{g}</span>
           </div>
         )}
@@ -145,12 +163,12 @@ export function ShopPage() {
         </div>
 
         <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-8 w-full sm:w-auto">
-          <div className="flex items-center gap-3 bg-black/60 border border-amber-900/40 rounded-full px-4 sm:px-6 py-2 shadow-inner">
-            <span className="text-[8px] sm:text-[10px] text-amber-700 uppercase font-black tracking-widest whitespace-nowrap">Bolsa:</span>
+          <div className="flex items-center gap-3 bg-black/60 border border-amber-900/40 rounded-full px-4 sm:px-6 py-2 shadow-inner group">
+            <span className="text-[8px] sm:text-[10px] text-amber-700 uppercase font-black tracking-widest whitespace-nowrap group-hover:text-amber-500 transition-colors">Bolsa:</span>
             {formatPrice(coinsBronze)}
           </div>
           <div className="flex items-center gap-2 text-[8px] sm:text-[10px] text-zinc-500 uppercase tracking-widest whitespace-nowrap">
-            <MapPin className="w-3 h-3 text-emerald-500" />
+            <MapPin className="w-3 h-3 text-emerald-500 animate-bounce" />
             {activeLocation}
           </div>
         </div>
@@ -167,31 +185,35 @@ export function ShopPage() {
               <img 
                 src={currentShop.npcPortrait} 
                 alt={currentShop.npcName} 
-                className="w-full h-full object-cover grayscale-[0.2] sepia-[0.2] brightness-75 group-hover:brightness-90 transition-all duration-700 scale-105 group-hover:scale-100"
+                className="w-full h-full object-cover grayscale-[0.2] sepia-[0.2] brightness-75 group-hover:brightness-90 transition-all duration-[3000ms] scale-110 group-hover:scale-100 animate-pulse-slow"
               />
             ) : (
               <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-800">
-                <User className="w-32 h-32 opacity-10" />
+                <User className="w-32 h-32 opacity-10 animate-pulse" />
               </div>
             )}
             
             {/* Vignette & Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-transparent to-transparent opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-transparent to-transparent opacity-95" />
             <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]" />
             
             {/* NPC Name Plate */}
-            <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 space-y-2">
+            <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/50" />
+                <Sparkles className="w-3 h-3 text-amber-600 animate-spin-slow" />
                 <span className="text-[9px] sm:text-[10px] text-amber-600 uppercase font-black tracking-[0.3em] whitespace-nowrap">Mercador Local</span>
+                <Sparkles className="w-3 h-3 text-amber-600 animate-spin-slow" />
                 <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-700/50" />
               </div>
               <h2 className="text-2xl sm:text-4xl font-black text-center text-amber-200 uppercase tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 {currentShop?.npcName || 'Desconhecido'}
               </h2>
-              <p className="text-amber-100/60 text-center italic text-base sm:text-lg px-4 leading-relaxed line-clamp-3">
-                "{currentShop?.welcomeMessage}"
-              </p>
+              <div className="min-h-[4.5rem] flex items-center justify-center">
+                <p className="text-amber-100/70 text-center italic text-sm sm:text-base px-4 leading-relaxed line-clamp-3 font-medium">
+                  "{displayedMessage}<span className="inline-block w-1.5 h-4 bg-amber-500/50 ml-0.5 animate-pulse" />"
+                </p>
+              </div>
             </div>
           </div>
 
@@ -204,13 +226,16 @@ export function ShopPage() {
                   <button
                     key={shop.id}
                     onClick={() => setSelectedShopId(shop.id)}
-                    className={`flex-shrink-0 lg:w-full text-left px-4 py-3 rounded-lg border transition-all duration-300 ${
+                    className={`flex-shrink-0 lg:w-full text-left px-4 py-3 rounded-lg border transition-all duration-300 relative overflow-hidden group/btn ${
                       selectedShopId === shop.id 
                         ? 'bg-amber-900/20 border-amber-600 text-amber-200 shadow-lg' 
                         : 'bg-black/40 border-amber-900/10 text-amber-900 hover:border-amber-900/40 hover:text-amber-700'
                     }`}
                   >
-                    <div className="text-xs font-bold uppercase tracking-tight">{shop.name}</div>
+                    <div className="text-xs font-bold uppercase tracking-tight relative z-10">{shop.name}</div>
+                    {selectedShopId === shop.id && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-transparent animate-shimmer" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -230,7 +255,7 @@ export function ShopPage() {
               {/* Category: Armas & Equipamentos */}
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <Sword className="w-5 h-5 text-amber-700" />
+                  <Sword className="w-5 h-5 text-amber-700 animate-pulse" />
                   <h3 className="text-xs sm:text-sm font-black text-amber-600 uppercase tracking-[0.4em]">Itens Disponíveis</h3>
                   <div className="h-px flex-1 bg-gradient-to-r from-amber-900/30 to-transparent" />
                 </div>
@@ -243,15 +268,28 @@ export function ShopPage() {
                     return (
                       <div 
                         key={item.id} 
-                        className="group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 hover:bg-amber-950/10 hover:border-amber-600/40 shadow-xl hover:shadow-amber-900/20"
+                        className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 hover:bg-amber-950/10 hover:border-amber-600/40 shadow-xl hover:shadow-amber-900/20 overflow-hidden ${
+                          item.rarity === 'legendary' ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)]' : ''
+                        }`}
                       >
+                        {/* Background rarity glow */}
+                        {item.rarity === 'legendary' && (
+                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 blur-[50px] group-hover:bg-amber-500/10 transition-all duration-1000" />
+                        )}
+                        {item.rarity === 'rare' && (
+                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-1000" />
+                        )}
+
                         {/* Item Icon & Rarity Glow */}
                         <div className="flex items-start justify-between mb-4 sm:mb-6">
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-amber-900/40 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ${
+                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-amber-900/40 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative ${
                             item.rarity === 'legendary' ? 'shadow-[0_0_15px_rgba(251,191,36,0.2)] border-amber-500' : 
                             item.rarity === 'rare' ? 'shadow-[0_0_15px_rgba(168,85,247,0.2)] border-purple-500' : ''
                           }`}>
-                            <Gem className="w-6 h-6 sm:w-7 sm:h-7" />
+                            <Gem className={`w-6 h-6 sm:w-7 sm:h-7 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
+                            {item.rarity === 'legendary' && (
+                              <div className="absolute inset-0 rounded-xl bg-amber-500/20 animate-ping duration-[3000ms] pointer-events-none" />
+                            )}
                           </div>
                           
                           <div className="text-right min-w-0">
@@ -263,14 +301,14 @@ export function ShopPage() {
                         </div>
 
                         {/* Content */}
-                        <div className="flex-1 space-y-2">
+                        <div className="flex-1 space-y-2 relative z-10">
                           <h4 className="text-base sm:text-lg font-black text-amber-100 group-hover:text-amber-400 transition-colors uppercase tracking-tight truncate">
                             {item.name}
                           </h4>
                           <div className="flex items-center gap-2">
                             <span className={`text-[8px] sm:text-[9px] px-2 py-0.5 rounded border uppercase font-bold tracking-tighter ${
-                              item.rarity === 'legendary' ? 'bg-amber-900/40 border-amber-500 text-amber-400' :
-                              item.rarity === 'rare' ? 'bg-purple-900/40 border-purple-500 text-purple-400' :
+                              item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-500 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
+                              item.rarity === 'rare' ? 'bg-purple-950/40 border-purple-500 text-purple-400' :
                               'bg-zinc-900/40 border-zinc-700 text-zinc-500'
                             }`}>
                               {item.rarity || 'Comum'}
@@ -292,8 +330,8 @@ export function ShopPage() {
                               {Array.from({ length: Math.min(3, shopItem.stock) }).map((_, i) => (
                                 <div 
                                   key={i} 
-                                  className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${
-                                    shopItem.stock === 1 ? 'bg-red-500' : 
+                                  className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full transition-all duration-1000 ${
+                                    shopItem.stock === 1 ? 'bg-red-500 shadow-[0_0_5px_#ef4444]' : 
                                     shopItem.stock <= 3 ? 'bg-orange-500' : 
                                     'bg-emerald-600'
                                   }`} 
@@ -314,7 +352,7 @@ export function ShopPage() {
                                 <div className="w-3 h-3 border-2 border-amber-500 border-t-white rounded-full animate-spin" />
                               ) : (
                                 <>
-                                  <Coins className="w-3 h-3" />
+                                  <Coins className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" />
                                   Comprar
                                 </>
                               )}
@@ -331,9 +369,9 @@ export function ShopPage() {
               <div className="py-8 sm:py-12 flex flex-col items-center justify-center gap-4 opacity-30">
                 <div className="h-px w-32 sm:w-64 bg-gradient-to-r from-transparent via-amber-900 to-transparent" />
                 <div className="flex items-center gap-6">
-                  <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-amber-900" />
+                  <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-amber-900 animate-pulse" />
                   <ScrollText className="w-5 h-5 sm:w-6 sm:h-6 text-amber-900" />
-                  <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-amber-900" />
+                  <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-amber-900 animate-pulse" />
                 </div>
                 <div className="h-px w-32 sm:w-64 bg-gradient-to-r from-transparent via-amber-900 to-transparent" />
                 <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.5em] text-amber-900 text-center">Mercado Regional • Anno Domini 2026</span>
@@ -341,7 +379,7 @@ export function ShopPage() {
 
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center space-y-4 opacity-20 p-8 text-center">
+            <div className="flex-1 flex flex-col items-center justify-center space-y-4 opacity-20 p-8 text-center animate-pulse">
               <MapPin className="w-16 h-16 sm:w-24 sm:h-24 text-amber-900" />
               <p className="text-base sm:text-xl font-serif italic text-amber-900">Não há mercadores ativos nesta região...</p>
             </div>
