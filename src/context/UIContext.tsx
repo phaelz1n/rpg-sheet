@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
-import { playCheckSound } from '../lib/audio';
+import { audioService } from '../lib/audio-service';
 
 type ToastType = 'success' | 'error';
 
@@ -19,7 +19,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
 
   const showToast = (message: string, type: ToastType = 'success') => {
     setToast({ message, type, visible: true });
-    if (type === 'success') playCheckSound();
+    if (type === 'success') audioService.playSound('SUCCESS');
     setTimeout(() => {
       setToast(prev => ({ ...prev, visible: false }));
     }, 3000);
