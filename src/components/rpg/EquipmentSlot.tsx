@@ -3,6 +3,7 @@ import { LucideIcon, X, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
 import { ItemVFX } from './ItemVFX';
+import { DivineEquipEffect } from './DivineEquipEffect';
 import { audioService } from '../../lib/audio-service';
 import { useSelectedItem } from '../../context/SelectedItemContext';
 
@@ -88,38 +89,12 @@ export function EquipmentSlot({
   return (
     <>
       {/* Divine Equip Animation Overlay */}
-      <AnimatePresence>
-        {isDivineEquipping && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0, rotate: 0 }}
-              animate={{ 
-                scale: [0, 1.5, 1.5, 1],
-                rotate: [0, 0, 360, 360],
-              }}
-              transition={{ duration: 2, times: [0, 0.4, 0.8, 1] }}
-              className="relative w-48 h-48 bg-gradient-to-br from-red-950 to-zinc-900 border-2 border-red-500 rounded-2xl p-6 shadow-[0_0_50px_rgba(220,38,38,0.5)] flex flex-col items-center justify-center overflow-hidden"
-            >
-              {/* Glass Shine Effect */}
-              <motion.div
-                initial={{ x: '-100%', y: '-100%' }}
-                animate={{ x: '100%', y: '100%' }}
-                transition={{ delay: 1.5, duration: 0.5 }}
-                className="absolute inset-0 bg-gradient-to-br from-transparent via-white/40 to-transparent skew-x-12"
-              />
-              <ItemVFX type={particles as any} rarity="divine" name={itemName} />
-              <Icon className="w-16 h-16 text-red-500 mb-2 relative z-10" />
-              <span className="text-white font-black uppercase text-center text-sm relative z-10">{itemName}</span>
-              <span className="text-red-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-1 relative z-10">Divino</span>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <DivineEquipEffect 
+        name={itemName || ''} 
+        icon={Icon} 
+        particles={particles} 
+        isVisible={isDivineEquipping} 
+      />
 
       <div className={`relative group ${
         isEmpty
