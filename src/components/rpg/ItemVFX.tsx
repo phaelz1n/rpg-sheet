@@ -50,15 +50,6 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
                 />
               ))}
             </div>
-            {/* Border Flash */}
-            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
-              <div 
-                className="absolute inset-[-200%] opacity-90 mix-blend-screen animate-[spin_2s_linear_infinite]"
-                style={{
-                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #60a5fa 50%, transparent 75%, transparent 100%)'
-                }}
-              />
-            </div>
           </>
         );
       case 'embers':
@@ -94,28 +85,12 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
         return (
           <>
             <div className="absolute -inset-1.5 bg-blue-400/20 blur-md animate-pulse rounded-lg" />
-            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
-              <div 
-                className="absolute inset-[-200%] opacity-70 mix-blend-screen animate-[spin_6s_linear_infinite]"
-                style={{
-                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #60a5fa 50%, transparent 75%, transparent 100%)'
-                }}
-              />
-            </div>
           </>
         );
       case 'void':
         return (
           <>
             <div className="absolute -inset-3 bg-purple-900/30 blur-xl animate-pulse rounded-lg" />
-            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
-              <div 
-                className="absolute inset-[-200%] opacity-90 mix-blend-screen animate-[spin_3s_linear_infinite]"
-                style={{
-                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #a855f7 50%, transparent 75%, transparent 100%)'
-                }}
-              />
-            </div>
             <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] rounded-lg" />
           </>
         );
@@ -123,14 +98,6 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
         return (
           <>
             <div className="absolute -inset-1.5 bg-amber-500/20 blur-md animate-pulse rounded-lg" />
-            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
-              <div 
-                className="absolute inset-[-200%] opacity-80 mix-blend-screen animate-[spin_5s_linear_infinite]"
-                style={{
-                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #fbbf24 50%, transparent 75%, transparent 100%)'
-                }}
-              />
-            </div>
           </>
         );
       case 'sparks':
@@ -140,7 +107,7 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
             {[...Array(8)].map((_, i) => (
               <div 
                 key={i}
-                className="absolute w-px h-3 bg-yellow-200 animate-ping"
+                className="absolute w-px h-3 bg-yellow-200 animate-pulse"
                 style={{
                   top: `${Math.random() * 100}%`,
                   left: `${Math.random() * 100}%`,
