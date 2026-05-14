@@ -396,10 +396,50 @@ export function AdminShopsPage() {
                               <div className="flex-1 min-w-0">
                                 <div className="font-bold text-zinc-200 text-xs truncate">{itemData?.name || 'Item Desconhecido'}</div>
                                 <div className="flex items-center gap-3 mt-2">
-                                  <label className="flex items-center gap-1.5">
-                                    <Coins className="w-3 h-3 text-amber-600" />
-                                    <input type="number" value={shopItem.priceBronze} onChange={e => updateShopItem(shopItem.itemId, 'priceBronze', Number(e.target.value))} className="w-14 bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-[10px] text-center focus:border-amber-600 outline-none" />
-                                  </label>
+                                  <div className="flex items-center gap-2">
+                                    <div className="flex flex-col">
+                                      <span className="text-[8px] text-yellow-600 uppercase font-bold text-center">Ouro</span>
+                                      <input 
+                                        type="number" 
+                                        value={Math.floor(shopItem.priceBronze / 100)} 
+                                        onChange={e => {
+                                          const g = Number(e.target.value);
+                                          const s = Math.floor((shopItem.priceBronze % 100) / 10);
+                                          const b = shopItem.priceBronze % 10;
+                                          updateShopItem(shopItem.itemId, 'priceBronze', (g * 100) + (s * 10) + b);
+                                        }} 
+                                        className="w-10 bg-zinc-900 border border-yellow-900/40 rounded px-1 py-1 text-[10px] text-center text-yellow-400 focus:border-yellow-600 outline-none" 
+                                      />
+                                    </div>
+                                    <div className="flex flex-col">
+                                      <span className="text-[8px] text-zinc-500 uppercase font-bold text-center">Prata</span>
+                                      <input 
+                                        type="number" 
+                                        value={Math.floor((shopItem.priceBronze % 100) / 10)} 
+                                        onChange={e => {
+                                          const g = Math.floor(shopItem.priceBronze / 100);
+                                          const s = Number(e.target.value);
+                                          const b = shopItem.priceBronze % 10;
+                                          updateShopItem(shopItem.itemId, 'priceBronze', (g * 100) + (s * 10) + b);
+                                        }} 
+                                        className="w-10 bg-zinc-900 border border-zinc-700/40 rounded px-1 py-1 text-[10px] text-center text-zinc-300 focus:border-zinc-500 outline-none" 
+                                      />
+                                    </div>
+                                    <div className="flex flex-col">
+                                      <span className="text-[8px] text-orange-700 uppercase font-bold text-center">Bronze</span>
+                                      <input 
+                                        type="number" 
+                                        value={shopItem.priceBronze % 10} 
+                                        onChange={e => {
+                                          const g = Math.floor(shopItem.priceBronze / 100);
+                                          const s = Math.floor((shopItem.priceBronze % 100) / 10);
+                                          const b = Number(e.target.value);
+                                          updateShopItem(shopItem.itemId, 'priceBronze', (g * 100) + (s * 10) + b);
+                                        }} 
+                                        className="w-10 bg-zinc-900 border border-orange-900/40 rounded px-1 py-1 text-[10px] text-center text-orange-500 focus:border-orange-700 outline-none" 
+                                      />
+                                    </div>
+                                  </div>
                                   <label className="flex items-center gap-1.5">
                                     <Package className="w-3 h-3 text-zinc-600" />
                                     <input type="number" value={shopItem.stock} onChange={e => updateShopItem(shopItem.itemId, 'stock', Number(e.target.value))} className="w-14 bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-[10px] text-center focus:border-amber-600 outline-none" />
