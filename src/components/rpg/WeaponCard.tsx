@@ -252,5 +252,6 @@ export function WeaponCard({
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }
