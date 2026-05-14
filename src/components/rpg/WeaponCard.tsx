@@ -51,9 +51,9 @@ export function WeaponCard({
     }
     
     // Só dispara se o nome mudou de verdade e não está vazio
-    if (!isEmpty && name !== lastNameRef.current && onImpact) {
-      onImpact();
+    if (!isEmpty && name !== lastNameRef.current) {
       if (rarity?.toLowerCase() === 'legendary') {
+        if (onImpact) onImpact();
         audioService.playSound('EQUIP_LEGENDARY');
       } else {
         audioService.playSound('EQUIP_NORMAL');

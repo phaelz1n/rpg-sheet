@@ -42,9 +42,9 @@ export function EquipmentSlot({
       return;
     }
 
-    if (!isEmpty && itemName !== lastItemNameRef.current && onImpact) {
-      onImpact();
+    if (!isEmpty && itemName !== lastItemNameRef.current) {
       if (rarity?.toLowerCase() === 'legendary') {
+        if (onImpact) onImpact();
         audioService.playSound('EQUIP_LEGENDARY');
       } else {
         audioService.playSound('EQUIP_NORMAL');

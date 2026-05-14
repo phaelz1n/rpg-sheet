@@ -59,14 +59,16 @@ class AudioService {
     const now = this.audioCtx.currentTime;
 
     if (type === 'EQUIP_LEGENDARY') {
-      this.playBuffer('/sfx/lightning-effects.mp3', 9.2); // 2.0s offset
+      this.playBuffer('/sfx/lightning-effects.mp3', 9.2); // Offset ajustado pelo usuário
+      return;
+    }
+
+    if (type === 'EQUIP_NORMAL') {
+      this.playBuffer('/sfx/anvil-strikes.mp3', 0, 1.2); // Toca apenas o primeiro pico (~1.2s)
       return;
     }
 
     switch (type) {
-      case 'EQUIP_NORMAL':
-        this.playClick(now);
-        break;
       case 'BUY_ITEM':
         this.playCoins(now);
         break;
@@ -76,7 +78,7 @@ class AudioService {
     }
   }
 
-  private async playBuffer(url: string, startOffset = 0) {
+  private async playBuffer(url: string, startOffset = 0, duration?: number) {
     if (!this.audioCtx) return;
 
     try {
@@ -92,7 +94,12 @@ class AudioService {
       const source = this.audioCtx.createBufferSource();
       source.buffer = buffer;
       source.connect(this.audioCtx.destination);
-      source.start(0, startOffset);
+      
+      if (duration) {
+        source.start(0, startOffset, duration);
+      } else {
+        source.start(0, startOffset);
+      }
     } catch (e) {
       console.error('[AudioService] Failed to play buffer', e);
     }
