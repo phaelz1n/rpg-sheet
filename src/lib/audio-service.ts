@@ -59,7 +59,7 @@ class AudioService {
     const now = this.audioCtx.currentTime;
 
     if (type === 'EQUIP_LEGENDARY') {
-      this.playBuffer('/sfx/lightning-effects.mp3', 2.0); // 2.0s offset
+      this.playBuffer('/sfx/lightning-effects.mp3', 3.0); // 2.0s offset
       return;
     }
 
@@ -122,7 +122,7 @@ class AudioService {
     const noise = this.audioCtx.createBufferSource();
     const noiseBuffer = this.createNoiseBuffer(2);
     if (!noiseBuffer) return;
-    
+
     noise.buffer = noiseBuffer;
 
     const filter = this.audioCtx.createBiquadFilter();
