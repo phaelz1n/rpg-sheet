@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
@@ -184,11 +184,11 @@ export function CharacterPage() {
 
   // Screen Shake System
   const [isShaking, setIsShaking] = useState(false);
-  const triggerScreenShake = () => {
+  const triggerScreenShake = useCallback(() => {
     if (isShaking) return;
     setIsShaking(true);
     setTimeout(() => setIsShaking(false), 600);
-  };
+  }, [isShaking]);
 
   const corruptionFilter = corruptionPercent > 80 ? 'grayscale-[0.6] sepia-[0.3] brightness-[0.7] contrast-[1.1] hue-rotate-[290deg]' :
                           corruptionPercent > 50 ? 'grayscale-[0.3] sepia-[0.1] brightness-[0.9]' :
