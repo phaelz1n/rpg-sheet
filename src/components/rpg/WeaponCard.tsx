@@ -40,11 +40,18 @@ export function WeaponCard({
 }: WeaponCardProps) {
   const isEmpty = !name;
 
+  const isInitialMount = React.useRef(true);
   const lastNameRef = React.useRef(name);
 
   useEffect(() => {
-    // Só dispara se o nome não está vazio e mudou (ou se é o primeiro render com item)
-    if (!isEmpty && (name !== lastNameRef.current || lastNameRef.current === undefined) ) {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      lastNameRef.current = name;
+      return;
+    }
+    
+    // Só dispara se o nome mudou de verdade e não está vazio
+    if (!isEmpty && name !== lastNameRef.current) {
       if (rarity?.toLowerCase() === 'legendary') {
         if (onImpact) onImpact();
         audioService.playSound('EQUIP_LEGENDARY');
