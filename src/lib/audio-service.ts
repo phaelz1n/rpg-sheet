@@ -69,7 +69,12 @@ class AudioService {
     }
 
     if (type === 'BACKPACK_MOVE') {
-      this.playBuffer('/sfx/mochila.mp3', 0, 0.5); // Toca o primeiro pico da mochila
+      this.playBuffer('/sfx/mochila.mp3', 0, 1.0); // Aumentado para 1s para garantir som
+      return;
+    }
+
+    if (type === 'SUCCESS') {
+      this.playClick(now);
       return;
     }
 
@@ -83,18 +88,42 @@ class AudioService {
     }
   }
 
+  public async preLoadAll() {
+    const sfx = [
+      '/sfx/lightning-effects.mp3',
+      '/sfx/anvil-strikes.mp3',
+      '/sfx/mochila.mp3'
+    ];
+    for (const url of sfx) {
+      this.loadBuffer(url);
+    }
+  }
+
+  private async loadBuffer(url: string) {
+    if (this.customBuffers.has(url)) return;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = await this.audioCtx?.decodeAudioData(arrayBuffer);
+      if (buffer) this.customBuffers.set(url, buffer);
+    } catch (e) {
+      console.error(`[AudioService] Pre-load failed for ${url}`, e);
+    }
+  }
+
   private async playBuffer(url: string, startOffset = 0, duration?: number) {
+    if (!this.initialized) this.init();
     if (!this.audioCtx) return;
 
     try {
       let buffer = this.customBuffers.get(url);
       if (!buffer) {
-        console.log(`[AudioService] Pre-loading buffer: ${url}`);
-        const response = await fetch(url);
-        const arrayBuffer = await response.arrayBuffer();
-        buffer = await this.audioCtx.decodeAudioData(arrayBuffer);
-        this.customBuffers.set(url, buffer);
+        await this.loadBuffer(url);
+        buffer = this.customBuffers.get(url);
       }
+
+      if (!buffer) return;
 
       const source = this.audioCtx.createBufferSource();
       source.buffer = buffer;

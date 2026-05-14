@@ -4,7 +4,7 @@ import { RichDescription } from './RichDescription';
 import { AutocompleteTextarea } from './AutocompleteTextarea';
 import { ttrpgApi } from '../../lib/ttrpg-api';
 import { seedDefaultItems } from '../../lib/seeding-service';
-import { playCheckSound } from '../../lib/audio';
+import { audioService } from '../../lib/audio-service';
 
 
 interface AdminItemsPanelProps {
@@ -81,7 +81,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type, visible: true });
-    if (type === 'success') playCheckSound();
+    if (type === 'success') audioService.playSound('SUCCESS');
     setTimeout(() => {
       setToast(prev => ({ ...prev, visible: false }));
     }, 3000);

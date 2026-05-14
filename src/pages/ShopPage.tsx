@@ -285,9 +285,6 @@ export function ShopPage() {
                           <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-1000" />
                         )}
 
-                        {/* Particle Effect from Master Config */}
-                        <ItemVFX type={item.particles as any} />
-
                         {/* Item Icon & Rarity Glow */}
                         <div className="flex items-start justify-between mb-4 sm:mb-6">
                           <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-amber-900/40 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative ${
