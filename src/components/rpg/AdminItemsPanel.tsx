@@ -11,7 +11,7 @@ interface AdminItemsPanelProps {
   onClose: () => void;
 }
 
-type ItemType = 'weapon' | 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots' | 'potion' | 'material' | 'collectible';
+type ItemType = 'weapon' | 'armor' | 'potion' | 'material' | 'collectible';
 type ItemRarity = 'common' | 'rare' | 'legendary';
 
 interface GlobalItem {
@@ -25,6 +25,7 @@ interface GlobalItem {
   attributeType?: string;
   bonus?: number;
   // Armor/Equipment fields
+  equipmentSlot?: 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots';
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number; // Quantidade de slots de acesso rápido que o cinto oferece
@@ -48,16 +49,20 @@ const rarityLabels = {
 
 const typeLabels = {
   weapon: 'Arma',
+  armor: 'Armadura',
+  potion: 'Poção',
+  material: 'Material',
+  collectible: 'Colecionável'
+};
+
+const slotLabels = {
   head: 'Cabeça',
   neck: 'Pescoço',
   chest: 'Peito',
   gloves: 'Luvas',
   belt: 'Cinto',
   pants: 'Calças',
-  boots: 'Botas',
-  potion: 'Poção',
-  material: 'Material',
-  collectible: 'Colecionável'
+  boots: 'Botas'
 };
 
 const armorTypes = ['head', 'neck', 'chest', 'gloves', 'belt', 'pants', 'boots'];
@@ -91,6 +96,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const [formData, setFormData] = useState<Partial<GlobalItem>>({
     name: '',
     type: 'weapon',
+    equipmentSlot: 'chest',
     rarity: 'common',
     description: '',
     damage: '',
@@ -374,8 +380,24 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
         )}
 
         {/* Armor-specific fields */}
-        {armorTypes.includes(type as string) && (
+        {type === 'armor' && (
           <div className="space-y-4">
+            <div>
+              <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Parte do Corpo (Slot)</label>
+              <select
+                value={formData.equipmentSlot || 'chest'}
+                onChange={(e) => setFormData({ ...formData, equipmentSlot: e.target.value as any })}
+                className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+              >
+                <option value="head">Cabeça</option>
+                <option value="neck">Pescoço</option>
+                <option value="chest">Peito</option>
+                <option value="gloves">Luvas</option>
+                <option value="belt">Cinto</option>
+                <option value="pants">Calças</option>
+                <option value="boots">Botas</option>
+              </select>
+            </div>
             <div>
               <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Bônus de Defesa</label>
               <input
@@ -665,8 +687,11 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                       }`}>
                         {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
                       </span>
-                      <span className="px-2 py-0.5 bg-zinc-800/60 border border-zinc-700 rounded text-zinc-400">
+                      <span className="px-2 py-0.5 bg-zinc-800/60 border border-zinc-700 rounded text-zinc-400 flex items-center gap-1">
                         {typeLabels[item.type]}
+                        {item.type === 'armor' && item.equipmentSlot && (
+                          <span className="text-zinc-500 uppercase text-[8px] border-l border-zinc-700 pl-1 ml-1">{slotLabels[item.equipmentSlot]}</span>
+                        )}
                       </span>
                     </div>
                     <div className="text-zinc-400 text-xs line-clamp-3 min-h-[40px]">
@@ -681,7 +706,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                     </div>
                   )}
 
-                  {armorTypes.includes(item.type) && (
+                  {item.type === 'armor' && (
                     <div className="text-xs text-zinc-500 space-y-1">
                       {(item.bonus ?? 0) > 0 && <div>Defesa: <span className="text-blue-400">+{item.bonus}</span></div>}
                       {(item.corruptionLimitBonus ?? 0) > 0 && (

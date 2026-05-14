@@ -59,7 +59,8 @@ interface RPGItem {
   attributeIcon: any;
   bonus: number;
   damage: string;
-  category: 'weapon' | 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots' | 'potion' | 'material' | 'collectible' | 'consumable';
+  category: 'weapon' | 'armor' | 'potion' | 'material' | 'collectible' | 'consumable';
+  equipmentSlot?: string;
   corruptionLimitBonus?: number;
   statBonus?: string;
   beltCapacity?: number;
@@ -300,9 +301,10 @@ export function CharacterPage() {
           bonus: item.bonus || 0,
           damage: item.damage || '',
           category: (item.type === 'weapon' ? 'weapon' : 
-                    ['head', 'chest', 'neck', 'gloves', 'belt', 'pants', 'boots'].includes(item.type) ? item.type :
+                    item.type === 'armor' ? 'armor' :
                     item.type === 'material' ? 'material' : 
                     item.type === 'potion' ? 'potion' : 'consumable') as RPGItem['category'],
+          equipmentSlot: item.equipmentSlot || undefined,
 
           corruptionLimitBonus: item.corruptionLimitBonus || 0,
           statBonus: item.statBonus || '',
@@ -1306,7 +1308,7 @@ export function CharacterPage() {
               return item.category === 'weapon';
             }
             if (itemSelectionModal.type === 'armor') {
-              return item.category === itemSelectionModal.slot;
+              return item.category === 'armor' && item.equipmentSlot === itemSelectionModal.slot;
             }
             if (itemSelectionModal.type === 'consumable') {
               // Na mochila agora pode tudo!
