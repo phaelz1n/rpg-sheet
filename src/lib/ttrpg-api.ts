@@ -114,22 +114,45 @@ export const ttrpgApi = {
       .select('*')
       .order('name');
     
-    return { items: data || [], error: error?.message };
+    const parsedItems = data?.map(item => {
+      if (item.type?.startsWith('armor-')) {
+        return {
+          ...item,
+          type: 'armor',
+          equipmentSlot: item.type.split('-')[1]
+        };
+      }
+      return item;
+    });
+
+    return { items: parsedItems || [], error: error?.message };
   },
 
   async createItem(itemData: any) {
+    const payload = { ...itemData };
+    if (payload.type === 'armor' && payload.equipmentSlot) {
+      payload.type = `armor-${payload.equipmentSlot}`;
+    }
+    delete payload.equipmentSlot;
+
     const { data, error } = await supabase
       .from('global_items')
-      .insert([itemData])
+      .insert([payload])
       .select();
     
     return { success: !error, item: data?.[0], error: error?.message };
   },
 
   async updateItem(id: string, itemData: any) {
+    const payload = { ...itemData };
+    if (payload.type === 'armor' && payload.equipmentSlot) {
+      payload.type = `armor-${payload.equipmentSlot}`;
+    }
+    delete payload.equipmentSlot;
+
     const { data, error } = await supabase
       .from('global_items')
-      .update(itemData)
+      .update(payload)
       .eq('id', id)
       .select();
     
