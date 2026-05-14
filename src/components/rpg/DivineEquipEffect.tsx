@@ -59,55 +59,50 @@ export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: Di
           <motion.div
             initial={{ scale: 0, rotateY: 180, y: 100, filter: 'brightness(5)' }}
             animate={{ 
-              scale: [0, 1.3, 1],
-              rotateY: [180, 0],
-              y: [100, 0],
-              filter: ['brightness(5)', 'brightness(1)']
+              scale: [0, 1.8, 1.8, 1],
+              rotateY: [180, 0, 360, 360],
+              y: [100, 0, 0, 0],
+              filter: ['brightness(5)', 'brightness(1.5)', 'brightness(1.5)', 'brightness(1)']
             }}
             transition={{ 
-              duration: 1.2, 
-              times: [0, 0.6, 1],
-              ease: "backOut" 
+              duration: 2.5, 
+              times: [0, 0.4, 0.8, 1],
+              ease: "easeInOut" 
             }}
             className="relative z-10 flex flex-col items-center"
           >
             {/* Pulsing Aura */}
             <motion.div
               animate={{ 
-                scale: [1, 1.1, 1],
+                scale: [1, 1.2, 1],
                 opacity: [0.4, 0.8, 0.4]
               }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute -inset-12 bg-red-600/20 blur-3xl rounded-full"
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="absolute -inset-16 bg-red-600/30 blur-3xl rounded-full"
             />
 
-            <div className="relative w-64 h-80 bg-gradient-to-br from-zinc-900 via-red-950 to-black border-2 border-red-500 rounded-2xl p-8 shadow-[0_0_100px_rgba(220,38,38,0.4)] flex flex-col items-center justify-center overflow-hidden">
-              {/* Internal Particles */}
+            <div className="relative w-64 h-80 bg-gradient-to-br from-zinc-900 via-red-950 to-black border-2 border-red-500 rounded-2xl p-8 shadow-[0_0_100px_rgba(220,38,38,0.5)] flex flex-col items-center justify-center overflow-hidden">
               <ItemVFX type={particles as any} rarity="divine" name={name} />
               
-              {/* Glass Shine */}
               <motion.div
                 animate={{ 
                   x: ['-200%', '200%'],
                   y: ['-200%', '200%']
                 }}
                 transition={{ 
-                  delay: 0.8, 
-                  duration: 1.5, 
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                  repeatDelay: 1
+                  delay: 1.2, 
+                  duration: 1, 
+                  ease: "easeInOut"
                 }}
-                className="absolute inset-0 bg-gradient-to-br from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none"
+                className="absolute inset-0 bg-gradient-to-br from-transparent via-white/40 to-transparent skew-x-12 pointer-events-none"
               />
 
-              {/* Icon & Title */}
               <motion.div
                 animate={{ 
-                  y: [0, -5, 0],
-                  filter: ['drop-shadow(0 0 10px rgba(239, 68, 68, 0.5))', 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.8))', 'drop-shadow(0 0 10px rgba(239, 68, 68, 0.5))']
+                  y: [0, -10, 0],
+                  filter: ['drop-shadow(0 0 15px rgba(239, 68, 68, 0.6))', 'drop-shadow(0 0 30px rgba(239, 68, 68, 0.9))', 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.6))']
                 }}
-                transition={{ duration: 3, repeat: Infinity }}
+                transition={{ duration: 2, repeat: Infinity }}
                 className="flex flex-col items-center gap-6"
               >
                 <div className="p-6 bg-red-950/40 rounded-full border border-red-500/30 shadow-inner">
@@ -118,7 +113,7 @@ export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: Di
                   <motion.h2 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    transition={{ delay: 0.6 }}
                     className="text-2xl font-black text-white uppercase tracking-tighter"
                   >
                     {name}
@@ -126,7 +121,7 @@ export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: Di
                   <motion.div 
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6, type: "spring" }}
+                    transition={{ delay: 0.8, type: "spring" }}
                     className="mt-2 flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-red-900/40"
                   >
                     <Sparkles className="w-3 h-3" />
@@ -135,20 +130,19 @@ export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: Di
                 </div>
               </motion.div>
 
-              {/* Decorative Runes/Symbols (Mocked with small divs) */}
               {[...Array(12)].map((_, i) => (
                 <motion.div
                   key={i}
                   animate={{ 
                     opacity: [0, 0.5, 0],
-                    y: [0, -40]
+                    y: [0, -60]
                   }}
                   transition={{ 
-                    duration: 2 + Math.random() * 2,
+                    duration: 2.5,
                     repeat: Infinity,
                     delay: Math.random() * 2
                   }}
-                  className="absolute text-red-500/40 text-[10px] font-serif"
+                  className="absolute text-red-500/40 text-[12px] font-serif"
                   style={{ 
                     left: `${10 + Math.random() * 80}%`,
                     bottom: '10%'
@@ -160,11 +154,11 @@ export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: Di
             </div>
           </motion.div>
 
-          {/* Flash Effect on Finish */}
+          {/* Flash Effect on Finish (exactly at the end of the 2.5s) */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.8, 0] }}
-            transition={{ delay: 1, duration: 0.4 }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ delay: 2.3, duration: 0.2 }}
             className="absolute inset-0 bg-white z-50 pointer-events-none"
           />
         </motion.div>
