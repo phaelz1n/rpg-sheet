@@ -59,7 +59,7 @@ class AudioService {
     const now = this.audioCtx.currentTime;
 
     if (type === 'EQUIP_LEGENDARY') {
-      this.playBuffer('/sfx/lightning-effects.mp3', 8.5); // 2.0s offset
+      this.playBuffer('/sfx/lightning-effects.mp3', 9.3); // 2.0s offset
       return;
     }
 
