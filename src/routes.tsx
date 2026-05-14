@@ -3,6 +3,8 @@ import { LoginPage } from './pages/LoginPage';
 import { CharacterPage } from './pages/CharacterPage';
 import { AdminPage } from './pages/AdminPage';
 import { AdminItemsPage } from './pages/AdminItemsPage';
+import { AdminShopsPage } from './pages/AdminShopsPage';
+import { ShopPage } from './pages/ShopPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProtectedRoute } from './components/ui/ProtectedRoute';
 
@@ -24,6 +26,14 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: '/shop',
+    element: (
+      <ProtectedRoute>
+        <ShopPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/admin',
     element: (
       <ProtectedRoute requireAdmin>
@@ -36,6 +46,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requireAdmin>
         <AdminItemsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/shops',
+    element: (
+      <ProtectedRoute requireAdmin>
+        <AdminShopsPage />
       </ProtectedRoute>
     ),
   },

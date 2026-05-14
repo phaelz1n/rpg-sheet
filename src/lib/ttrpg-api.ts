@@ -166,5 +166,63 @@ export const ttrpgApi = {
       .eq('id', id);
     
     return { success: !error, error: error?.message };
+  },
+
+  // NPC Shops
+  async getShops() {
+    const { data, error } = await supabase
+      .from('shops')
+      .select('*')
+      .order('name');
+    return { shops: data || [], error: error?.message };
+  },
+
+  async saveShop(shopData: any) {
+    const { error } = await supabase
+      .from('shops')
+      .upsert(shopData, { onConflict: 'id' });
+    return { success: !error, error: error?.message };
+  },
+
+  async deleteShop(id: string) {
+    const { error } = await supabase
+      .from('shops')
+      .delete()
+      .eq('id', id);
+    return { success: !error, error: error?.message };
+  },
+
+  subscribeToShops(callback: (payload: any) => void) {
+    const channel = supabase.channel('shops_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'shops' },
+        (payload) => callback(payload)
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  },
+
+  // Realtime Subscriptions
+  subscribeToCharacter(username: string, callback: (payload: any) => void) {
+    const channel = supabase.channel(`character_${username}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'characters', filter: `username=eq.${username}` },
+        (payload) => callback(payload)
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  },
+
+  subscribeToGlobalItems(callback: (payload: any) => void) {
+    const channel = supabase.channel('global_items_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'global_items' },
+        (payload) => callback(payload)
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }
 };

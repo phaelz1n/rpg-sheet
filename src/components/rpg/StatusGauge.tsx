@@ -5,7 +5,7 @@ interface StatusGaugeProps {
   current: number;
   max: number;
   icon: LucideIcon;
-  color: 'red' | 'blue' | 'purple' | 'green' | 'crimson';
+  color: 'red' | 'blue' | 'purple' | 'green' | 'crimson' | 'amber' | 'emerald';
   onCurrentChange?: (value: number) => void;
   onMaxChange?: (value: number) => void;
 }
@@ -18,7 +18,9 @@ export function StatusGauge({ label, current, max, icon: Icon, color, onCurrentC
     blue: { bar: 'bg-blue-700', glow: 'shadow-blue-900/50' },
     purple: { bar: 'bg-purple-700', glow: 'shadow-purple-900/50' },
     green: { bar: 'bg-emerald-700', glow: 'shadow-emerald-900/50' },
-    crimson: { bar: 'bg-rose-800', glow: 'shadow-rose-900/50' }
+    crimson: { bar: 'bg-rose-800', glow: 'shadow-rose-900/50' },
+    amber: { bar: 'bg-amber-600', glow: 'shadow-amber-900/50' },
+    emerald: { bar: 'bg-emerald-600', glow: 'shadow-emerald-900/50' }
   };
 
   const colors = colorMap[color];

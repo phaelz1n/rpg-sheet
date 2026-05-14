@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { Users, Trash2, Plus, Edit, Shield, X, Key, Package } from 'lucide-react';
+import { Users, Trash2, Plus, Edit, Shield, X, Key, Package, ShoppingBag } from 'lucide-react';
 import { ttrpgApi } from '../../lib/ttrpg-api';
 import { useUI } from '../../context/UIContext';
 
@@ -128,6 +128,13 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
               >
                 <Package className="w-5 h-5" />
                 Gerenciar Itens
+              </button>
+              <button
+                onClick={() => navigate('/admin/shops')}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-900/60 to-green-900/60 border-2 border-emerald-600/70 rounded-lg text-emerald-200 hover:from-emerald-800/80 hover:to-green-800/80 transition-all shadow-lg text-sm font-semibold"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                Gerenciar Lojas
               </button>
               <button
                 onClick={onLogout}
