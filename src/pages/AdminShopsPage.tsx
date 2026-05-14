@@ -52,8 +52,9 @@ export function AdminShopsPage() {
   // Derived data
   const uniqueLocations = useMemo(() => {
     const locs = new Set(shops.map(s => s.location).filter(Boolean));
+    if (activeLocation && activeLocation !== 'Geral') locs.add(activeLocation);
     return Array.from(locs).sort() as string[];
-  }, [shops]);
+  }, [shops, activeLocation]);
 
   const filteredItems = useMemo(() => {
     return allItems.filter(item => {
@@ -180,28 +181,54 @@ export function AdminShopsPage() {
               <h3 className="text-xs font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
                 <Globe className="w-4 h-4" /> Controle de Sessão (RP)
               </h3>
-              <div className="space-y-4">
-                <label className="block">
-                  <span className="text-[10px] text-zinc-500 uppercase font-bold ml-1">Região/Cidade do RP</span>
-                  <select 
-                    value={activeLocation} 
-                    onChange={e => handleLocationChange(e.target.value)}
-                    className="w-full bg-black/60 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-amber-100 focus:border-amber-600 outline-none mt-1 appearance-none"
-                  >
-                    <option value="Geral">Geral / Global</option>
-                    {uniqueLocations.map(loc => (
-                      <option key={loc} value={loc}>{loc}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block">
-                  <span className="text-[10px] text-zinc-500 uppercase font-bold ml-1">Título do Mercado (Custom)</span>
-                  <input type="text" value={marketTitle} onChange={e => setMarketTitle(e.target.value)} className="w-full bg-black/60 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-amber-100 focus:border-amber-600 outline-none mt-1" />
-                </label>
-                <button onClick={handleSaveGlobalConfig} className="w-full bg-amber-900/20 hover:bg-amber-900/40 text-amber-500 border border-amber-900/40 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
-                  <Save className="w-3 h-3" /> ATUALIZAR MUNDO
-                </button>
-              </div>
+                <div className="space-y-4">
+                  <label className="block">
+                    <span className="text-[10px] text-zinc-500 uppercase font-bold ml-1">Região/Cidade do RP</span>
+                    <div className="flex gap-2 mt-1">
+                      <select 
+                        value={activeLocation} 
+                        onChange={e => handleLocationChange(e.target.value)}
+                        className="flex-1 bg-black/60 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-amber-100 focus:border-amber-600 outline-none appearance-none"
+                      >
+                        <option value="Geral">Geral / Global</option>
+                        {uniqueLocations.map(loc => (
+                          <option key={loc} value={loc}>{loc}</option>
+                        ))}
+                        <option value="NEW">+ Adicionar Nova...</option>
+                      </select>
+                    </div>
+                  </label>
+
+                  {/* Add New Region Input (Show only if needed) */}
+                  {activeLocation === 'NEW' && (
+                    <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                      <span className="text-[9px] text-amber-600 uppercase font-black ml-1">Nome da Nova Região</span>
+                      <input 
+                        type="text" 
+                        autoFocus
+                        placeholder="Ex: Valória, Porto Real..."
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleLocationChange((e.target as HTMLInputElement).value);
+                          }
+                        }}
+                        onBlur={(e) => {
+                          if (e.target.value) handleLocationChange(e.target.value);
+                          else setActiveLocation('Geral');
+                        }}
+                        className="w-full bg-amber-500/5 border border-amber-600/40 rounded-lg px-3 py-2 text-sm text-amber-100 focus:border-amber-500 outline-none mt-1" 
+                      />
+                    </div>
+                  )}
+
+                  <label className="block">
+                    <span className="text-[10px] text-zinc-500 uppercase font-bold ml-1">Título do Mercado (Custom)</span>
+                    <input type="text" value={marketTitle} onChange={e => setMarketTitle(e.target.value)} className="w-full bg-black/60 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-amber-100 focus:border-amber-600 outline-none mt-1" />
+                  </label>
+                  <button onClick={handleSaveGlobalConfig} className="w-full bg-amber-900/20 hover:bg-amber-900/40 text-amber-500 border border-amber-900/40 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
+                    <Save className="w-3 h-3" /> ATUALIZAR MUNDO
+                  </button>
+                </div>
             </div>
 
             <div className="space-y-4">
