@@ -9,21 +9,47 @@ interface ItemVFXProps {
 }
 
 export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
+  // Hash function for deterministic randomness
+  const getSeed = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  };
+
+  const seed = getSeed(name || 'default');
+  const seededRandom = (i: number) => {
+    const x = Math.sin(seed + i) * 10000;
+    return x - Math.floor(x);
+  };
+
+  const isHighRarity = rarity?.toLowerCase() === 'legendary' || rarity?.toLowerCase() === 'divine';
+
   // Fallback inteligente baseado no nome se o tipo não for especificado
   let fallbackType: ItemVFXProps['type'] = 'none';
-  if (rarity?.toLowerCase() === 'legendary') {
+  if (isHighRarity) {
     const lowerName = name?.toLowerCase() || '';
     if (lowerName.includes('chama') || lowerName.includes('fogo') || lowerName.includes('brasa')) {
       fallbackType = 'embers';
     } else if (lowerName.includes('gelo') || lowerName.includes('frio') || lowerName.includes('véu')) {
       fallbackType = 'frost';
     } else {
-      fallbackType = 'thunder';
+      fallbackType = rarity?.toLowerCase() === 'divine' ? 'divine' : 'thunder';
     }
   }
 
   const finalType = type || fallbackType;
   
+  // Se não for lendário/divino e for um efeito padrão, não mostra nada
+  if (!isHighRarity && finalType !== 'none') {
+    // Permite efeitos manuais mesmo em comuns se o usuário explicitamente setou? 
+    // O usuário disse: "os efeitos que vem nos itens padrões são somente pros lendários ta"
+    // Então vou forçar none se não for high rarity.
+    return null;
+  }
+
   if (finalType === 'none') return null;
 
   const renderParticles = () => {
@@ -31,54 +57,58 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'thunder':
         return (
           <>
-            {/* Electric Glow */}
             <div className="absolute -inset-2 bg-blue-500/20 blur-xl animate-pulse rounded-lg" />
-            {/* Lightning Arcs */}
             <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
-              {[...Array(4)].map((_, i) => (
-                <div 
-                  key={i}
-                  className="absolute bg-blue-100/60 shadow-[0_0_10px_#60a5fa] animate-[pulse_0.1s_ease-in-out_infinite]"
-                  style={{
-                    width: '1px',
-                    height: `${20 + Math.random() * 60}%`,
-                    top: `${Math.random() * 80}%`,
-                    left: `${Math.random() * 100}%`,
-                    transform: `rotate(${Math.random() * 360}deg) skew(${Math.random() * 20}deg)`,
-                    opacity: 0.8,
-                    animationDelay: `${i * 0.2}s`
-                  }}
-                />
-              ))}
+              {[...Array(4)].map((_, i) => {
+                const r1 = seededRandom(i * 10);
+                const r2 = seededRandom(i * 20);
+                const r3 = seededRandom(i * 30);
+                const r4 = seededRandom(i * 40);
+                return (
+                  <div 
+                    key={i}
+                    className="absolute bg-blue-100/60 shadow-[0_0_10px_#60a5fa] animate-[pulse_0.1s_ease-in-out_infinite]"
+                    style={{
+                      width: '1px',
+                      height: `${20 + r1 * 60}%`,
+                      top: `${r2 * 80}%`,
+                      left: `${r3 * 100}%`,
+                      transform: `rotate(${r4 * 360}deg) skew(${r1 * 20}deg)`,
+                      opacity: 0.8,
+                      animationDelay: `${i * 0.2}s`
+                    }}
+                  />
+                );
+              })}
             </div>
           </>
         );
       case 'embers':
         return (
           <>
-            {/* Outer Glow */}
             <div className="absolute -inset-2 bg-orange-600/30 blur-xl animate-pulse rounded-lg" />
-            
-            {/* Flame Particles */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg">
-              {[...Array(20)].map((_, i) => (
-                <div 
-                  key={i}
-                  className="absolute bg-gradient-to-t from-orange-600 via-orange-400 to-yellow-200 rounded-full blur-[1.5px] animate-[rise_2s_ease-out_infinite]"
-                  style={{
-                    bottom: '-10px',
-                    left: `${Math.random() * 100}%`,
-                    width: `${3 + Math.random() * 10}px`,
-                    height: `${3 + Math.random() * 10}px`,
-                    animationDelay: `${Math.random() * 2}s`,
-                    animationDuration: `${1 + Math.random() * 2}s`,
-                    opacity: 0.4 + Math.random() * 0.4
-                  }}
-                />
-              ))}
+              {[...Array(15)].map((_, i) => {
+                const r1 = seededRandom(i * 11);
+                const r2 = seededRandom(i * 22);
+                const r3 = seededRandom(i * 33);
+                return (
+                  <div 
+                    key={i}
+                    className="absolute bg-gradient-to-t from-orange-600 via-orange-400 to-yellow-200 rounded-full blur-[1.5px] animate-[rise_2s_ease-out_infinite]"
+                    style={{
+                      bottom: '-10px',
+                      left: `${r1 * 100}%`,
+                      width: `${3 + r2 * 6}px`,
+                      height: `${3 + r2 * 6}px`,
+                      animationDelay: `${r3 * 2}s`,
+                      animationDuration: `${1.5 + r1}s`,
+                      opacity: 0.4 + r2 * 0.4
+                    }}
+                  />
+                );
+              })}
             </div>
-            
-            {/* Bottom Fire Base Glow */}
             <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-orange-600/40 to-transparent rounded-b-lg blur-sm" />
           </>
         );
@@ -86,19 +116,32 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
         return (
           <>
             <div className="absolute -inset-1.5 bg-blue-400/20 blur-md animate-pulse rounded-lg" />
+            <div className="absolute inset-0 overflow-hidden">
+               {[...Array(6)].map((_, i) => {
+                 const r1 = seededRandom(i * 7);
+                 return (
+                   <div key={i} className="absolute w-1 h-1 bg-white rounded-full blur-[1px] animate-pulse"
+                     style={{ top: `${r1 * 100}%`, left: `${seededRandom(i * 9) * 100}%`, animationDelay: `${r1 * 2}s` }} />
+                 );
+               })}
+            </div>
           </>
         );
       case 'void':
         return (
           <>
             <div className="absolute -inset-3 bg-purple-900/30 blur-xl animate-pulse rounded-lg" />
-            <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] rounded-lg" />
+            <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] rounded-lg animate-pulse" />
           </>
         );
       case 'gold_dust':
         return (
           <>
             <div className="absolute -inset-1.5 bg-amber-500/20 blur-md animate-pulse rounded-lg" />
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="absolute w-0.5 h-0.5 bg-amber-200 rounded-full animate-ping"
+                style={{ top: `${seededRandom(i * 5) * 100}%`, left: `${seededRandom(i * 3) * 100}%`, animationDelay: `${seededRandom(i * 2) * 3}s` }} />
+            ))}
           </>
         );
       case 'sparks':
@@ -110,9 +153,9 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
                 key={i}
                 className="absolute w-px h-3 bg-yellow-200 animate-pulse"
                 style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  transform: `rotate(${Math.random() * 360}deg)`,
+                  top: `${seededRandom(i * 12) * 100}%`,
+                  left: `${seededRandom(i * 14) * 100}%`,
+                  transform: `rotate(${seededRandom(i * 16) * 360}deg)`,
                   animationDelay: `${i * 0.4}s`,
                   opacity: 0.6
                 }}
@@ -123,65 +166,67 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'poison':
         return (
           <>
-            <div className="absolute -inset-2 bg-green-500/30 blur-xl animate-pulse rounded-lg" />
+            {/* Puddle */}
+            <div className="absolute bottom-0 inset-x-1 h-1/4 bg-green-900/60 blur-md rounded-b-lg" />
+            <div className="absolute -inset-2 bg-green-500/10 blur-xl animate-pulse rounded-lg" />
+            {/* Bubbles */}
+            <div className="absolute inset-0 pointer-events-none">
+               {[...Array(6)].map((_, i) => {
+                 const r1 = seededRandom(i * 5);
+                 const r2 = seededRandom(i * 7);
+                 return (
+                   <div key={i} className="absolute border border-green-400/40 bg-green-500/20 rounded-full animate-[rise_3s_ease-in-infinite]"
+                     style={{
+                       bottom: '-5px',
+                       left: `${r1 * 80 + 10}%`,
+                       width: `${4 + r2 * 8}px`,
+                       height: `${4 + r2 * 8}px`,
+                       animationDelay: `${r1 * 3}s`,
+                       animationDuration: `${2 + r2 * 2}s`
+                     }}
+                   >
+                     <div className="absolute top-1 left-1 w-1 h-1 bg-white/40 rounded-full" />
+                   </div>
+                 );
+               })}
+            </div>
           </>
         );
       case 'smoke':
         return (
           <>
-            <div className="absolute -inset-2 bg-gray-700/40 blur-xl animate-pulse rounded-lg" />
-          </>
-        );
-      case 'explosion':
-        return (
-          <>
-            <div className="absolute inset-0 bg-yellow-300/30 blur-xl animate-pulse rounded-full" />
-            <div className="absolute inset-0 border border-yellow-400/50 rounded-full animate-[scale_0.5s_ease-out_infinite]" />
-          </>
-        );
-      case 'sandstorm':
-        return (
-          <>
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute bg-yellow-600/40 rounded-full animate-[rise_2s_ease-out_infinite]"
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  width: `${2 + Math.random() * 6}px`,
-                  height: `${2 + Math.random() * 6}px`,
-                  animationDelay: `${Math.random() * 2}s`,
-                  opacity: 0.5 + Math.random() * 0.4
-                }}
-              />
-            ))}
-          </>
-        );
-      case 'water':
-        return (
-          <>
-            {[...Array(10)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute bg-blue-400/30 rounded-full animate-[rise_2s_ease-out_infinite]"
-                style={{
-                  bottom: '-5px',
-                  left: `${Math.random() * 100}%`,
-                  width: `${4 + Math.random() * 8}px`,
-                  height: `${4 + Math.random() * 8}px`,
-                  animationDelay: `${Math.random() * 1.5}s`,
-                  opacity: 0.6 + Math.random() * 0.3
-                }}
-              />
-            ))}
+            <div className="absolute -inset-3 bg-zinc-700/20 blur-2xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 overflow-hidden rounded-lg">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="absolute bg-zinc-500/20 blur-xl rounded-full animate-[rise_4s_ease-out_infinite]"
+                  style={{
+                    bottom: '-20px',
+                    left: `${seededRandom(i * 4) * 80}%`,
+                    width: '40px',
+                    height: '40px',
+                    animationDelay: `${i * 0.8}s`
+                  }} />
+              ))}
+            </div>
           </>
         );
       case 'hologram':
         return (
           <>
-            <div className="absolute inset-0 bg-cyan-200/10" />
-            <div className="absolute inset-0 bg-cyan-300/20 mix-blend-screen" style={{ backgroundImage: 'linear-gradient(45deg, transparent 45%, #00ffff 45%, #00ffff 55%, transparent 55%)', backgroundSize: '4px 4px' }} />
+            <div className="absolute inset-0 bg-cyan-500/5 animate-pulse" />
+            <div className="absolute inset-0 overflow-hidden rounded-lg">
+              {/* Scanlines */}
+              <div className="absolute inset-0 opacity-30" style={{ 
+                backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 255, 255, 0.1) 1px, rgba(0, 255, 255, 0.1) 2px)',
+                backgroundSize: '100% 2px'
+              }} />
+              {/* Glitch lines */}
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="absolute w-full h-px bg-cyan-400/40 animate-[shimmer_2s_infinite]"
+                  style={{ top: `${seededRandom(i * 8) * 100}%`, animationDelay: `${i * 0.7}s` }} />
+              ))}
+              <div className="absolute inset-0 bg-cyan-300/10 mix-blend-screen animate-pulse" />
+            </div>
           </>
         );
       case 'earth':
@@ -190,14 +235,15 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="absolute bg-brown-800/40 rounded-full animate-[rise_2s_ease-out_infinite]"
+                className="absolute bg-amber-900/30 rounded-sm animate-[rise_2.5s_ease-out_infinite]"
                 style={{
                   bottom: '-5px',
-                  left: `${Math.random() * 100}%`,
-                  width: `${5 + Math.random() * 10}px`,
-                  height: `${5 + Math.random() * 10}px`,
-                  animationDelay: `${Math.random() * 2}s`,
-                  opacity: 0.5 + Math.random() * 0.4
+                  left: `${seededRandom(i * 5) * 100}%`,
+                  width: `${3 + seededRandom(i * 2) * 7}px`,
+                  height: `${3 + seededRandom(i * 2) * 7}px`,
+                  transform: `rotate(${seededRandom(i * 9) * 360}deg)`,
+                  animationDelay: `${seededRandom(i * 4) * 2}s`,
+                  opacity: 0.5
                 }}
               />
             ))}
@@ -206,17 +252,18 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'nature':
         return (
           <>
-            {[...Array(12)].map((_, i) => (
+            <div className="absolute bottom-0 inset-x-0 h-1/4 bg-green-900/20 blur-sm rounded-b-lg" />
+            {[...Array(10)].map((_, i) => (
               <div
                 key={i}
-                className="absolute bg-green-600/30 rounded-full animate-[rise_2s_ease-out_infinite]"
+                className="absolute bg-green-500/40 rounded-full animate-[rise_2s_ease-out_infinite]"
                 style={{
                   bottom: '-5px',
-                  left: `${Math.random() * 100}%`,
-                  width: `${3 + Math.random() * 8}px`,
-                  height: `${3 + Math.random() * 8}px`,
-                  animationDelay: `${Math.random() * 1.5}s`,
-                  opacity: 0.5 + Math.random() * 0.4
+                  left: `${seededRandom(i * 3) * 100}%`,
+                  width: `${2 + seededRandom(i * 6) * 5}px`,
+                  height: `${2 + seededRandom(i * 6) * 5}px`,
+                  animationDelay: `${seededRandom(i * 7) * 2}s`,
+                  opacity: 0.6
                 }}
               />
             ))}
@@ -225,20 +272,19 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'spark_discharge':
         return (
           <>
-            <div className="absolute -inset-2 bg-white/30 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute -inset-2 bg-cyan-400/10 blur-xl animate-pulse rounded-lg" />
             <div className="absolute inset-0 pointer-events-none">
-              {[...Array(4)].map((_, i) => (
+              {[...Array(5)].map((_, i) => (
                 <div
                   key={i}
-                  className="absolute bg-white/60 shadow-[0_0_10px_#ffffff] animate-[pulse_0.1s_ease-in-out_infinite]"
+                  className="absolute bg-white shadow-[0_0_8px_#ffffff] animate-pulse"
                   style={{
-                    width: '2px',
-                    height: `${20 + Math.random() * 60}%`,
-                    top: `${Math.random() * 80}%`,
-                    left: `${Math.random() * 100}%`,
-                    transform: `rotate(${Math.random() * 360}deg)`,
-                    opacity: 0.8,
-                    animationDelay: `${i * 0.15}s`
+                    width: '1.5px',
+                    height: `${15 + seededRandom(i * 5) * 40}%`,
+                    top: `${seededRandom(i * 7) * 80}%`,
+                    left: `${seededRandom(i * 9) * 100}%`,
+                    transform: `rotate(${seededRandom(i * 11) * 360}deg)`,
+                    animationDelay: `${i * 0.1}s`
                   }}
                 />
               ))}
@@ -248,28 +294,33 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'feathers':
         return (
           <>
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute bg-white/70 rounded" 
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  width: `${2 + Math.random() * 4}px`,
-                  height: `${8 + Math.random() * 12}px`,
-                  transform: `rotate(${Math.random() * 360}deg)`,
-                  opacity: 0.6 + Math.random() * 0.3,
-                  animationDelay: `${Math.random() * 2}s`
-                }}
-              />
-            ))}
+            {[...Array(6)].map((_, i) => {
+              const r1 = seededRandom(i * 3);
+              const r2 = seededRandom(i * 5);
+              return (
+                <div
+                  key={i}
+                  className="absolute bg-white/40 rounded-full blur-[0.5px] animate-[rise_3s_linear_infinite]" 
+                  style={{
+                    top: '-10px',
+                    left: `${r1 * 100}%`,
+                    width: '4px',
+                    height: '12px',
+                    transform: `rotate(${r2 * 360}deg)`,
+                    animationDelay: `${r1 * 3}s`,
+                    animationDuration: `${3 + r2 * 2}s`
+                  }}
+                />
+              );
+            })}
           </>
         );
       case 'demonic':
         return (
           <>
-            <div className="absolute -inset-2 bg-red-900/40 blur-xl animate-pulse rounded-lg" />
-            <div className="absolute inset-0 border border-red-700/30 rounded-lg" />
+            <div className="absolute -inset-2 bg-red-950/60 blur-xl animate-pulse rounded-lg shadow-[0_0_20px_rgba(153,27,27,0.4)]" />
+            <div className="absolute inset-0 border border-red-900/50 rounded-lg animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-t from-red-900/20 to-transparent" />
           </>
         );
       case 'bleed':
@@ -278,14 +329,14 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="absolute bg-red-600/70 rounded-full animate-[rise_1.5s_ease-out_infinite]"
+                className="absolute bg-red-600 rounded-full animate-[rise_1.5s_ease-in_infinite]"
                 style={{
-                  top: `${Math.random() * 30}%`,
-                  left: `${Math.random() * 100}%`,
-                  width: `${2 + Math.random() * 4}px`,
-                  height: `${6 + Math.random() * 8}px`,
-                  opacity: 0.6 + Math.random() * 0.3,
-                  animationDelay: `${Math.random() * 1}s`
+                  top: `${seededRandom(i * 4) * 40}%`,
+                  left: `${seededRandom(i * 2) * 100}%`,
+                  width: '2px',
+                  height: '8px',
+                  animationDelay: `${seededRandom(i * 6) * 1.5}s`,
+                  opacity: 0.8
                 }}
               />
             ))}
@@ -294,17 +345,16 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'splash':
         return (
           <>
-            {[...Array(10)].map((_, i) => (
+            {[...Array(12)].map((_, i) => (
               <div
                 key={i}
-                className="absolute bg-blue-300/30 rounded-full animate-[rise_1.8s_ease-out_infinite]"
+                className="absolute bg-blue-400/40 rounded-full animate-pulse"
                 style={{
-                  bottom: '-5px',
-                  left: `${Math.random() * 100}%`,
-                  width: `${3 + Math.random() * 6}px`,
-                  height: `${3 + Math.random() * 6}px`,
-                  opacity: 0.5 + Math.random() * 0.4,
-                  animationDelay: `${Math.random() * 1.5}s`
+                  bottom: `${seededRandom(i * 5) * 20}%`,
+                  left: `${seededRandom(i * 3) * 100}%`,
+                  width: `${2 + seededRandom(i * 7) * 4}px`,
+                  height: `${2 + seededRandom(i * 7) * 4}px`,
+                  animationDelay: `${seededRandom(i * 9) * 1}s`
                 }}
               />
             ))}
@@ -313,55 +363,46 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       case 'gem_reflex':
         return (
           <>
-            <div className="absolute inset-0 bg-purple-200/10" />
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute bg-purple-400/30 rounded-full animate-[scale_1s_ease-out_infinite]"
-                style={{
-                  top: `${Math.random() * 80}%`,
-                  left: `${Math.random() * 80}%`,
-                  width: `${4 + Math.random() * 8}px`,
-                  height: `${4 + Math.random() * 8}px`,
-                  opacity: 0.6 + Math.random() * 0.3,
-                  animationDelay: `${i * 0.2}s`
-                }}
-              />
-            ))}
+            <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
           </>
         );
       case 'living_paint':
         return (
           <>
-            <div className="absolute inset-0 bg-black/70" />
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute bg-black/90 rounded-full animate-[rise_2s_ease-out_infinite]"
-                style={{
-                  bottom: '-5px',
-                  left: `${Math.random() * 100}%`,
-                  width: `${6 + Math.random() * 12}px`,
-                  height: `${6 + Math.random() * 12}px`,
-                  opacity: 0.5 + Math.random() * 0.3,
-                  animationDelay: `${Math.random() * 2}s`
-                }}
-              />
-            ))}
+            <div className="absolute inset-0 bg-black/40 blur-sm" />
+            <div className="absolute inset-0 overflow-hidden">
+               {[...Array(4)].map((_, i) => (
+                 <div key={i} className="absolute bg-black rounded-full blur-md animate-pulse"
+                   style={{
+                     width: '40px',
+                     height: '40px',
+                     top: `${seededRandom(i * 5) * 80}%`,
+                     left: `${seededRandom(i * 7) * 80}%`,
+                     opacity: 0.6
+                   }} />
+               ))}
+            </div>
           </>
         );
       case 'divine':
         return (
           <>
-            <div className="absolute -inset-2 bg-yellow-300/30 blur-xl animate-pulse rounded-lg" />
-            <div className="absolute inset-0 border border-yellow-400/50 rounded-lg" />
+            <div className="absolute -inset-4 bg-red-600/20 blur-2xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 border-2 border-red-500/30 rounded-lg shadow-[inset_0_0_15px_rgba(220,38,38,0.3)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-red-600/10 to-white/10" />
+            {[...Array(5)].map((_, i) => (
+               <div key={i} className="absolute w-1 h-1 bg-white rounded-full animate-ping"
+                 style={{ top: `${seededRandom(i * 4) * 100}%`, left: `${seededRandom(i * 6) * 100}%`, animationDelay: `${i * 0.5}s` }} />
+            ))}
           </>
         );
       case 'cursed':
         return (
           <>
-            <div className="absolute -inset-2 bg-purple-800/40 blur-xl animate-pulse rounded-lg" />
-            <div className="absolute inset-0 border border-purple-600/50 rounded-lg" />
+            <div className="absolute -inset-3 bg-purple-900/40 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 border border-purple-500/20 rounded-lg" />
+            <div className="absolute inset-0 bg-black/20" />
           </>
         );
       default:
@@ -374,4 +415,4 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
       {renderParticles()}
     </div>
   );
-};
+}

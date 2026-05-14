@@ -13,7 +13,7 @@ interface AdminItemsPanelProps {
 }
 
 type ItemType = 'weapon' | 'armor' | 'potion' | 'material' | 'collectible';
-type ItemRarity = 'common' | 'rare' | 'legendary';
+type ItemRarity = 'common' | 'rare' | 'legendary' | 'divine';
 
 export interface GlobalItem {
   id: string;
@@ -40,13 +40,15 @@ export interface GlobalItem {
 const rarityColors = {
   common: 'border-gray-500',
   rare: 'border-blue-500',
-  legendary: 'border-amber-500'
+  legendary: 'border-amber-500',
+  divine: 'border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.4)]'
 };
 
 const rarityLabels = {
   common: 'Comum',
   rare: 'Raro',
-  legendary: 'Lendário'
+  legendary: 'Lendário',
+  divine: 'Divino'
 };
 
 const typeLabels = {
