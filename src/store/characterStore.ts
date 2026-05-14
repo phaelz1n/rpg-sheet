@@ -177,7 +177,15 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     }
   },
 
-  updateField: (field, value) => set({ [field]: value, lastLocalUpdate: Date.now() }),
+  updateField: (field, value) => {
+    const currentState = get();
+    if (field === 'corruption' && typeof value === 'number' && value > currentState.corruption) {
+      import('../lib/audio-service').then(({ audioService }) => {
+        audioService.playSound('CORRUPTION_GAINED');
+      });
+    }
+    set((state) => ({ ...state, [field]: value, lastLocalUpdate: Date.now() }));
+  },
 
   updateSkill: (skill, value) => set((state) => ({
     skills: { ...state.skills, [skill]: value },

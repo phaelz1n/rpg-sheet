@@ -1,15 +1,52 @@
 import React from 'react';
 
 interface ItemVFXProps {
-  type?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust';
+  type?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder';
+  rarity?: string;
   className?: string;
 }
 
-export function ItemVFX({ type, className = "" }: ItemVFXProps) {
-  if (!type || type === 'none') return null;
+export function ItemVFX({ type, rarity, className = "" }: ItemVFXProps) {
+  const finalType = type || (rarity?.toLowerCase() === 'legendary' ? 'thunder' : 'none');
+  
+  if (finalType === 'none') return null;
 
   const renderParticles = () => {
-    switch (type) {
+    switch (finalType) {
+      case 'thunder':
+        return (
+          <>
+            {/* Electric Glow */}
+            <div className="absolute -inset-2 bg-blue-500/20 blur-xl animate-pulse rounded-lg" />
+            {/* Lightning Arcs */}
+            <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+              {[...Array(4)].map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute bg-blue-100/60 shadow-[0_0_10px_#60a5fa] animate-[pulse_0.1s_ease-in-out_infinite]"
+                  style={{
+                    width: '1px',
+                    height: `${20 + Math.random() * 60}%`,
+                    top: `${Math.random() * 80}%`,
+                    left: `${Math.random() * 100}%`,
+                    transform: `rotate(${Math.random() * 360}deg) skew(${Math.random() * 20}deg)`,
+                    opacity: 0.8,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+            {/* Border Flash */}
+            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
+              <div 
+                className="absolute inset-[-200%] opacity-90 mix-blend-screen animate-[spin_2s_linear_infinite]"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #60a5fa 50%, transparent 75%, transparent 100%)'
+                }}
+              />
+            </div>
+          </>
+        );
       case 'embers':
         return (
           <>

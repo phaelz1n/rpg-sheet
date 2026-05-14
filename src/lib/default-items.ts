@@ -29,11 +29,11 @@ export const DEFAULT_ITEMS = [
   { name: 'Cristal de Ossário', type: 'material', rarity: 'rare', description: 'Cristal formado em locais de grande mortalidade.', particles: 'frost' },
 
   // <--- MINÉRIOS LENDÁRIOS (5) --->
-  { name: 'Aurorita', type: 'material', rarity: 'legendary', description: 'Metal que brilha com a luz de um sol esquecido. Armas.', particles: 'gold_dust' },
-  { name: 'Fragmento do Véu', type: 'material', rarity: 'legendary', description: 'Um pedaço da própria realidade usado em alquimia avançada.', particles: 'void' },
-  { name: 'Coração Fóssil', type: 'material', rarity: 'legendary', description: 'O coração petrificado de uma entidade ancestral. Rituais.', particles: 'void' },
-  { name: 'Pedra do Luminar', type: 'material', rarity: 'legendary', description: 'Gema que contém a essência da luz pura. Armas/Rituais.', particles: 'gold_dust' },
-  { name: 'Núcleo Abissal', type: 'material', rarity: 'legendary', description: 'O centro concentrado de um vazio absoluto. Armas/Rituais.', particles: 'void' },
+  { name: 'Aurorita', type: 'material', rarity: 'legendary', description: 'Metal que brilha com a luz de um sol esquecido. Armas.', particles: 'thunder' },
+  { name: 'Fragmento do Véu', type: 'material', rarity: 'legendary', description: 'Um pedaço da própria realidade usado em alquimia avançada.', particles: 'thunder' },
+  { name: 'Coração Fóssil', type: 'material', rarity: 'legendary', description: 'O coração petrificado de uma entidade ancestral. Rituais.', particles: 'thunder' },
+  { name: 'Pedra do Luminar', type: 'material', rarity: 'legendary', description: 'Gema que contém a essência da luz pura. Armas/Rituais.', particles: 'thunder' },
+  { name: 'Núcleo Abissal', type: 'material', rarity: 'legendary', description: 'O centro concentrado de um vazio absoluto. Armas/Rituais.', particles: 'thunder' },
 
   // <--- ITENS DE PERSONAGEM --->
   { name: 'Cestos (Manoplas)', type: 'weapon', rarity: 'common', damage: '1d6', description: 'Manoplas de combate usadas em ambas as mãos.' },
@@ -47,7 +47,7 @@ export const DEFAULT_ITEMS = [
   { name: 'Faixas Vermelhas', type: 'armor', equipmentSlot: 'gloves', rarity: 'common', description: 'Envoltórios para os braços.' },
   { name: 'Gancho com Corrente', type: 'weapon', rarity: 'rare', damage: '1d4', attributeType: 'strength', description: 'Permite puxar inimigos (Teste de #atletismo), escalar e interagir com o ambiente.', particles: 'sparks' },
   { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effectTarget: 'stamina', healingValue: '+2', description: 'Estimulante que recupera +2 de #stamina instantaneamente.', particles: 'sparks' },
-  { name: 'Medalhão Sussurrante', type: 'armor', equipmentSlot: 'neck', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.', particles: 'gold_dust' },
+  { name: 'Medalhão Sussurrante', type: 'armor', equipmentSlot: 'neck', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.', particles: 'thunder' },
   { name: 'Pele de Urso', type: 'armor', equipmentSlot: 'chest', rarity: 'rare', description: 'Manto pesado que oferece 3 de #rd.' },
   { name: 'Amuleto Tosco', type: 'armor', equipmentSlot: 'neck', rarity: 'rare', bonus: 1, description: 'Concede +1 em testes de #intimidação.', particles: 'sparks' },
   { name: 'Coroa de Ossos', type: 'armor', equipmentSlot: 'head', rarity: 'rare', corruptionLimitBonus: 1, description: 'Artefato macabro que expande o limite de #corrupção em +1.', particles: 'void' },

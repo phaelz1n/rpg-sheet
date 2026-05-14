@@ -13,6 +13,7 @@ import { useUI } from '../context/UIContext';
 import { useAuth } from '../context/AuthContext';
 import { ttrpgApi } from '../lib/ttrpg-api';
 import { ItemVFX } from '../components/rpg/ItemVFX';
+import { audioService } from '../lib/audio-service';
 
 export function ShopPage() {
   const navigate = useNavigate();
@@ -128,6 +129,7 @@ export function ShopPage() {
       setBuyingItemId(null);
       
       if (result.success) {
+        audioService.playSound('BUY_ITEM');
         showToast(`${item.name} comprado com sucesso!`, 'success');
       } else {
         showToast(result.error || 'Erro na compra', 'error');

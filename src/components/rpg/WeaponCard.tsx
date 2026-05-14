@@ -3,6 +3,7 @@ import { Swords, Hand, X, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
 import { ItemVFX } from './ItemVFX';
+import { audioService } from '../../lib/audio-service';
 
 interface WeaponCardProps {
   slot: 'main' | 'off';
@@ -42,8 +43,13 @@ export function WeaponCard({
   useEffect(() => {
     if (!isEmpty && onImpact) {
       onImpact();
+      if (rarity?.toLowerCase() === 'legendary') {
+        audioService.playSound('EQUIP_LEGENDARY');
+      } else {
+        audioService.playSound('EQUIP_NORMAL');
+      }
     }
-  }, [name, onImpact]);
+  }, [name, onImpact, rarity]);
 
   return (
     <div className={`relative group ${
@@ -86,7 +92,7 @@ export function WeaponCard({
               />
             )}
 
-            <ItemVFX type={particles as any} />
+            <ItemVFX type={particles as any} rarity={rarity} />
 
             {!isEmpty && onClear && (
               <button
