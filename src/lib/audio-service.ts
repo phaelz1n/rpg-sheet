@@ -1,8 +1,8 @@
 const SFX_URLS = {
-  EQUIP_NORMAL: 'https://www.soundjay.com/buttons/sounds/button-20.mp3', // Metal click
-  EQUIP_LEGENDARY: 'https://www.soundjay.com/nature/sounds/thunder-crack-01.mp3', // Thunder
-  BUY_ITEM: 'https://www.soundjay.com/misc/sounds/coin-spade-1.mp3', // Coins
-  CORRUPTION_GAINED: 'https://www.soundjay.com/button/sounds/button-10.mp3' // Whoosh (placeholder)
+  EQUIP_NORMAL: 'https://assets.mixkit.co/sfx/preview/mixkit-modern-click-box-check-1120.mp3',
+  EQUIP_LEGENDARY: 'https://assets.mixkit.co/sfx/preview/mixkit-thunder-rolling-and-crackling-1282.mp3',
+  BUY_ITEM: 'https://assets.mixkit.co/sfx/preview/mixkit-clinking-coins-735.mp3',
+  CORRUPTION_GAINED: 'https://assets.mixkit.co/sfx/preview/mixkit-dark-magic-horror-whoosh-1488.mp3'
 };
 
 class AudioService {

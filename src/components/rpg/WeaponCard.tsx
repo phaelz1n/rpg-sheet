@@ -99,7 +99,7 @@ export function WeaponCard({
               />
             )}
 
-            <ItemVFX type={particles as any} rarity={rarity} />
+            <ItemVFX type={particles as any} rarity={rarity} name={name} />
 
             {!isEmpty && onClear && (
               <button

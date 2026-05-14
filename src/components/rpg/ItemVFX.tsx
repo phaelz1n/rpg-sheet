@@ -3,11 +3,25 @@ import React from 'react';
 interface ItemVFXProps {
   type?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder';
   rarity?: string;
+  name?: string;
   className?: string;
 }
 
-export function ItemVFX({ type, rarity, className = "" }: ItemVFXProps) {
-  const finalType = type || (rarity?.toLowerCase() === 'legendary' ? 'thunder' : 'none');
+export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
+  // Fallback inteligente baseado no nome se o tipo não for especificado
+  let fallbackType: ItemVFXProps['type'] = 'none';
+  if (rarity?.toLowerCase() === 'legendary') {
+    const lowerName = name?.toLowerCase() || '';
+    if (lowerName.includes('chama') || lowerName.includes('fogo') || lowerName.includes('brasa')) {
+      fallbackType = 'embers';
+    } else if (lowerName.includes('gelo') || lowerName.includes('frio') || lowerName.includes('véu')) {
+      fallbackType = 'frost';
+    } else {
+      fallbackType = 'thunder';
+    }
+  }
+
+  const finalType = type || fallbackType;
   
   if (finalType === 'none') return null;
 

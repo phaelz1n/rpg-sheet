@@ -271,10 +271,12 @@ export function ShopPage() {
                     return (
                       <div 
                         key={item.id} 
-                        className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 hover:bg-amber-950/10 hover:border-amber-600/40 shadow-xl hover:shadow-amber-900/20 overflow-hidden ${
-                          item.rarity === 'legendary' ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50 legendary-border-beam' : ''
+                        className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 hover:bg-amber-950/10 hover:border-amber-600/40 shadow-xl hover:shadow-amber-900/20 ${
+                          item.rarity === 'legendary' ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50' : ''
                         }`}
                       >
+                        <ItemVFX type={item.particles as any} rarity={item.rarity} name={item.name} />
+
                         {/* Background rarity glow */}
                         {item.rarity === 'legendary' && (
                           <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 blur-[50px] group-hover:bg-amber-500/10 transition-all duration-1000" />

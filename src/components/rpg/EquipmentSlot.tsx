@@ -97,7 +97,7 @@ export function EquipmentSlot({
               />
             )}
             
-            <ItemVFX type={particles as any} rarity={rarity} />
+            <ItemVFX type={particles as any} rarity={rarity} name={itemName} />
 
             {!isEmpty && onClear && (
               <button
