@@ -38,15 +38,21 @@ CREATE TABLE IF NOT EXISTS public.shops (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. ATUALIZAÇÃO DE COLUNAS DA LOJA (Regiões e Visibilidade)
+-- 4. ATUALIZAÇÃO DE COLUNAS (Idempotência para colunas novas)
 DO $$ 
 BEGIN 
+    -- Colunas para Shops
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='shops' AND column_name='location') THEN
         ALTER TABLE public.shops ADD COLUMN location TEXT DEFAULT 'Geral';
     END IF;
     
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='shops' AND column_name='is_visible') THEN
         ALTER TABLE public.shops ADD COLUMN is_visible BOOLEAN DEFAULT TRUE;
+    END IF;
+
+    -- Colunas para Global Items
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='global_items' AND column_name='particles') THEN
+        ALTER TABLE public.global_items ADD COLUMN particles TEXT DEFAULT 'none';
     END IF;
 END $$;
 
@@ -57,24 +63,23 @@ CREATE TABLE IF NOT EXISTS public.global_configs (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. HABILITAR REALTIME (Com verificação de segurança)
-DO $$
-DECLARE
-    pub_name TEXT := 'supabase_realtime';
-    tables TEXT[] := ARRAY['characters', 'global_items', 'shops', 'global_configs'];
-    t TEXT;
-BEGIN
-    FOREACH t IN ARRAY tables LOOP
-        IF NOT EXISTS (
-            SELECT 1 FROM pg_publication_tables 
-            WHERE pubname = pub_name 
-            AND schemaname = 'public' 
-            AND tablename = t
-        ) THEN
-            EXECUTE format('ALTER PUBLICATION %I ADD TABLE public.%I', pub_name, t);
-        END IF;
-    END LOOP;
-END $$;
+-- 6. HABILITAR REALTIME
+-- Nota: Executamos em blocos separados para evitar que falhas em uma tabela travem as outras
+DO $$ BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.characters;
+EXCEPTION WHEN OTHERS THEN NULL; END $$;
+
+DO $$ BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.global_items;
+EXCEPTION WHEN OTHERS THEN NULL; END $$;
+
+DO $$ BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.shops;
+EXCEPTION WHEN OTHERS THEN NULL; END $$;
+
+DO $$ BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.global_configs;
+EXCEPTION WHEN OTHERS THEN NULL; END $$;
 
 -- 7. COMENTÁRIOS
 COMMENT ON TABLE public.characters IS 'Fichas dos jogadores e credenciais.';
