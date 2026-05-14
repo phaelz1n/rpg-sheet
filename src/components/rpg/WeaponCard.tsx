@@ -17,6 +17,7 @@ interface WeaponCardProps {
   onBonusChange?: (value: string) => void;
   onClear?: () => void;
   onAddClick?: () => void;
+  onImpact?: () => void;
 }
 
 export function WeaponCard({
@@ -32,9 +33,16 @@ export function WeaponCard({
   onDamageChange,
   onBonusChange,
   onClear,
-  onAddClick
+  onAddClick,
+  onImpact
 }: WeaponCardProps) {
   const isEmpty = !name;
+
+  React.useEffect(() => {
+    if (!isEmpty && onImpact) {
+      onImpact();
+    }
+  }, [name, onImpact]);
 
   return (
     <div className={`relative group ${

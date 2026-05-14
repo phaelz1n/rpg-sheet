@@ -182,10 +182,24 @@ export function CharacterPage() {
   const corruptionMax = store.corruptionBaseMax + corruptionBonus;
   const corruptionPercent = (store.corruption / corruptionMax) * 100;
 
+  // Screen Shake System
+  const [isShaking, setIsShaking] = useState(false);
+  const triggerScreenShake = () => {
+    if (isShaking) return;
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 600);
+  };
+
+  const corruptionFilter = corruptionPercent > 80 ? 'grayscale-[0.6] sepia-[0.3] brightness-[0.7] contrast-[1.1] hue-rotate-[290deg]' :
+                          corruptionPercent > 50 ? 'grayscale-[0.3] sepia-[0.1] brightness-[0.9]' :
+                          '';
+
   return (
     <div className={`min-h-screen transition-all duration-1000 p-4 md:p-6 overflow-x-hidden relative ${
-      corruptionPercent > 80 ? 'bg-zinc-950 grayscale-[0.4] brightness-[0.6]' : 
-      corruptionPercent > 50 ? 'bg-black grayscale-[0.1] brightness-[0.9]' : 
+      isShaking ? 'animate-[shake_0.5s_cubic-bezier(.36,.07,.19,.97)_both]' : ''
+    } ${
+      corruptionPercent > 80 ? 'bg-zinc-950' : 
+      corruptionPercent > 50 ? 'bg-black' : 
       'bg-gradient-to-br from-zinc-950 via-stone-950 to-black'
     }`}>
       {/* Corruption Overlays */}
@@ -200,6 +214,8 @@ export function CharacterPage() {
           corruptionPercent > 80 ? 'opacity-100 animate-pulse' : 'opacity-0'
         }`} />
       </div>
+
+      <div className={`transition-all duration-1000 ${corruptionFilter}`}>
 
       {/* Top Bar */}
       <div className="max-w-[1600px] mx-auto mb-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-zinc-900/50 to-black/50 border border-amber-900/40 rounded-lg p-3 relative z-10">
@@ -327,6 +343,7 @@ export function CharacterPage() {
                   onBonusChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, bonus: value })}
                   onClear={() => store.equipWeapon('main', { name: '', damage: '', bonus: '', synergy: '', special: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'main')}
+                  onImpact={triggerScreenShake}
                 />
                 <WeaponCard
                   slot="off"
@@ -342,6 +359,7 @@ export function CharacterPage() {
                   onBonusChange={(value) => store.equipWeapon('off', { ...store.offWeapon, bonus: value })}
                   onClear={() => store.equipWeapon('off', { name: '', damage: '', bonus: '', synergy: '', special: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'off')}
+                  onImpact={triggerScreenShake}
                 />
                 <DamageReductionBadge value={store.damageReduction} onValueChange={(val) => store.updateField('damageReduction', val)} />
               </div>
@@ -351,7 +369,7 @@ export function CharacterPage() {
           {/* RIGHT COLUMN: Equipment, Belt, Curses, Inventory */}
           <div className="space-y-6">
             <CoinPouch />
-            <BodyEquipmentSection onOpenModal={handleOpenSelectionModal} />
+            <BodyEquipmentSection onOpenModal={handleOpenSelectionModal} onImpact={triggerScreenShake} />
             <BeltSection onOpenModal={handleOpenSelectionModal} />
             <CursesSection />
             <InventorySection 
