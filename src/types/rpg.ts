@@ -136,4 +136,6 @@ export interface Shop {
   npcPortrait: string;
   welcomeMessage: string;
   inventory: ShopItem[];
+  location?: string;
+  is_visible?: boolean;
 }

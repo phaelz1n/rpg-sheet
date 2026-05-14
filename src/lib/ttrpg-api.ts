@@ -224,5 +224,33 @@ export const ttrpgApi = {
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
+  },
+
+  // Global Configs
+  async getGlobalConfig(id: string) {
+    const { data, error } = await supabase
+      .from('global_configs')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    return { data: data?.data, error: error?.message };
+  },
+
+  async saveGlobalConfig(id: string, data: any) {
+    const { error } = await supabase
+      .from('global_configs')
+      .upsert({ id, data, updated_at: new Date().toISOString() });
+    return { success: !error, error: error?.message };
+  },
+
+  subscribeToGlobalConfig(id: string, callback: (payload: any) => void) {
+    const channel = supabase.channel(`config_${id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'global_configs', filter: `id=eq.${id}` },
+        (payload) => callback(payload)
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }
 };

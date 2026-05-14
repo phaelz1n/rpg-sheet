@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS public.shops (
     "npcName" TEXT,
     "npcPortrait" TEXT,
     "welcomeMessage" TEXT,
+    location TEXT DEFAULT 'Geral',
+    is_visible BOOLEAN DEFAULT TRUE,
     inventory JSONB DEFAULT '[]'::jsonb, -- Array de {itemId, priceBronze, stock}
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -46,10 +48,21 @@ CREATE TABLE IF NOT EXISTS public.shops (
 -- Habilitar Realtime para shops (Essencial para estoque compartilhado!)
 ALTER PUBLICATION supabase_realtime ADD TABLE public.shops;
 
--- 4. COMENTÁRIOS E DICAS
+-- 4. TABELA DE CONFIGURAÇÕES GLOBAIS
+CREATE TABLE IF NOT EXISTS public.global_configs (
+    id TEXT PRIMARY KEY,
+    data JSONB DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Habilitar Realtime para global_configs
+ALTER PUBLICATION supabase_realtime ADD TABLE public.global_configs;
+
+-- 5. COMENTÁRIOS E DICAS
 COMMENT ON TABLE public.characters IS 'Armazena as fichas dos jogadores e credenciais de login.';
 COMMENT ON TABLE public.global_items IS 'Base de dados central de itens que podem ser adicionados às fichas ou lojas.';
 COMMENT ON TABLE public.shops IS 'Configuração de mercadores e estoque compartilhado em tempo real.';
+COMMENT ON TABLE public.global_configs IS 'Configurações globais do mestre (ex: localização ativa do mercado).';
 
 -- NOTA: Certifique-se de configurar as permissões de RLS (Row Level Security) 
 -- no seu painel do Supabase conforme sua necessidade de segurança.
