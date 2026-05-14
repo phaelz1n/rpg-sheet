@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LucideIcon, X, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
@@ -31,7 +31,7 @@ export function EquipmentSlot({
 }: EquipmentSlotProps) {
   const isEmpty = !itemName;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEmpty && onImpact) {
       onImpact();
     }

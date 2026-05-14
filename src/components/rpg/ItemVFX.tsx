@@ -5,7 +5,7 @@ interface ItemVFXProps {
   className?: string;
 }
 
-export const ItemVFX: React.FC<ItemVFXProps> = ({ type, className = "" }) => {
+export function ItemVFX({ type, className = "" }: ItemVFXProps) {
   if (!type || type === 'none') return null;
 
   const renderParticles = () => {

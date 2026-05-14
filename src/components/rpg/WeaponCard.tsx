@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { Swords, Hand, X, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
@@ -38,7 +39,7 @@ export function WeaponCard({
 }: WeaponCardProps) {
   const isEmpty = !name;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEmpty && onImpact) {
       onImpact();
     }
