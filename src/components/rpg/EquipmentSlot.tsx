@@ -1,3 +1,4 @@
+import React from 'react';
 import { LucideIcon, X, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
@@ -13,10 +14,28 @@ interface EquipmentSlotProps {
   onItemNameChange?: (value: string) => void;
   onClear?: () => void;
   onAddClick?: () => void;
+  onImpact?: () => void;
 }
 
-export function EquipmentSlot({ slotName, itemName, rarity, icon: Icon, description, particles, onItemNameChange, onClear, onAddClick }: EquipmentSlotProps) {
+export function EquipmentSlot({ 
+  slotName, 
+  itemName, 
+  rarity, 
+  icon: Icon, 
+  description, 
+  particles, 
+  onItemNameChange, 
+  onClear, 
+  onAddClick,
+  onImpact 
+}: EquipmentSlotProps) {
   const isEmpty = !itemName;
+
+  React.useEffect(() => {
+    if (!isEmpty && onImpact) {
+      onImpact();
+    }
+  }, [itemName, onImpact]);
 
   const rarityColors: Record<string, string> = {
     'common': 'border-zinc-500/50',

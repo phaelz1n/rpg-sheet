@@ -434,5 +434,6 @@ export function CharacterPage() {
         )}
       </div>
     </div>
+    </div>
   );
 }
