@@ -41,14 +41,17 @@ export function WeaponCard({
   const isEmpty = !name;
 
   const isInitialMount = React.useRef(true);
+  const lastNameRef = React.useRef(name);
 
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
+      lastNameRef.current = name;
       return;
     }
     
-    if (!isEmpty && onImpact) {
+    // Só dispara se o nome mudou de verdade e não está vazio
+    if (!isEmpty && name !== lastNameRef.current && onImpact) {
       onImpact();
       if (rarity?.toLowerCase() === 'legendary') {
         audioService.playSound('EQUIP_LEGENDARY');
@@ -56,7 +59,8 @@ export function WeaponCard({
         audioService.playSound('EQUIP_NORMAL');
       }
     }
-  }, [name, onImpact, rarity]);
+    lastNameRef.current = name;
+  }, [name, onImpact, rarity, isEmpty]);
 
   return (
     <div className={`relative group ${

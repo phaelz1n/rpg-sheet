@@ -42,15 +42,24 @@ class AudioService {
     return buffer;
   }
 
+  private lastPlayTimes: Record<string, number> = {};
+
   public playSound(type: string) {
     if (!this.initialized) this.init();
     if (!this.audioCtx) return;
+
+    // Prevenção de repetição rápida (debounce)
+    const nowReal = Date.now();
+    if (this.lastPlayTimes[type] && nowReal - this.lastPlayTimes[type] < 300) {
+      return;
+    }
+    this.lastPlayTimes[type] = nowReal;
 
     const now = this.audioCtx.currentTime;
     console.log(`[AudioService] Playing sound: ${type}`);
 
     if (type === 'EQUIP_LEGENDARY') {
-      this.playCustomFile('/sfx/lightning-effects.mp3', 0.2); // 0.2s offset para tirar silêncio inicial
+      this.playCustomFile('/sfx/lightning-effects.mp3', 2.0); // 2.0s offset solicitado
       return;
     }
 

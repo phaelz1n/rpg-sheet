@@ -33,14 +33,16 @@ export function EquipmentSlot({
   const isEmpty = !itemName;
 
   const isInitialMount = React.useRef(true);
+  const lastItemNameRef = React.useRef(itemName);
 
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
+      lastItemNameRef.current = itemName;
       return;
     }
 
-    if (!isEmpty && onImpact) {
+    if (!isEmpty && itemName !== lastItemNameRef.current && onImpact) {
       onImpact();
       if (rarity?.toLowerCase() === 'legendary') {
         audioService.playSound('EQUIP_LEGENDARY');
@@ -48,7 +50,8 @@ export function EquipmentSlot({
         audioService.playSound('EQUIP_NORMAL');
       }
     }
-  }, [itemName, onImpact, rarity]);
+    lastItemNameRef.current = itemName;
+  }, [itemName, onImpact, rarity, isEmpty]);
 
   const rarityColors: Record<string, string> = {
     'common': 'border-zinc-500/50',
