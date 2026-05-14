@@ -1,22 +1,13 @@
-import { X, Search } from 'lucide-react';
+import { X, Search, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-
-interface Item {
-  id: string;
-  name: string;
-  category: string;
-  bonus: number;
-  damage: string;
-  attributeType: string;
-  rarity?: string;
-}
+import { RPGItem } from '../../types/rpg';
 
 interface ItemSelectionModalProps {
   isOpen: boolean;
   title: string;
-  items: Item[];
+  items: RPGItem[];
   onClose: () => void;
-  onSelect: (item: Item) => void;
+  onSelect: (item: RPGItem) => void;
 }
 
 export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: ItemSelectionModalProps) {
@@ -29,17 +20,20 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
   );
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
       <div className="bg-gradient-to-br from-zinc-900 to-black border-2 border-amber-900/60 rounded-xl p-4 sm:p-6 max-w-lg w-full shadow-2xl max-h-[80vh] flex flex-col">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-amber-900/40">
-          <h3 className="text-amber-400 text-base sm:text-lg">{title}</h3>
+          <h3 className="text-amber-400 text-base sm:text-lg font-bold uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-5 h-5" />
+            {title}
+          </h3>
           <button
             onClick={onClose}
-            className="w-6 h-6 bg-red-900/80 border border-red-700 rounded flex items-center justify-center hover:bg-red-800 transition-colors"
+            className="w-8 h-8 bg-red-900/20 hover:bg-red-900/40 border border-red-900/40 rounded-full flex items-center justify-center transition-colors group"
           >
-            <X className="w-4 h-4 text-red-100" />
+            <X className="w-4 h-4 text-red-500 group-hover:text-red-200" />
           </button>
         </div>
 
@@ -58,10 +52,10 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
         </div>
 
         {/* Items List */}
-        <div className="flex-1 overflow-y-auto space-y-2 pr-2">
+        <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
           {filteredItems.length === 0 ? (
-            <div className="text-center py-8 text-zinc-500">
-              {items.length === 0 ? 'Nenhum item disponível' : 'Nenhum item encontrado'}
+            <div className="text-center py-12 text-zinc-600 italic">
+              {items.length === 0 ? 'Nenhum item disponível nesta categoria' : 'Nenhum item encontrado'}
             </div>
           ) : (
             filteredItems.map((item) => (
@@ -71,59 +65,77 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                   onSelect(item);
                   onClose();
                 }}
-                className={`w-full bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-2 ${
-                  item.rarity === 'rare' ? 'border-blue-900/50' :
-                  item.rarity === 'legendary' ? 'border-amber-900/50' :
-                  'border-zinc-800/50'
-                } rounded-lg p-3 text-left hover:from-amber-900/30 hover:to-orange-900/30 transition-colors group`}
+                className={`w-full bg-gradient-to-r from-zinc-900/80 to-black/80 border-2 ${
+                  item.rarity === 'divine' ? 'border-red-600/60 shadow-[0_0_15px_rgba(220,38,38,0.2)]' :
+                  item.rarity === 'legendary' ? 'border-amber-600/40 shadow-[0_0_10px_rgba(217,119,6,0.1)]' :
+                  item.rarity === 'rare' ? 'border-blue-600/40' :
+                  'border-zinc-800/60'
+                } rounded-xl p-4 text-left hover:border-amber-500/60 hover:from-zinc-800/80 transition-all group relative overflow-hidden`}
               >
-                <div className="flex items-start justify-between mb-1">
-                  <h4 className={`font-bold ${
-                    item.rarity === 'rare' ? 'text-blue-400' :
+                {/* Background Glow for high rarities */}
+                {item.rarity === 'divine' && <div className="absolute inset-0 bg-red-600/5 pointer-events-none" />}
+                {item.rarity === 'legendary' && <div className="absolute inset-0 bg-amber-600/5 pointer-events-none" />}
+
+                <div className="flex items-start justify-between mb-1.5 relative z-10">
+                  <h4 className={`font-black text-sm sm:text-base uppercase tracking-tight ${
+                    item.rarity === 'divine' ? 'text-red-500' :
                     item.rarity === 'legendary' ? 'text-amber-400' :
-                    'text-amber-300'
-                  } group-hover:text-amber-200`}>{item.name}</h4>
-                  <div className="flex gap-2 text-[10px] uppercase tracking-tighter">
-                    {item.rarity && (
-                      <span className={`px-1.5 py-0.5 rounded border ${
-                        item.rarity === 'rare' ? 'bg-blue-950/40 border-blue-800/50 text-blue-300' :
-                        item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-800/50 text-amber-300' :
-                        'bg-zinc-800/40 border-zinc-700/50 text-zinc-400'
-                      }`}>
-                        {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
-                      </span>
-                    )}
+                    item.rarity === 'rare' ? 'text-blue-400' :
+                    'text-zinc-200'
+                  } group-hover:text-white transition-colors`}>{item.name}</h4>
+                  
+                  <div className="flex gap-1.5 text-[9px] uppercase font-black tracking-widest">
+                    <span className={`px-2 py-0.5 rounded-md border ${
+                      item.rarity === 'divine' ? 'bg-red-950/60 border-red-700/60 text-red-400' :
+                      item.rarity === 'legendary' ? 'bg-amber-950/60 border-amber-700/60 text-amber-400' :
+                      item.rarity === 'rare' ? 'bg-blue-950/60 border-blue-700/60 text-blue-400' :
+                      'bg-zinc-900/80 border-zinc-700/60 text-zinc-500'
+                    }`}>
+                      {item.rarity === 'divine' ? 'Divino' : 
+                       item.rarity === 'legendary' ? 'Lendário' : 
+                       item.rarity === 'rare' ? 'Raro' : 'Comum'}
+                    </span>
                     {item.damage && (
-                      <span className="px-1.5 py-0.5 bg-red-950/40 border border-red-900/50 rounded text-red-400">
+                      <span className="px-2 py-0.5 bg-red-950/30 border border-red-900/40 rounded-md text-red-500/80">
                         {item.damage}
-                      </span>
-                    )}
-                    {item.bonus !== 0 && (
-                      <span className="px-1.5 py-0.5 bg-zinc-950/40 border border-zinc-800/50 rounded text-zinc-300">
-                        +{item.bonus}
                       </span>
                     )}
                   </div>
                 </div>
-                {item.category === 'weapon' && (
-                  <div className="text-[10px] text-zinc-500 capitalize flex items-center gap-1">
-                    <div className={`w-1 h-1 rounded-full ${
-                      item.rarity === 'rare' ? 'bg-blue-500' :
-                      item.rarity === 'legendary' ? 'bg-amber-500' :
-                      'bg-zinc-600'
-                    }`} />
-                    {item.attributeType === 'dexterity' ? 'Destreza' :
-                     item.attributeType === 'strength' ? 'Força' :
-                     item.attributeType === 'occultism' ? 'Ocultismo' :
-                     item.attributeType === 'faith' ? 'Fé' :
-                     item.attributeType === 'vigor' ? 'Vigor' :
-                     item.attributeType === 'willpower' ? 'Vontade' : item.attributeType}
-                  </div>
-                )}
-                {item.category === 'material' && (
-                  <div className="text-[10px] text-zinc-600 italic">
-                    Material de Crafting
-                  </div>
+
+                <div className="flex items-center gap-3 relative z-10">
+                  {item.category === 'weapon' && (
+                    <div className="text-[10px] text-zinc-500 font-bold flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded border border-zinc-800/40">
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        item.rarity === 'divine' ? 'bg-red-500 animate-pulse' :
+                        item.rarity === 'legendary' ? 'bg-amber-500' :
+                        item.rarity === 'rare' ? 'bg-blue-500' :
+                        'bg-zinc-600'
+                      }`} />
+                      {item.attributeType === 'dexterity' ? 'Destreza' :
+                       item.attributeType === 'strength' ? 'Força' :
+                       item.attributeType === 'occultism' ? 'Ocultismo' :
+                       item.attributeType === 'faith' ? 'Fé' : item.attributeType}
+                    </div>
+                  )}
+
+                  {item.bonus !== 0 && (
+                    <div className="text-[10px] text-zinc-400 font-bold bg-black/40 px-2 py-0.5 rounded border border-zinc-800/40">
+                      Bônus: <span className="text-amber-500">+{item.bonus}</span>
+                    </div>
+                  )}
+
+                  {item.category === 'material' && (
+                    <div className="text-[9px] text-zinc-600 font-black uppercase tracking-widest italic">
+                      Material
+                    </div>
+                  )}
+                </div>
+
+                {item.description && (
+                  <p className="mt-2 text-[10px] text-zinc-500 line-clamp-1 group-hover:text-zinc-400 transition-colors italic">
+                    {item.description.replace(/#\w+/g, '').substring(0, 60)}...
+                  </p>
                 )}
               </button>
             ))
@@ -133,7 +145,7 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
         {/* Cancel */}
         <button
           onClick={onClose}
-          className="w-full mt-4 bg-zinc-800/50 border border-zinc-700 rounded-lg p-2 text-zinc-400 hover:bg-zinc-800 transition-colors"
+          className="w-full mt-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/50 rounded-lg p-3 text-zinc-500 hover:text-zinc-300 font-bold uppercase text-xs tracking-widest transition-all"
         >
           Cancelar
         </button>

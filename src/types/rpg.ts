@@ -1,7 +1,7 @@
 export type AttributeType = 'occultism' | 'dexterity' | 'vigor' | 'willpower' | 'strength' | 'faith';
 export type ItemCategory = 'weapon' | 'armor' | 'potion' | 'material' | 'collectible' | 'consumable';
 export type EquipmentSlot = 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots';
-export type ItemRarity = 'common' | 'rare' | 'legendary';
+export type ItemRarity = 'common' | 'rare' | 'legendary' | 'divine';
 
 export interface RPGItem {
   id: string;
@@ -17,7 +17,7 @@ export interface RPGItem {
   beltCapacity?: number;
   rarity?: ItemRarity | string;
   description?: string;
-  particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust';
+  particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder' | 'poison' | 'hologram' | 'divine' | 'cursed';
 }
 
 export interface InventoryItem extends RPGItem {
