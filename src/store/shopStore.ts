@@ -45,33 +45,39 @@ export const useShopStore = create<ShopStore>((set, get) => ({
   },
 
   buyItem: async (shopId, itemId, buyerUsername) => {
-    const shop = get().shops.find(s => s.id === shopId);
+    // 0. Fetch the LATEST version of the shop from DB to avoid race conditions
+    const { shops: latestShops } = await ttrpgApi.getShops();
+    const shop = latestShops?.find(s => s.id === shopId);
+    
     if (!shop) return { success: false, error: 'Loja não encontrada' };
     
     const shopItem = shop.inventory.find(i => i.itemId === itemId);
-    if (!shopItem || shopItem.stock <= 0) return { success: false, error: 'Item esgotado' };
+    if (!shopItem || shopItem.stock <= 0) return { success: false, error: 'Item esgotado ou não disponível' };
 
     const charStore = useCharacterStore.getState();
     if (charStore.coinsBronze < shopItem.priceBronze) {
       return { success: false, error: 'Moedas insuficientes' };
     }
 
-    // Get the actual RPGItem data
+    // 1. Get the actual RPGItem data (needed for character inventory)
     const { items } = await ttrpgApi.getAllItems();
     const rpgItem = items.find((i: any) => i.id === itemId);
     if (!rpgItem) return { success: false, error: 'Dados do item não encontrados' };
 
-    // 1. Update Shop (Shared state)
+    // 2. Update Shop (Shared state)
+    // Decrement stock. If stock hits 0, it's removed from display.
     const newInventory = shop.inventory.map(i => 
       i.itemId === itemId ? { ...i, stock: i.stock - 1 } : i
     ).filter(i => i.stock > 0);
 
     const updatedShop = { ...shop, inventory: newInventory };
     const shopResponse = await ttrpgApi.saveShop(updatedShop);
-    if (!shopResponse.success) return { success: false, error: 'Erro ao atualizar loja' };
+    
+    if (!shopResponse.success) {
+      return { success: false, error: 'Erro ao atualizar estoque da loja. Tente novamente.' };
+    }
 
-    // 2. Update Character (Private state)
-    // Add to inventory
+    // 3. Update Character (Private state)
     const newInvItem = {
       id: Date.now().toString(),
       name: rpgItem.name,
@@ -84,7 +90,6 @@ export const useShopStore = create<ShopStore>((set, get) => ({
       rarity: rpgItem.rarity
     };
 
-    // We use the store's internal methods directly if possible or update and save
     charStore.removeCoins(shopItem.priceBronze);
     charStore.setInventory([...charStore.inventory, newInvItem as any]);
     await charStore.saveCharacter();

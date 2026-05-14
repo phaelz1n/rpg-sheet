@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { ShoppingBag, ArrowLeft, Plus, Trash2, Save, User, Package, Gem, Coins } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Plus, Trash2, Save, User, Package, Gem, Coins, Minus } from 'lucide-react';
 import { ttrpgApi } from '../lib/ttrpg-api';
 import { useUI } from '../context/UIContext';
 import { Shop, ShopItem, RPGItem } from '../types/rpg';
@@ -213,14 +213,57 @@ export function AdminShopsPage() {
                             <div className="flex-1">
                               <div className="font-bold text-zinc-200 text-sm">{itemData?.name || 'Item Desconhecido'}</div>
                               <div className="flex items-center gap-4 mt-2">
-                                <label className="flex items-center gap-2">
-                                  <Coins className="w-3 h-3 text-amber-500" />
-                                  <input type="number" value={shopItem.priceBronze} onChange={e => updateShopItem(shopItem.itemId, 'priceBronze', Number(e.target.value))} className="w-16 bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs" />
-                                </label>
-                                <label className="flex items-center gap-2">
-                                  <Package className="w-3 h-3 text-zinc-500" />
-                                  <input type="number" value={shopItem.stock} onChange={e => updateShopItem(shopItem.itemId, 'stock', Number(e.target.value))} className="w-16 bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs" />
-                                </label>
+                                <div className="flex flex-col gap-2">
+                                  <label className="flex items-center gap-2">
+                                    <Coins className="w-3 h-3 text-amber-500" />
+                                    <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded overflow-hidden">
+                                      <button 
+                                        onClick={() => updateShopItem(shopItem.itemId, 'priceBronze', Math.max(0, shopItem.priceBronze - 1))}
+                                        className="px-2 py-1 hover:bg-zinc-800 text-zinc-500 hover:text-amber-500 transition-colors"
+                                      >
+                                        <Minus className="w-3 h-3" />
+                                      </button>
+                                      <input 
+                                        type="number" 
+                                        value={shopItem.priceBronze} 
+                                        onChange={e => updateShopItem(shopItem.itemId, 'priceBronze', Number(e.target.value))} 
+                                        className="w-16 bg-transparent text-center text-xs focus:outline-none" 
+                                      />
+                                      <button 
+                                        onClick={() => updateShopItem(shopItem.itemId, 'priceBronze', shopItem.priceBronze + 1)}
+                                        className="px-2 py-1 hover:bg-zinc-800 text-zinc-500 hover:text-amber-500 transition-colors"
+                                      >
+                                        <Plus className="w-3 h-3" />
+                                      </button>
+                                    </div>
+                                    <span className="text-[9px] text-zinc-600 uppercase font-bold">Preço</span>
+                                  </label>
+                                  
+                                  <label className="flex items-center gap-2">
+                                    <Package className="w-3 h-3 text-zinc-500" />
+                                    <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded overflow-hidden">
+                                      <button 
+                                        onClick={() => updateShopItem(shopItem.itemId, 'stock', Math.max(0, shopItem.stock - 1))}
+                                        className="px-2 py-1 hover:bg-zinc-800 text-zinc-500 hover:text-emerald-500 transition-colors"
+                                      >
+                                        <Minus className="w-3 h-3" />
+                                      </button>
+                                      <input 
+                                        type="number" 
+                                        value={shopItem.stock} 
+                                        onChange={e => updateShopItem(shopItem.itemId, 'stock', Number(e.target.value))} 
+                                        className="w-16 bg-transparent text-center text-xs focus:outline-none" 
+                                      />
+                                      <button 
+                                        onClick={() => updateShopItem(shopItem.itemId, 'stock', shopItem.stock + 1)}
+                                        className="px-2 py-1 hover:bg-zinc-800 text-zinc-500 hover:text-emerald-500 transition-colors"
+                                      >
+                                        <Plus className="w-3 h-3" />
+                                      </button>
+                                    </div>
+                                    <span className="text-[9px] text-zinc-600 uppercase font-bold">Estoque</span>
+                                  </label>
+                                </div>
                               </div>
                             </div>
                             <button onClick={() => removeItemFromShop(shopItem.itemId)} className="p-2 text-zinc-600 hover:text-red-500 transition-colors">

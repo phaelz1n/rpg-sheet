@@ -251,12 +251,22 @@ export function ShopPage() {
                         {/* Buy Action */}
                         <div className="mt-8 flex items-center justify-between gap-4">
                           <div className="flex flex-col">
-                            <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest">Estoque</span>
+                            <span className={`text-[8px] uppercase font-black tracking-widest ${shopItem.stock <= 2 ? 'text-red-500 animate-pulse' : 'text-amber-900'}`}>
+                              {shopItem.stock <= 2 ? 'Últimas Unidades!' : 'Estoque'}
+                            </span>
                             <div className="flex items-center gap-1.5 mt-0.5">
                               {Array.from({ length: Math.min(5, shopItem.stock) }).map((_, i) => (
-                                <div key={i} className="w-1.5 h-1.5 rounded-full bg-amber-600/50 shadow-[0_0_4px_rgba(217,119,6,0.3)]" />
+                                <div 
+                                  key={i} 
+                                  className={`w-1.5 h-1.5 rounded-full shadow-[0_0_4px_rgba(0,0,0,0.3)] ${
+                                    shopItem.stock === 1 ? 'bg-red-500 shadow-red-500/50' : 
+                                    shopItem.stock <= 3 ? 'bg-orange-500 shadow-orange-500/50' : 
+                                    'bg-emerald-600 shadow-emerald-500/50'
+                                  }`} 
+                                />
                               ))}
                               {shopItem.stock > 5 && <span className="text-[10px] text-amber-600/60 font-bold">+{shopItem.stock - 5}</span>}
+                              <span className="text-[10px] text-zinc-500 font-bold ml-1">({shopItem.stock})</span>
                             </div>
                           </div>
 
