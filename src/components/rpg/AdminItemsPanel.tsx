@@ -5,6 +5,7 @@ import { AutocompleteTextarea } from './AutocompleteTextarea';
 import { ttrpgApi } from '../../lib/ttrpg-api';
 import { seedDefaultItems } from '../../lib/seeding-service';
 import { audioService } from '../../lib/audio-service';
+import { ItemVFX } from './ItemVFX';
 
 
 interface AdminItemsPanelProps {
@@ -287,7 +288,23 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     const type = formData.type;
 
     return (
-      <>
+      <div className="space-y-4">
+        {/* Item Preview */}
+        <div className="flex flex-col items-center justify-center p-6 bg-black/40 border border-amber-900/20 rounded-xl mb-4 relative overflow-hidden shadow-inner">
+          <div className="text-[10px] text-amber-900 uppercase font-black tracking-widest mb-4">Prévia do Jogador</div>
+          <div className="w-24 h-24 relative bg-gradient-to-br from-zinc-900 to-black border border-amber-900/40 rounded-xl flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
+            <ItemVFX type={formData.particles} rarity={formData.rarity} name={formData.name} />
+            <Package className={`w-8 h-8 mb-1 relative z-10 ${
+              formData.rarity === 'legendary' ? 'text-amber-400' : formData.rarity === 'rare' ? 'text-blue-400' : 'text-zinc-500'
+            }`} />
+            <div className={`text-[8px] font-black uppercase text-center leading-tight tracking-tighter px-1 relative z-10 ${
+              formData.rarity === 'legendary' ? 'text-amber-300' : formData.rarity === 'rare' ? 'text-blue-300' : 'text-zinc-300'
+            }`}>
+              {formData.name || 'Nome do Item'}
+            </div>
+          </div>
+        </div>
+
         {/* Common fields */}
         <div>
           <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Nome</label>
@@ -509,7 +526,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
             </div>
           </div>
         )}
-      </>
+      </div>
     );
   };
 
@@ -654,11 +671,13 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                 <div
                   key={item.id}
                   onClick={() => toggleSelect(item.id)}
-                  className={`bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border-2 ${
+                  className={`bg-gradient-to-br from-zinc-800/80 to-black/90 border-2 ${
                     selectedIds.has(item.id) ? 'border-amber-500 bg-amber-900/10' : rarityColors[item.rarity]
-                  } rounded-lg p-4 shadow-lg hover:shadow-xl transition-all relative group cursor-pointer`}
+                  } rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all relative group cursor-pointer overflow-hidden`}
                 >
-                  <div className="mb-3">
+                  <ItemVFX type={item.particles} rarity={item.rarity} name={item.name} />
+                  
+                  <div className="mb-3 relative z-10">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 overflow-hidden">
                         <Package className="w-4 h-4 text-amber-500 flex-shrink-0" />
