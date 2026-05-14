@@ -32,7 +32,14 @@ export function EquipmentSlot({
 }: EquipmentSlotProps) {
   const isEmpty = !itemName;
 
+  const isInitialMount = React.useRef(true);
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     if (!isEmpty && onImpact) {
       onImpact();
       if (rarity?.toLowerCase() === 'legendary') {

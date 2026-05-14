@@ -1,20 +1,15 @@
 const SFX_URLS = {
-  EQUIP_NORMAL: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c3527873c5.mp3', // Metal click
-  EQUIP_LEGENDARY: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c89657096e.mp3', // Thunder
-  BUY_ITEM: 'https://cdn.pixabay.com/audio/2021/08/04/audio_332f1b4028.mp3', // Coins
-  CORRUPTION_GAINED: 'https://cdn.pixabay.com/audio/2022/01/18/audio_8e78262705.mp3' // Dark whisper/whoosh
+  EQUIP_NORMAL: 'https://www.soundjay.com/buttons/sounds/button-20.mp3', // Metal click
+  EQUIP_LEGENDARY: 'https://www.soundjay.com/nature/sounds/thunder-crack-01.mp3', // Thunder
+  BUY_ITEM: 'https://www.soundjay.com/misc/sounds/coin-spade-1.mp3', // Coins
+  CORRUPTION_GAINED: 'https://www.soundjay.com/button/sounds/button-10.mp3' // Whoosh (placeholder)
 };
 
 class AudioService {
   private static instance: AudioService;
-  private audioContext: AudioContext | null = null;
-  private soundBuffers: Map<string, AudioBuffer> = new Map();
+  private sounds: Map<string, HTMLAudioElement> = new Map();
 
-  private constructor() {
-    if (typeof window !== 'undefined') {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    }
-  }
+  private constructor() {}
 
   public static getInstance(): AudioService {
     if (!AudioService.instance) {
@@ -23,29 +18,26 @@ class AudioService {
     return AudioService.instance;
   }
 
-  public async playSound(type: keyof typeof SFX_URLS) {
-    if (!this.audioContext) return;
+  public playSound(type: keyof typeof SFX_URLS) {
+    if (typeof window === 'undefined') return;
+    console.log(`[AudioService] Playing sound: ${type}`);
 
     try {
-      if (this.audioContext.state === 'suspended') {
-        await this.audioContext.resume();
-      }
-
-      let buffer = this.soundBuffers.get(type);
+      let audio = this.sounds.get(type);
       
-      if (!buffer) {
-        const response = await fetch(SFX_URLS[type]);
-        const arrayBuffer = await response.arrayBuffer();
-        buffer = await this.audioContext.decodeAudioData(arrayBuffer);
-        this.soundBuffers.set(type, buffer);
+      if (!audio) {
+        console.log(`[AudioService] Loading new audio for: ${type}`);
+        audio = new Audio(SFX_URLS[type]);
+        audio.preload = 'auto';
+        this.sounds.set(type, audio);
       }
 
-      const source = this.audioContext.createBufferSource();
-      source.buffer = buffer;
-      source.connect(this.audioContext.destination);
-      source.start(0);
+      audio.currentTime = 0;
+      audio.play().catch(err => {
+        console.error(`[AudioService] Error playing ${type}:`, err);
+      });
     } catch (error) {
-      console.warn('Failed to play sound:', error);
+      console.error(`[AudioService] Failed to play sound ${type}:`, error);
     }
   }
 }

@@ -40,7 +40,14 @@ export function WeaponCard({
 }: WeaponCardProps) {
   const isEmpty = !name;
 
+  const isInitialMount = React.useRef(true);
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    
     if (!isEmpty && onImpact) {
       onImpact();
       if (rarity?.toLowerCase() === 'legendary') {
