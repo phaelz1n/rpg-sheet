@@ -174,22 +174,30 @@ export function CharacterPage() {
     setItemSelectionModal({ isOpen: false, type: null });
   };
 
+  const corruptionBonus = rpgItems
+    .filter(item => item.category === 'armor' && (item.corruptionLimitBonus ?? 0) > 0 &&
+      [store.equipmentHead, store.equipmentNeck, store.equipmentChest, store.equipmentGloves, store.equipmentBelt, store.equipmentPants, store.equipmentBoots].includes(item.name))
+    .reduce((sum, item) => sum + (item.corruptionLimitBonus || 0), 0);
+  
+  const corruptionMax = store.corruptionBaseMax + corruptionBonus;
+  const corruptionPercent = (store.corruption / corruptionMax) * 100;
+
   return (
     <div className={`min-h-screen transition-all duration-1000 p-4 md:p-6 overflow-x-hidden relative ${
-      store.corruption > 80 ? 'bg-zinc-950 grayscale-[0.4] brightness-[0.6]' : 
-      store.corruption > 50 ? 'bg-black grayscale-[0.1] brightness-[0.9]' : 
+      corruptionPercent > 80 ? 'bg-zinc-950 grayscale-[0.4] brightness-[0.6]' : 
+      corruptionPercent > 50 ? 'bg-black grayscale-[0.1] brightness-[0.9]' : 
       'bg-gradient-to-br from-zinc-950 via-stone-950 to-black'
     }`}>
       {/* Corruption Overlays */}
       <div className="fixed inset-0 pointer-events-none z-[100]">
         <div className={`absolute inset-0 transition-opacity duration-1000 bg-[radial-gradient(circle,transparent_40%,rgba(48,0,48,0.4)_100%)] ${
-          store.corruption > 30 ? 'opacity-100' : 'opacity-0'
+          corruptionPercent > 30 ? 'opacity-100' : 'opacity-0'
         }`} />
         <div className={`absolute inset-0 transition-opacity duration-1000 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] mix-blend-overlay ${
-          store.corruption > 60 ? 'opacity-50' : 'opacity-0'
+          corruptionPercent > 60 ? 'opacity-50' : 'opacity-0'
         }`} />
         <div className={`absolute inset-0 transition-opacity duration-1000 shadow-[inset_0_0_150px_rgba(147,51,234,0.15)] ${
-          store.corruption > 80 ? 'opacity-100 animate-pulse' : 'opacity-0'
+          corruptionPercent > 80 ? 'opacity-100 animate-pulse' : 'opacity-0'
         }`} />
       </div>
 
@@ -312,6 +320,8 @@ export function CharacterPage() {
                   bonus={store.mainWeapon.bonus}
                   synergy={store.mainWeapon.synergy}
                   special={store.mainWeapon.special}
+                  particles={rpgItems.find(i => i.name === store.mainWeapon.name)?.particles}
+                  rarity={rpgItems.find(i => i.name === store.mainWeapon.name)?.rarity}
                   onNameChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, name: value })}
                   onDamageChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, damage: value })}
                   onBonusChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, bonus: value })}
@@ -325,6 +335,8 @@ export function CharacterPage() {
                   bonus={store.offWeapon.bonus}
                   synergy={store.offWeapon.synergy}
                   special={store.offWeapon.special}
+                  particles={rpgItems.find(i => i.name === store.offWeapon.name)?.particles}
+                  rarity={rpgItems.find(i => i.name === store.offWeapon.name)?.rarity}
                   onNameChange={(value) => store.equipWeapon('off', { ...store.offWeapon, name: value })}
                   onDamageChange={(value) => store.equipWeapon('off', { ...store.offWeapon, damage: value })}
                   onBonusChange={(value) => store.equipWeapon('off', { ...store.offWeapon, bonus: value })}

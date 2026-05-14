@@ -1,5 +1,6 @@
 import { Swords, Hand, X, Plus } from 'lucide-react';
 import { RichDescription } from './RichDescription';
+import { ItemVFX } from './ItemVFX';
 
 interface WeaponCardProps {
   slot: 'main' | 'off';
@@ -8,6 +9,8 @@ interface WeaponCardProps {
   bonus?: string;
   synergy?: string;
   special?: string;
+  particles?: string;
+  rarity?: string;
   onNameChange?: (value: string) => void;
   onDamageChange?: (value: string) => void;
   onBonusChange?: (value: string) => void;
@@ -22,6 +25,8 @@ export function WeaponCard({
   bonus,
   synergy,
   special,
+  particles,
+  rarity,
   onNameChange,
   onDamageChange,
   onBonusChange,
@@ -31,12 +36,16 @@ export function WeaponCard({
   const isEmpty = !name;
 
   return (
-    <div className={`relative group ${
+    <div className={`relative group overflow-hidden ${
       isEmpty
         ? 'bg-zinc-900/40 border-2 border-dashed border-zinc-700/40 cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60'
-        : 'bg-gradient-to-br from-orange-950/40 to-zinc-900/80 border-2 border-orange-900/60 shadow-xl shadow-orange-900/20'
+        : `bg-gradient-to-br from-orange-950/40 to-zinc-900/80 border-2 shadow-xl shadow-orange-900/20 ${
+            rarity === 'legendary' ? 'border-amber-600/50' : 'border-orange-900/60'
+          }`
     } rounded-lg p-4 transition-all`}
     onClick={isEmpty ? onAddClick : undefined}>
+
+      <ItemVFX type={particles as any} />
 
       {!isEmpty && onClear && (
         <button
