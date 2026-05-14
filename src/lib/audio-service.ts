@@ -47,14 +47,16 @@ class AudioService {
     if (!this.audioCtx) return;
 
     const now = this.audioCtx.currentTime;
-    console.log(`[AudioService] Synthesizing sound: ${type}`);
+    console.log(`[AudioService] Playing sound: ${type}`);
+
+    if (type === 'EQUIP_LEGENDARY') {
+      this.playCustomFile('/sfx/lightning-effects.mp3', 0.2); // 0.2s offset para tirar silêncio inicial
+      return;
+    }
 
     switch (type) {
       case 'EQUIP_NORMAL':
         this.playClick(now);
-        break;
-      case 'EQUIP_LEGENDARY':
-        this.playThunder(now);
         break;
       case 'BUY_ITEM':
         this.playCoins(now);
@@ -63,6 +65,12 @@ class AudioService {
         this.playWhoosh(now);
         break;
     }
+  }
+
+  private playCustomFile(url: string, startOffset = 0) {
+    const audio = new Audio(url);
+    audio.currentTime = startOffset;
+    audio.play().catch(e => console.error('[AudioService] File play failed', e));
   }
 
   private playClick(now: number) {
