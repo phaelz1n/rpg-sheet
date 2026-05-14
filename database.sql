@@ -1,7 +1,7 @@
--- SCRIPT DE INICIALIZAÇÃO DO BANCO DE DADOS RPG
--- Projeto: Modular UI for RPG Character Sheet
+-- SCRIPT DE INICIALIZAÇÃO E ATUALIZAÇÃO DO BANCO DE DADOS RPG
+-- Este script é seguro para ser executado múltiplas vezes.
 
--- 1. TABELA DE PERSONAGENS (E AUTENTICAÇÃO SIMPLES)
+-- 1. TABELA DE PERSONAGENS
 CREATE TABLE IF NOT EXISTS public.characters (
     username TEXT PRIMARY KEY,
     password TEXT NOT NULL,
@@ -10,10 +10,7 @@ CREATE TABLE IF NOT EXISTS public.characters (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Habilitar Realtime para characters
-ALTER PUBLICATION supabase_realtime ADD TABLE public.characters;
-
--- 2. TABELA DE ITENS GLOBAIS (BASE DE DADOS DO MESTRE)
+-- 2. TABELA DE ITENS GLOBAIS
 CREATE TABLE IF NOT EXISTS public.global_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
@@ -29,40 +26,57 @@ CREATE TABLE IF NOT EXISTS public.global_items (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Habilitar Realtime para global_items
-ALTER PUBLICATION supabase_realtime ADD TABLE public.global_items;
-
--- 3. TABELA DE LOJAS NPC (SISTEMA DE COMÉRCIO)
+-- 3. TABELA DE LOJAS NPC
 CREATE TABLE IF NOT EXISTS public.shops (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     "npcName" TEXT,
     "npcPortrait" TEXT,
     "welcomeMessage" TEXT,
-    location TEXT DEFAULT 'Geral',
-    is_visible BOOLEAN DEFAULT TRUE,
-    inventory JSONB DEFAULT '[]'::jsonb, -- Array de {itemId, priceBronze, stock}
+    inventory JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Habilitar Realtime para shops (Essencial para estoque compartilhado!)
-ALTER PUBLICATION supabase_realtime ADD TABLE public.shops;
+-- 4. ATUALIZAÇÃO DE COLUNAS DA LOJA (Regiões e Visibilidade)
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='shops' AND column_name='location') THEN
+        ALTER TABLE public.shops ADD COLUMN location TEXT DEFAULT 'Geral';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='shops' AND column_name='is_visible') THEN
+        ALTER TABLE public.shops ADD COLUMN is_visible BOOLEAN DEFAULT TRUE;
+    END IF;
+END $$;
 
--- 4. TABELA DE CONFIGURAÇÕES GLOBAIS
+-- 5. TABELA DE CONFIGURAÇÕES GLOBAIS (RP Config)
 CREATE TABLE IF NOT EXISTS public.global_configs (
     id TEXT PRIMARY KEY,
     data JSONB DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Habilitar Realtime para global_configs
-ALTER PUBLICATION supabase_realtime ADD TABLE public.global_configs;
+-- 6. HABILITAR REALTIME (Com verificação de segurança)
+DO $$
+DECLARE
+    pub_name TEXT := 'supabase_realtime';
+    tables TEXT[] := ARRAY['characters', 'global_items', 'shops', 'global_configs'];
+    t TEXT;
+BEGIN
+    FOREACH t IN ARRAY tables LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_publication_tables 
+            WHERE pubname = pub_name 
+            AND schemaname = 'public' 
+            AND tablename = t
+        ) THEN
+            EXECUTE format('ALTER PUBLICATION %I ADD TABLE public.%I', pub_name, t);
+        END IF;
+    END LOOP;
+END $$;
 
--- 5. COMENTÁRIOS E DICAS
-COMMENT ON TABLE public.characters IS 'Armazena as fichas dos jogadores e credenciais de login.';
-COMMENT ON TABLE public.global_items IS 'Base de dados central de itens que podem ser adicionados às fichas ou lojas.';
-COMMENT ON TABLE public.shops IS 'Configuração de mercadores e estoque compartilhado em tempo real.';
-COMMENT ON TABLE public.global_configs IS 'Configurações globais do mestre (ex: localização ativa do mercado).';
-
--- NOTA: Certifique-se de configurar as permissões de RLS (Row Level Security) 
--- no seu painel do Supabase conforme sua necessidade de segurança.
+-- 7. COMENTÁRIOS
+COMMENT ON TABLE public.characters IS 'Fichas dos jogadores e credenciais.';
+COMMENT ON TABLE public.global_items IS 'Base de dados central de itens do mestre.';
+COMMENT ON TABLE public.shops IS 'Mercadores e estoque compartilhado.';
+COMMENT ON TABLE public.global_configs IS 'Configurações globais (ex: Mercado Ativo).';
