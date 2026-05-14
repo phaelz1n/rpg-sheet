@@ -20,7 +20,7 @@ interface GlobalItem {
   type: ItemType;
   rarity: ItemRarity;
   description: string;
-  particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust';
+  particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder';
   // Weapon fields
   damage?: string;
   attributeType?: string;
@@ -328,18 +328,19 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           </div>
 
           <div>
-            <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Partículas</label>
+            <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Partículas & Som</label>
             <select
               value={formData.particles || 'none'}
               onChange={(e) => setFormData({ ...formData, particles: e.target.value as any })}
               className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
             >
-              <option value="none">Nenhuma</option>
-              <option value="embers">Brasas (Fogo)</option>
-              <option value="frost">Gelo</option>
-              <option value="void">Vazio (Purple)</option>
-              <option value="gold_dust">Poeira de Ouro</option>
-              <option value="sparks">Faíscas</option>
+              <option value="none">Padrão (Sem Aura)</option>
+              <option value="embers">Chamas (Fogo + Crepitar)</option>
+              <option value="thunder">Trovão (Raios + Impacto)</option>
+              <option value="frost">Gelo (Aura Fria)</option>
+              <option value="void">Vazio (Corrupção)</option>
+              <option value="gold_dust">Poeira de Ouro (Místico)</option>
+              <option value="sparks">Faíscas (Metal)</option>
             </select>
           </div>
         </div>
@@ -704,12 +705,16 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                       }`}>
                         {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
                       </span>
-                      <span className="px-2 py-0.5 bg-zinc-800/60 border border-zinc-700 rounded text-zinc-400 flex items-center gap-1">
-                        {typeLabels[item.type]}
                         {item.type === 'armor' && item.equipmentSlot && (
                           <span className="text-zinc-500 uppercase text-[8px] border-l border-zinc-700 pl-1 ml-1">{slotLabels[item.equipmentSlot]}</span>
                         )}
                       </span>
+                      {item.particles && item.particles !== 'none' && (
+                        <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 rounded text-amber-500/80 flex items-center gap-1 lowercase">
+                          <Sparkles className="w-2.5 h-2.5" />
+                          {item.particles}
+                        </span>
+                      )}
                     </div>
                     <div className="text-zinc-400 text-xs line-clamp-3 min-h-[40px]">
                       <RichDescription text={item.description} />

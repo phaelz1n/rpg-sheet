@@ -2,6 +2,7 @@ import { Sparkles, Minus, Plus, ChevronLeft, ChevronRight, Gem } from 'lucide-re
 import { InventorySlot } from '../rpg/InventorySlot';
 import { EncumbranceBar } from '../rpg/EncumbranceBar';
 import { useCharacterStore } from '../../store/characterStore';
+import { audioService } from '../../lib/audio-service';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -22,6 +23,16 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
   const totalSlotsOnThisPage = Math.min(ITEMS_PER_PAGE, inventoryCapacity - (inventoryPage * ITEMS_PER_PAGE));
   const effectiveEmptySlots = Math.max(0, totalSlotsOnThisPage - pageItems.length);
 
+  const handlePageChange = (newPage: number) => {
+    audioService.playSound('BACKPACK_MOVE');
+    onPageChange(newPage);
+  };
+
+  const handleExpand = () => {
+    audioService.playSound('BACKPACK_MOVE');
+    updateField('inventoryCapacity', Math.min(40, inventoryCapacity + 4));
+  };
+
   return (
     <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">
       <div className="flex items-center justify-between mb-4">
@@ -36,7 +47,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
           {inventoryCapacity > ITEMS_PER_PAGE && (
             <div className="flex items-center gap-2 bg-black/40 border border-amber-900/20 rounded px-2 py-1">
               <button 
-                onClick={() => onPageChange(Math.max(0, inventoryPage - 1))}
+                onClick={() => handlePageChange(Math.max(0, inventoryPage - 1))}
                 disabled={inventoryPage === 0}
                 className="text-amber-600 hover:text-amber-400 disabled:text-zinc-700 transition-colors"
               >
@@ -46,7 +57,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
                 Pág {inventoryPage + 1}
               </span>
               <button 
-                onClick={() => onPageChange(Math.min(totalPages - 1, inventoryPage + 1))}
+                onClick={() => handlePageChange(Math.min(totalPages - 1, inventoryPage + 1))}
                 disabled={inventoryPage >= totalPages - 1}
                 className="text-amber-600 hover:text-amber-400 disabled:text-zinc-700 transition-colors"
               >
@@ -58,6 +69,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
           <div className="flex items-center bg-amber-900/20 border border-amber-900/40 rounded overflow-hidden">
             <button 
               onClick={() => {
+                audioService.playSound('BACKPACK_MOVE');
                 const newCap = Math.max(8, inventoryCapacity - 4);
                 updateField('inventoryCapacity', newCap);
                 const maxPage = Math.ceil(newCap / ITEMS_PER_PAGE) - 1;
@@ -70,7 +82,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
               <Minus className="w-3 h-3" />
             </button>
             <button 
-              onClick={() => updateField('inventoryCapacity', Math.min(40, inventoryCapacity + 4))}
+              onClick={handleExpand}
               className="flex items-center gap-1 px-3 py-1 text-[10px] text-amber-400 hover:bg-amber-900/40 transition-all uppercase font-bold"
               title="Aumentar espaço da mochila"
             >

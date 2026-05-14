@@ -68,6 +68,11 @@ class AudioService {
       return;
     }
 
+    if (type === 'BACKPACK_MOVE') {
+      this.playBuffer('/sfx/mochila.mp3', 0, 0.5); // Toca o primeiro pico da mochila
+      return;
+    }
+
     switch (type) {
       case 'BUY_ITEM':
         this.playCoins(now);
