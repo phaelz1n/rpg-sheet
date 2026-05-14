@@ -32,17 +32,10 @@ export function EquipmentSlot({
 }: EquipmentSlotProps) {
   const isEmpty = !itemName;
 
-  const isInitialMount = React.useRef(true);
   const lastItemNameRef = React.useRef(itemName);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      lastItemNameRef.current = itemName;
-      return;
-    }
-
-    if (!isEmpty && itemName !== lastItemNameRef.current) {
+    if (!isEmpty && (itemName !== lastItemNameRef.current || lastItemNameRef.current === undefined)) {
       if (rarity?.toLowerCase() === 'legendary') {
         if (onImpact) onImpact();
         audioService.playSound('EQUIP_LEGENDARY');
