@@ -28,11 +28,11 @@ export const DEFAULT_ITEMS = [
   { name: 'Necronita', type: 'material', rarity: 'rare', description: 'Metal que drena a vitalidade. Armas/Rituais.' },
   { name: 'Cristal de Ossário', type: 'material', rarity: 'rare', description: 'Cristal formado em locais de grande mortalidade.' },
 
-  // <--- MINÉRIOS LENDÁRIOS & DIVINOS (5) --->
-  { name: 'Aurorita Sagrada', type: 'material', rarity: 'divine', description: 'Metal que brilha com a luz de um sol esquecido. Armas.', particles: 'divine' },
+  // <--- MINÉRIOS LENDÁRIOS (5) --->
+  { name: 'Aurorita', type: 'material', rarity: 'legendary', description: 'Metal que brilha com a luz de um sol esquecido. Armas.', particles: 'divine' },
   { name: 'Fragmento do Véu', type: 'material', rarity: 'legendary', description: 'Um pedaço da própria realidade usado em alquimia avançada.', particles: 'hologram' },
   { name: 'Coração Fóssil', type: 'material', rarity: 'legendary', description: 'O coração petrificado de uma entidade ancestral. Rituais.', particles: 'cursed' },
-  { name: 'Pedra do Luminar', type: 'material', rarity: 'divine', description: 'Gema que contém a essência da luz pura. Armas/Rituais.', particles: 'divine' },
+  { name: 'Pedra do Luminar', type: 'material', rarity: 'legendary', description: 'Gema que contém a essência da luz pura. Armas/Rituais.', particles: 'divine' },
   { name: 'Núcleo Abissal', type: 'material', rarity: 'legendary', description: 'O centro concentrado de um vazio absoluto. Armas/Rituais.', particles: 'void' },
 
   // <--- ITENS DE PERSONAGEM --->
@@ -47,13 +47,12 @@ export const DEFAULT_ITEMS = [
   { name: 'Faixas Vermelhas', type: 'armor', equipmentSlot: 'gloves', rarity: 'common', description: 'Envoltórios para os braços.' },
   { name: 'Gancho com Corrente', type: 'weapon', rarity: 'rare', damage: '1d4', attributeType: 'strength', description: 'Permite puxar inimigos (Teste de #atletismo), escalar e interagir com o ambiente.' },
   { name: 'Injeção de Adrenalina', type: 'potion', rarity: 'rare', effectTarget: 'stamina', healingValue: '+2', description: 'Estimulante que recupera +2 de #stamina instantaneamente.' },
-  { name: 'Medalhão da Mãe Suprema', type: 'armor', equipmentSlot: 'neck', rarity: 'divine', description: 'Relíquia divina concedida pela progenitora original.', particles: 'divine' },
+  { name: 'Medalhão Sussurrante', type: 'armor', equipmentSlot: 'neck', rarity: 'legendary', description: 'Relíquia misteriosa concedida por uma mãe.', particles: 'hologram' },
   { name: 'Pele de Urso', type: 'armor', equipmentSlot: 'chest', rarity: 'rare', description: 'Manto pesado que oferece 3 de #rd.' },
   { name: 'Amuleto Tosco', type: 'armor', equipmentSlot: 'neck', rarity: 'rare', bonus: 1, description: 'Concede +1 em testes de #intimidação.' },
   { name: 'Coroa de Ossos', type: 'armor', equipmentSlot: 'head', rarity: 'rare', corruptionLimitBonus: 1, description: 'Artefato macabro que expande o limite de #corrupção em +1.' },
   { name: 'Foco de Fé', type: 'armor', equipmentSlot: 'neck', rarity: 'rare', statBonus: '+1 #fé', description: 'Canalizador espiritual para ritos sagrados. Concede +1 em #fé.' },
   { name: 'Chama do Arrependimento', type: 'weapon', rarity: 'legendary', damage: '2d6', attributeType: 'dexterity', description: 'Espada herética. Sinergia: +1d10 Fogo se o alvo estiver #marcado. Sacrifício: +1 #corrupção para dano máximo (12).', particles: 'embers' },
-  { name: 'Lâmina do Julgamento', type: 'weapon', rarity: 'divine', damage: '3d8', attributeType: 'faith', description: 'Espada divina forjada na luz. Sinergia: +2d10 contra seres sombrios.', particles: 'divine' },
   { name: 'Adaga de Ferro Frio', type: 'weapon', rarity: 'rare', damage: '1d6+3', attributeType: 'dexterity', description: 'Lâmina herética. Aplica o status #marcado ao atingir.' },
   { name: 'Picareta de Combate', type: 'weapon', rarity: 'common', damage: '1d6', description: 'Ferramenta adaptada para combate.' },
   { name: 'Cutello do Verdão', type: 'weapon', rarity: 'rare', damage: '1d8', description: 'Lâmina pesada e imponente.' },
