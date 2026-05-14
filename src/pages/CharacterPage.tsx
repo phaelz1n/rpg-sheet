@@ -470,6 +470,9 @@ export function CharacterPage() {
   useEffect(() => {
     if (rpgItems.length === 0) return;
 
+    // Helper to check if an item still exists globally
+    const itemExists = (name: string) => rpgItems.some(i => i.name === name);
+
     // Refresh Weapons
     if (mainWeapon.name) {
       const global = rpgItems.find(i => i.name === mainWeapon.name);
@@ -483,6 +486,8 @@ export function CharacterPage() {
             special: global.description || ''
           }));
         }
+      } else {
+        setMainWeapon({ name: '', damage: '', bonus: '', synergy: '', special: '' });
       }
     }
     
@@ -498,6 +503,35 @@ export function CharacterPage() {
             special: global.description || ''
           }));
         }
+      } else {
+        setOffWeapon({ name: '', damage: '', bonus: '', synergy: '', special: '' });
+      }
+    }
+
+    // Check Armors
+    if (equipmentHead && !itemExists(equipmentHead)) setEquipmentHead('');
+    if (equipmentNeck && !itemExists(equipmentNeck)) setEquipmentNeck('');
+    if (equipmentChest && !itemExists(equipmentChest)) setEquipmentChest('');
+    if (equipmentGloves && !itemExists(equipmentGloves)) setEquipmentGloves('');
+    if (equipmentBelt && !itemExists(equipmentBelt)) setEquipmentBelt('');
+    if (equipmentPants && !itemExists(equipmentPants)) setEquipmentPants('');
+    if (equipmentBoots && !itemExists(equipmentBoots)) setEquipmentBoots('');
+
+    // Check Belt Slots
+    if (beltSlot1 && !itemExists(beltSlot1)) setBeltSlot1('');
+    if (beltSlot2 && !itemExists(beltSlot2)) setBeltSlot2('');
+    if (beltSlot3 && !itemExists(beltSlot3)) setBeltSlot3('');
+    if (beltSlot4 && !itemExists(beltSlot4)) setBeltSlot4('');
+    if (beltSlot5 && !itemExists(beltSlot5)) setBeltSlot5('');
+    if (beltSlot6 && !itemExists(beltSlot6)) setBeltSlot6('');
+    if (beltSlot7 && !itemExists(beltSlot7)) setBeltSlot7('');
+    if (beltSlot8 && !itemExists(beltSlot8)) setBeltSlot8('');
+
+    // Check Inventory
+    if (inventory.length > 0) {
+      const validInventory = inventory.filter(invItem => itemExists(invItem.name));
+      if (validInventory.length !== inventory.length) {
+        setInventory(validInventory);
       }
     }
   }, [rpgItems]);
