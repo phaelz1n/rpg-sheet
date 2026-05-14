@@ -1,7 +1,8 @@
 import React from 'react';
+import { useSelectedItem } from '../../context/SelectedItemContext';
 
 interface ItemVFXProps {
-  type?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder';
+  type?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder' | 'poison' | 'smoke' | 'explosion' | 'sandstorm' | 'water' | 'hologram' | 'earth' | 'nature' | 'spark_discharge' | 'feathers' | 'demonic' | 'bleed' | 'splash' | 'gem_reflex' | 'living_paint' | 'divine' | 'cursed';
   rarity?: string;
   name?: string;
   className?: string;
@@ -117,6 +118,250 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
                 }}
               />
             ))}
+          </>
+        );
+      case 'poison':
+        return (
+          <>
+            <div className="absolute -inset-2 bg-green-500/30 blur-xl animate-pulse rounded-lg" />
+          </>
+        );
+      case 'smoke':
+        return (
+          <>
+            <div className="absolute -inset-2 bg-gray-700/40 blur-xl animate-pulse rounded-lg" />
+          </>
+        );
+      case 'explosion':
+        return (
+          <>
+            <div className="absolute inset-0 bg-yellow-300/30 blur-xl animate-pulse rounded-full" />
+            <div className="absolute inset-0 border border-yellow-400/50 rounded-full animate-[scale_0.5s_ease-out_infinite]" />
+          </>
+        );
+      case 'sandstorm':
+        return (
+          <>
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-yellow-600/40 rounded-full animate-[rise_2s_ease-out_infinite]"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  width: `${2 + Math.random() * 6}px`,
+                  height: `${2 + Math.random() * 6}px`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  opacity: 0.5 + Math.random() * 0.4
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'water':
+        return (
+          <>
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-blue-400/30 rounded-full animate-[rise_2s_ease-out_infinite]"
+                style={{
+                  bottom: '-5px',
+                  left: `${Math.random() * 100}%`,
+                  width: `${4 + Math.random() * 8}px`,
+                  height: `${4 + Math.random() * 8}px`,
+                  animationDelay: `${Math.random() * 1.5}s`,
+                  opacity: 0.6 + Math.random() * 0.3
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'hologram':
+        return (
+          <>
+            <div className="absolute inset-0 bg-cyan-200/10" />
+            <div className="absolute inset-0 bg-cyan-300/20 mix-blend-screen" style={{ backgroundImage: 'linear-gradient(45deg, transparent 45%, #00ffff 45%, #00ffff 55%, transparent 55%)', backgroundSize: '4px 4px' }} />
+          </>
+        );
+      case 'earth':
+        return (
+          <>
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-brown-800/40 rounded-full animate-[rise_2s_ease-out_infinite]"
+                style={{
+                  bottom: '-5px',
+                  left: `${Math.random() * 100}%`,
+                  width: `${5 + Math.random() * 10}px`,
+                  height: `${5 + Math.random() * 10}px`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  opacity: 0.5 + Math.random() * 0.4
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'nature':
+        return (
+          <>
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-green-600/30 rounded-full animate-[rise_2s_ease-out_infinite]"
+                style={{
+                  bottom: '-5px',
+                  left: `${Math.random() * 100}%`,
+                  width: `${3 + Math.random() * 8}px`,
+                  height: `${3 + Math.random() * 8}px`,
+                  animationDelay: `${Math.random() * 1.5}s`,
+                  opacity: 0.5 + Math.random() * 0.4
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'spark_discharge':
+        return (
+          <>
+            <div className="absolute -inset-2 bg-white/30 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 pointer-events-none">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute bg-white/60 shadow-[0_0_10px_#ffffff] animate-[pulse_0.1s_ease-in-out_infinite]"
+                  style={{
+                    width: '2px',
+                    height: `${20 + Math.random() * 60}%`,
+                    top: `${Math.random() * 80}%`,
+                    left: `${Math.random() * 100}%`,
+                    transform: `rotate(${Math.random() * 360}deg)`,
+                    opacity: 0.8,
+                    animationDelay: `${i * 0.15}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        );
+      case 'feathers':
+        return (
+          <>
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-white/70 rounded" 
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  width: `${2 + Math.random() * 4}px`,
+                  height: `${8 + Math.random() * 12}px`,
+                  transform: `rotate(${Math.random() * 360}deg)`,
+                  opacity: 0.6 + Math.random() * 0.3,
+                  animationDelay: `${Math.random() * 2}s`
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'demonic':
+        return (
+          <>
+            <div className="absolute -inset-2 bg-red-900/40 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 border border-red-700/30 rounded-lg" />
+          </>
+        );
+      case 'bleed':
+        return (
+          <>
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-red-600/70 rounded-full animate-[rise_1.5s_ease-out_infinite]"
+                style={{
+                  top: `${Math.random() * 30}%`,
+                  left: `${Math.random() * 100}%`,
+                  width: `${2 + Math.random() * 4}px`,
+                  height: `${6 + Math.random() * 8}px`,
+                  opacity: 0.6 + Math.random() * 0.3,
+                  animationDelay: `${Math.random() * 1}s`
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'splash':
+        return (
+          <>
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-blue-300/30 rounded-full animate-[rise_1.8s_ease-out_infinite]"
+                style={{
+                  bottom: '-5px',
+                  left: `${Math.random() * 100}%`,
+                  width: `${3 + Math.random() * 6}px`,
+                  height: `${3 + Math.random() * 6}px`,
+                  opacity: 0.5 + Math.random() * 0.4,
+                  animationDelay: `${Math.random() * 1.5}s`
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'gem_reflex':
+        return (
+          <>
+            <div className="absolute inset-0 bg-purple-200/10" />
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-purple-400/30 rounded-full animate-[scale_1s_ease-out_infinite]"
+                style={{
+                  top: `${Math.random() * 80}%`,
+                  left: `${Math.random() * 80}%`,
+                  width: `${4 + Math.random() * 8}px`,
+                  height: `${4 + Math.random() * 8}px`,
+                  opacity: 0.6 + Math.random() * 0.3,
+                  animationDelay: `${i * 0.2}s`
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'living_paint':
+        return (
+          <>
+            <div className="absolute inset-0 bg-black/70" />
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-black/90 rounded-full animate-[rise_2s_ease-out_infinite]"
+                style={{
+                  bottom: '-5px',
+                  left: `${Math.random() * 100}%`,
+                  width: `${6 + Math.random() * 12}px`,
+                  height: `${6 + Math.random() * 12}px`,
+                  opacity: 0.5 + Math.random() * 0.3,
+                  animationDelay: `${Math.random() * 2}s`
+                }}
+              />
+            ))}
+          </>
+        );
+      case 'divine':
+        return (
+          <>
+            <div className="absolute -inset-2 bg-yellow-300/30 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 border border-yellow-400/50 rounded-lg" />
+          </>
+        );
+      case 'cursed':
+        return (
+          <>
+            <div className="absolute -inset-2 bg-purple-800/40 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute inset-0 border border-purple-600/50 rounded-lg" />
           </>
         );
       default:

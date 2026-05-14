@@ -51,7 +51,7 @@ export const useShopStore = create<ShopStore>((set, get) => ({
     
     if (!shop) return { success: false, error: 'Loja não encontrada' };
     
-    const shopItem = shop.inventory.find(i => i.itemId === itemId);
+    const shopItem = shop.inventory.find((i: any) => i.itemId === itemId);
     if (!shopItem || shopItem.stock <= 0) return { success: false, error: 'Item esgotado ou não disponível' };
 
     const charStore = useCharacterStore.getState();
@@ -66,9 +66,9 @@ export const useShopStore = create<ShopStore>((set, get) => ({
 
     // 2. Update Shop (Shared state)
     // Decrement stock. If stock hits 0, it's removed from display.
-    const newInventory = shop.inventory.map(i => 
+    const newInventory = shop.inventory.map((i: any) => 
       i.itemId === itemId ? { ...i, stock: i.stock - 1 } : i
-    ).filter(i => i.stock > 0);
+    ).filter((i: any) => i.stock > 0);
 
     const updatedShop = { ...shop, inventory: newInventory };
     const shopResponse = await ttrpgApi.saveShop(updatedShop);

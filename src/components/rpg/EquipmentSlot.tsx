@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
 import { ItemVFX } from './ItemVFX';
 import { audioService } from '../../lib/audio-service';
+import { useSelectedItem } from '../../context/SelectedItemContext';
 
 interface EquipmentSlotProps {
   slotName: string;
@@ -31,6 +32,20 @@ export function EquipmentSlot({
   onImpact 
 }: EquipmentSlotProps) {
   const isEmpty = !itemName;
+  const { setSelected } = useSelectedItem();
+
+  const handleSelect = () => {
+    if (!isEmpty) {
+      setSelected({
+        id: '',
+        name: itemName || '',
+        type: '',
+        rarity: rarity as any,
+        description: description || '',
+        particles: particles as any,
+      } as any);
+    }
+  };
 
   const isInitialMount = React.useRef(true);
   const lastItemNameRef = React.useRef(itemName);
@@ -67,7 +82,7 @@ export function EquipmentSlot({
         ? `bg-zinc-900/40 border border-dashed ${borderClass} cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60`
         : `bg-gradient-to-br from-amber-950/30 to-zinc-900/60 border ${borderClass} shadow-lg`
     } rounded-lg p-3 transition-all duration-500`}
-    onClick={isEmpty ? onAddClick : undefined}>
+    onClick={isEmpty ? onAddClick : handleSelect}>
 
       <AnimatePresence mode="wait">
         {!isEmpty ? (

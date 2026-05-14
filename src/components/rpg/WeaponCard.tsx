@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { RichDescription } from './RichDescription';
 import { ItemVFX } from './ItemVFX';
 import { audioService } from '../../lib/audio-service';
+import { useSelectedItem } from '../../context/SelectedItemContext';
 
 interface WeaponCardProps {
   slot: 'main' | 'off';
@@ -39,6 +40,20 @@ export function WeaponCard({
   onImpact
 }: WeaponCardProps) {
   const isEmpty = !name;
+  const { setSelected } = useSelectedItem();
+
+  const handleSelect = () => {
+    if (!isEmpty) {
+      setSelected({
+        id: '',
+        name: name || '',
+        type: 'weapon',
+        rarity: rarity as any,
+        description: special || '',
+        particles: particles as any,
+      } as any);
+    }
+  };
 
   const isInitialMount = React.useRef(true);
   const lastNameRef = React.useRef(name);
@@ -70,7 +85,7 @@ export function WeaponCard({
             rarity === 'legendary' ? 'border-amber-600/50' : 'border-orange-900/60'
           }`
     } rounded-lg p-4 transition-all duration-500 min-h-[220px] flex flex-col`}
-    onClick={isEmpty ? onAddClick : undefined}>
+    onClick={isEmpty ? onAddClick : handleSelect}>
 
       <AnimatePresence mode="wait">
         {!isEmpty ? (

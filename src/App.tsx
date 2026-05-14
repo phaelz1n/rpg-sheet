@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { UIProvider } from './context/UIContext';
 import { router } from './routes';
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { SelectedItemProvider } from './context/SelectedItemContext';
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
   constructor(props: any) {
@@ -53,12 +54,14 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 
 export default function App() {
   return (
-    <UIProvider>
-      <AuthProvider>
-        <ErrorBoundary>
-          <RouterProvider router={router} />
-        </ErrorBoundary>
-      </AuthProvider>
-    </UIProvider>
+    <SelectedItemProvider>
+      <UIProvider>
+        <AuthProvider>
+          <ErrorBoundary>
+            <RouterProvider router={router} />
+          </ErrorBoundary>
+        </AuthProvider>
+      </UIProvider>
+    </SelectedItemProvider>
   );
 }

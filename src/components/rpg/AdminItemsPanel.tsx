@@ -15,7 +15,7 @@ interface AdminItemsPanelProps {
 type ItemType = 'weapon' | 'armor' | 'potion' | 'material' | 'collectible';
 type ItemRarity = 'common' | 'rare' | 'legendary';
 
-interface GlobalItem {
+export interface GlobalItem {
   id: string;
   name: string;
   type: ItemType;
@@ -358,6 +358,23 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
               <option value="void">Vazio (Corrupção)</option>
               <option value="gold_dust">Poeira de Ouro (Místico)</option>
               <option value="sparks">Faíscas (Metal)</option>
+              <option value="poison">Veneno</option>
+              <option value="smoke">Fumaça</option>
+              <option value="explosion">Explosão</option>
+              <option value="sandstorm">Tempestade de Areia</option>
+              <option value="water">Água</option>
+              <option value="hologram">Holográfico</option>
+              <option value="earth">Terra</option>
+              <option value="nature">Grama/Mato</option>
+              <option value="spark_discharge">Faísca Elétrica</option>
+              <option value="feathers">Penas Caindo</option>
+              <option value="demonic">Demoníaco</option>
+              <option value="bleed">Sangramento</option>
+              <option value="splash">Splash</option>
+              <option value="gem_reflex">Reflexo de Joia</option>
+              <option value="living_paint">Tinta Viva</option>
+              <option value="divine">Divino</option>
+              <option value="cursed">Amaldiçoado</option>
             </select>
           </div>
         </div>
@@ -371,6 +388,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
             placeholder="Descrição do item"
           />
         </div>
+
 
         {/* Weapon-specific fields */}
         {type === 'weapon' && (
