@@ -176,20 +176,20 @@ export function CharacterPage() {
 
   return (
     <div className={`min-h-screen transition-all duration-1000 p-4 md:p-6 overflow-x-hidden relative ${
-      charData.corruption > 80 ? 'bg-zinc-950 grayscale-[0.4] brightness-[0.6]' : 
-      charData.corruption > 50 ? 'bg-black grayscale-[0.1] brightness-[0.9]' : 
+      store.corruption > 80 ? 'bg-zinc-950 grayscale-[0.4] brightness-[0.6]' : 
+      store.corruption > 50 ? 'bg-black grayscale-[0.1] brightness-[0.9]' : 
       'bg-gradient-to-br from-zinc-950 via-stone-950 to-black'
     }`}>
       {/* Corruption Overlays */}
       <div className="fixed inset-0 pointer-events-none z-[100]">
         <div className={`absolute inset-0 transition-opacity duration-1000 bg-[radial-gradient(circle,transparent_40%,rgba(48,0,48,0.4)_100%)] ${
-          charData.corruption > 30 ? 'opacity-100' : 'opacity-0'
+          store.corruption > 30 ? 'opacity-100' : 'opacity-0'
         }`} />
         <div className={`absolute inset-0 transition-opacity duration-1000 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] mix-blend-overlay ${
-          charData.corruption > 60 ? 'opacity-50' : 'opacity-0'
+          store.corruption > 60 ? 'opacity-50' : 'opacity-0'
         }`} />
         <div className={`absolute inset-0 transition-opacity duration-1000 shadow-[inset_0_0_150px_rgba(147,51,234,0.15)] ${
-          charData.corruption > 80 ? 'opacity-100 animate-pulse' : 'opacity-0'
+          store.corruption > 80 ? 'opacity-100 animate-pulse' : 'opacity-0'
         }`} />
       </div>
 
