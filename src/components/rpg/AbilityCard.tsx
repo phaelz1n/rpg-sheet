@@ -30,7 +30,7 @@ interface AbilityCardProps {
 export function AbilityCard({
   name,
   type,
-  icon: Icon,
+  icon: IconProp,
   manaCost,
   corruptionCost,
   staminaCost,
@@ -51,6 +51,9 @@ export function AbilityCard({
 }: AbilityCardProps) {
   const [showTypeSelector, setShowTypeSelector] = useState(false);
   const isActive = type === 'action';
+  
+  // Fallback for serialized icons from database
+  const Icon = typeof IconProp === 'function' ? IconProp : Zap;
 
   const hasMana = manaCost !== undefined;
   const hasCorruption = corruptionCost !== undefined;

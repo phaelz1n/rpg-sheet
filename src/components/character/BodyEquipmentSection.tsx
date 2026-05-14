@@ -1,4 +1,4 @@
-import { ShirtIcon, Crown, Circle, Hand, GripHorizontal, CircleDot, Footprints } from 'lucide-react';
+import { Shirt, Crown, Circle, Hand, GripHorizontal, CircleDot, Footprints } from 'lucide-react';
 import { EquipmentSlot } from '../rpg/EquipmentSlot';
 import { useCharacterStore } from '../../store/characterStore';
 import { useGlobalStore } from '../../store/globalStore';
@@ -20,7 +20,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
   return (
     <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">
       <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2 text-sm sm:text-base font-bold">
-        <ShirtIcon className="w-5 h-5" />
+        <Shirt className="w-5 h-5" />
         Equipamento
       </h2>
       <div className="grid grid-cols-2 gap-3">
@@ -49,7 +49,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentChest}
           rarity={getItemRarity(equipmentChest)}
           description={getItemDescription(equipmentChest)}
-          icon={ShirtIcon}
+          icon={Shirt}
           onItemNameChange={(val) => updateField('equipmentChest', val)}
           onClear={() => updateField('equipmentChest', '')}
           onAddClick={() => onOpenModal('armor', 'chest')}
