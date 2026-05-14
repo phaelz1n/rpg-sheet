@@ -8,8 +8,36 @@ const SFX_URLS = {
 class AudioService {
   private static instance: AudioService;
   private sounds: Map<string, HTMLAudioElement> = new Map();
+  private initialized = false;
 
-  private constructor() {}
+  private constructor() {
+    if (typeof window !== 'undefined') {
+      // Warm-up sounds on first interaction
+      window.addEventListener('click', () => this.init(), { once: true });
+    }
+  }
+
+  public init() {
+    if (this.initialized) return;
+    console.log('[AudioService] Initializing audio context...');
+    
+    // Create dummy buffer to wake up audio on mobile/Brave
+    Object.keys(SFX_URLS).forEach(key => {
+      const type = key as keyof typeof SFX_URLS;
+      if (!this.sounds.has(type)) {
+        const audio = new Audio(SFX_URLS[type]);
+        audio.volume = 0;
+        audio.play().then(() => {
+          audio.pause();
+          audio.volume = 1;
+          audio.currentTime = 0;
+        }).catch(() => {});
+        this.sounds.set(type, audio);
+      }
+    });
+
+    this.initialized = true;
+  }
 
   public static getInstance(): AudioService {
     if (!AudioService.instance) {
@@ -20,24 +48,28 @@ class AudioService {
 
   public playSound(type: keyof typeof SFX_URLS) {
     if (typeof window === 'undefined') return;
-    console.log(`[AudioService] Playing sound: ${type}`);
+    if (!this.initialized) this.init();
+
+    console.log(`[AudioService] Requesting sound: ${type}`);
 
     try {
       let audio = this.sounds.get(type);
       
       if (!audio) {
-        console.log(`[AudioService] Loading new audio for: ${type}`);
         audio = new Audio(SFX_URLS[type]);
-        audio.preload = 'auto';
         this.sounds.set(type, audio);
       }
 
       audio.currentTime = 0;
-      audio.play().catch(err => {
-        console.error(`[AudioService] Error playing ${type}:`, err);
-      });
+      const playPromise = audio.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.error(`[AudioService] Play blocked for ${type}:`, error);
+        });
+      }
     } catch (error) {
-      console.error(`[AudioService] Failed to play sound ${type}:`, error);
+      console.error(`[AudioService] Critical failure playing ${type}:`, error);
     }
   }
 }

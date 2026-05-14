@@ -51,31 +51,35 @@ export function ItemVFX({ type, rarity, className = "" }: ItemVFXProps) {
         return (
           <>
             {/* Outer Glow */}
-            <div className="absolute -inset-1.5 bg-orange-600/20 blur-md animate-pulse rounded-lg" />
+            <div className="absolute -inset-1.5 bg-orange-600/30 blur-md animate-pulse rounded-lg" />
             {/* Border Beam */}
             <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
               <div 
                 className="absolute inset-[-200%] opacity-80 mix-blend-screen animate-[spin_4s_linear_infinite]"
                 style={{
-                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #f97316 50%, transparent 75%, transparent 100%)'
+                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #f97316 50%, #facc15 55%, transparent 60%, transparent 100%)'
                 }}
               />
             </div>
-            {/* Floating Sparks */}
+            {/* Flame Particles */}
             <div className="absolute inset-0 pointer-events-none">
-              {[...Array(6)].map((_, i) => (
+              {[...Array(12)].map((_, i) => (
                 <div 
                   key={i}
-                  className="absolute w-1 h-1 bg-orange-400 rounded-full blur-[0.5px] animate-bounce"
+                  className="absolute bg-gradient-to-t from-orange-600 via-orange-400 to-yellow-200 rounded-full blur-[1px] animate-[rise_2s_ease-out_infinite]"
                   style={{
-                    bottom: '5%',
-                    left: `${15 + (i * 15)}%`,
-                    animationDelay: `${i * 0.3}s`,
-                    opacity: 0.4
+                    bottom: '-5px',
+                    left: `${Math.random() * 90}%`,
+                    width: `${4 + Math.random() * 8}px`,
+                    height: `${4 + Math.random() * 8}px`,
+                    animationDelay: `${Math.random() * 2}s`,
+                    animationDuration: `${1.5 + Math.random()}s`,
+                    opacity: 0.6
                   }}
                 />
               ))}
             </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-orange-950/20 to-transparent rounded-lg" />
           </>
         );
       case 'frost':
