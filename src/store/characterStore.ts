@@ -5,10 +5,11 @@ import { ttrpgApi } from '../lib/ttrpg-api';
 interface CharacterStore extends CharacterData {
   isLoading: boolean;
   username: string | null;
+  lastLocalUpdate: number; // Timestamp da última alteração local
   
   // Actions
   setUsername: (username: string) => void;
-  loadCharacter: (username: string) => Promise<void>;
+  loadCharacter: (username: string, force?: boolean) => Promise<void>;
   saveCharacter: () => Promise<void>;
   
   updateField: <K extends keyof CharacterData>(field: K, value: CharacterData[K]) => void;
@@ -89,10 +90,16 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
   ...defaultState,
   isLoading: false,
   username: null,
+  lastLocalUpdate: 0,
 
   setUsername: (username) => set({ username }),
 
-  loadCharacter: async (username) => {
+  loadCharacter: async (username, force = false) => {
+    // Se não for forçado, ignorar atualizações se houver mudança local recente (evita race condition)
+    if (!force && Date.now() - get().lastLocalUpdate < 3000) {
+      return;
+    }
+
     set({ isLoading: true, username });
     try {
       const response = await ttrpgApi.getCharacter(username);
@@ -170,70 +177,80 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     }
   },
 
-  updateField: (field, value) => set({ [field]: value }),
+  updateField: (field, value) => set({ [field]: value, lastLocalUpdate: Date.now() }),
 
   updateSkill: (skill, value) => set((state) => ({
-    skills: { ...state.skills, [skill]: value }
+    skills: { ...state.skills, [skill]: value },
+    lastLocalUpdate: Date.now()
   })),
 
   updateGlobalAttribute: (attribute, value) => set((state) => ({
-    globalAttributes: { ...state.globalAttributes, [attribute]: value }
+    globalAttributes: { ...state.globalAttributes, [attribute]: value },
+    lastLocalUpdate: Date.now()
   })),
 
   equipWeapon: (slot, weapon) => set((state) => ({
-    [slot === 'main' ? 'mainWeapon' : 'offWeapon']: weapon
+    [slot === 'main' ? 'mainWeapon' : 'offWeapon']: weapon,
+    lastLocalUpdate: Date.now()
   })),
 
   equipArmor: (slot, itemName) => set((state) => {
+    const now = Date.now();
     switch (slot) {
-      case 'head': return { equipmentHead: itemName };
-      case 'neck': return { equipmentNeck: itemName };
-      case 'chest': return { equipmentChest: itemName };
-      case 'gloves': return { equipmentGloves: itemName };
-      case 'belt': return { equipmentBelt: itemName };
-      case 'pants': return { equipmentPants: itemName };
-      case 'boots': return { equipmentBoots: itemName };
+      case 'head': return { equipmentHead: itemName, lastLocalUpdate: now };
+      case 'neck': return { equipmentNeck: itemName, lastLocalUpdate: now };
+      case 'chest': return { equipmentChest: itemName, lastLocalUpdate: now };
+      case 'gloves': return { equipmentGloves: itemName, lastLocalUpdate: now };
+      case 'belt': return { equipmentBelt: itemName, lastLocalUpdate: now };
+      case 'pants': return { equipmentPants: itemName, lastLocalUpdate: now };
+      case 'boots': return { equipmentBoots: itemName, lastLocalUpdate: now };
       default: return state;
     }
   }),
 
   updateBeltSlot: (slotNum, itemName) => set((state) => {
     const slotKey = `beltSlot${slotNum}` as keyof CharacterData;
-    return { [slotKey]: itemName };
+    return { [slotKey]: itemName, lastLocalUpdate: Date.now() };
   }),
 
   updateInventoryQuantity: (id, newQuantity) => set((state) => ({
     inventory: state.inventory.map(item => 
       item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-    )
+    ),
+    lastLocalUpdate: Date.now()
   })),
 
   removeFromInventory: (id) => set((state) => ({
-    inventory: state.inventory.filter(item => item.id !== id)
+    inventory: state.inventory.filter(item => item.id !== id),
+    lastLocalUpdate: Date.now()
   })),
 
-  setInventory: (inventory) => set({ inventory }),
+  setInventory: (inventory) => set({ inventory, lastLocalUpdate: Date.now() }),
 
   addAbility: (ability) => set((state) => {
     if (state.abilities.length >= 4) return state;
-    return { abilities: [...state.abilities, ability] };
+    return { abilities: [...state.abilities, ability], lastLocalUpdate: Date.now() };
   }),
 
   updateAbility: (id, field, value) => set((state) => ({
     abilities: state.abilities.map(a => 
       a.id === id ? { ...a, [field]: value } : a
-    )
+    ),
+    lastLocalUpdate: Date.now()
   })),
 
   removeAbility: (id) => set((state) => ({
-    abilities: state.abilities.filter(a => a.id !== id)
+    abilities: state.abilities.filter(a => a.id !== id),
+    lastLocalUpdate: Date.now()
   })),
 
   addCoins: (amount) => set((state) => ({
-    coinsBronze: state.coinsBronze + amount
+    coinsBronze: state.coinsBronze + amount,
+    lastLocalUpdate: Date.now()
   })),
 
   removeCoins: (amount) => set((state) => ({
-    coinsBronze: Math.max(0, state.coinsBronze - amount)
+    coinsBronze: Math.max(0, state.coinsBronze - amount),
+    lastLocalUpdate: Date.now()
   }))
 }));
