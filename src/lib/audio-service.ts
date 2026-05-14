@@ -43,12 +43,13 @@ class AudioService {
   }
 
   private lastPlayTimes: Record<string, number> = {};
+  private customBuffers: Map<string, AudioBuffer> = new Map();
 
-  public playSound(type: string) {
+  public async playSound(type: string) {
     if (!this.initialized) this.init();
     if (!this.audioCtx) return;
 
-    // Prevenção de repetição rápida (debounce)
+    // Prevenção de repetição rápida
     const nowReal = Date.now();
     if (this.lastPlayTimes[type] && nowReal - this.lastPlayTimes[type] < 300) {
       return;
@@ -56,10 +57,9 @@ class AudioService {
     this.lastPlayTimes[type] = nowReal;
 
     const now = this.audioCtx.currentTime;
-    console.log(`[AudioService] Playing sound: ${type}`);
 
     if (type === 'EQUIP_LEGENDARY') {
-      this.playCustomFile('/sfx/lightning-effects.mp3', 2.0); // 2.0s offset solicitado
+      this.playBuffer('/sfx/lightning-effects.mp3', 2.0); // 2.0s offset
       return;
     }
 
@@ -76,10 +76,26 @@ class AudioService {
     }
   }
 
-  private playCustomFile(url: string, startOffset = 0) {
-    const audio = new Audio(url);
-    audio.currentTime = startOffset;
-    audio.play().catch(e => console.error('[AudioService] File play failed', e));
+  private async playBuffer(url: string, startOffset = 0) {
+    if (!this.audioCtx) return;
+
+    try {
+      let buffer = this.customBuffers.get(url);
+      if (!buffer) {
+        console.log(`[AudioService] Pre-loading buffer: ${url}`);
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        buffer = await this.audioCtx.decodeAudioData(arrayBuffer);
+        this.customBuffers.set(url, buffer);
+      }
+
+      const source = this.audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(this.audioCtx.destination);
+      source.start(0, startOffset);
+    } catch (e) {
+      console.error('[AudioService] Failed to play buffer', e);
+    }
   }
 
   private playClick(now: number) {
