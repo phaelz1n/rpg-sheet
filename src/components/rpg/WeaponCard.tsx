@@ -52,7 +52,7 @@ export function WeaponCard({
         : `bg-gradient-to-br from-orange-950/40 to-zinc-900/80 border-2 shadow-xl shadow-orange-900/20 ${
             rarity === 'legendary' ? 'border-amber-600/50' : 'border-orange-900/60'
           }`
-    } rounded-lg p-4 transition-all duration-500 overflow-hidden min-h-[220px] flex flex-col`}
+    } rounded-lg p-4 transition-all duration-500 min-h-[220px] flex flex-col`}
     onClick={isEmpty ? onAddClick : undefined}>
 
       <AnimatePresence mode="wait">

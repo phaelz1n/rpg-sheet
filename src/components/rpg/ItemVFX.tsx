@@ -13,74 +13,82 @@ export function ItemVFX({ type, className = "" }: ItemVFXProps) {
       case 'embers':
         return (
           <>
-            <div className="absolute inset-0 bg-orange-600/5 animate-pulse" />
-            {/* Border Beam - Flame */}
-            <div className="absolute inset-0 border-2 border-transparent rounded-lg overflow-hidden">
-              <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,#f97316_360deg)] animate-[spin_3s_linear_infinite]" />
-            </div>
-            {[...Array(6)].map((_, i) => (
+            {/* Outer Glow */}
+            <div className="absolute -inset-1.5 bg-orange-600/20 blur-md animate-pulse rounded-lg" />
+            {/* Border Beam */}
+            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
               <div 
-                key={i}
-                className="absolute w-1 h-1 bg-orange-500 rounded-full blur-[1px] animate-bounce"
+                className="absolute inset-[-200%] opacity-80 mix-blend-screen animate-[spin_4s_linear_infinite]"
                 style={{
-                  bottom: '0',
-                  left: `${10 + (i * 15)}%`,
-                  animationDelay: `${i * 0.2}s`,
-                  animationDuration: '2s',
-                  opacity: 0.6
+                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #f97316 50%, transparent 75%, transparent 100%)'
                 }}
               />
-            ))}
+            </div>
+            {/* Floating Sparks */}
+            <div className="absolute inset-0 pointer-events-none">
+              {[...Array(6)].map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute w-1 h-1 bg-orange-400 rounded-full blur-[0.5px] animate-bounce"
+                  style={{
+                    bottom: '5%',
+                    left: `${15 + (i * 15)}%`,
+                    animationDelay: `${i * 0.3}s`,
+                    opacity: 0.4
+                  }}
+                />
+              ))}
+            </div>
           </>
         );
       case 'frost':
         return (
           <>
-            <div className="absolute inset-0 bg-blue-400/5 animate-pulse" />
-            {/* Border Beam - Ice */}
-            <div className="absolute inset-0 border-2 border-transparent rounded-lg overflow-hidden">
-              <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,#60a5fa_360deg)] animate-[spin_4s_linear_infinite]" />
+            <div className="absolute -inset-1.5 bg-blue-400/20 blur-md animate-pulse rounded-lg" />
+            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
+              <div 
+                className="absolute inset-[-200%] opacity-70 mix-blend-screen animate-[spin_6s_linear_infinite]"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #60a5fa 50%, transparent 75%, transparent 100%)'
+                }}
+              />
             </div>
-            <div className="absolute inset-0 bg-blue-200/5 backdrop-blur-[1px]" />
           </>
         );
       case 'void':
         return (
           <>
-            <div className="absolute inset-0 bg-purple-950/10" />
-            {/* Border Beam - Void */}
-            <div className="absolute inset-0 border-2 border-transparent rounded-lg overflow-hidden">
-              <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,#a855f7_360deg)] animate-[spin_2s_linear_infinite]" />
+            <div className="absolute -inset-3 bg-purple-900/30 blur-xl animate-pulse rounded-lg" />
+            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
+              <div 
+                className="absolute inset-[-200%] opacity-90 mix-blend-screen animate-[spin_3s_linear_infinite]"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #a855f7 50%, transparent 75%, transparent 100%)'
+                }}
+              />
             </div>
-            <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]" />
+            <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] rounded-lg" />
           </>
         );
       case 'gold_dust':
         return (
           <>
-            {/* Border Beam - Gold */}
-            <div className="absolute inset-0 border-2 border-transparent rounded-lg overflow-hidden">
-              <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,#fbbf24_360deg)] animate-[spin_4s_linear_infinite]" />
-            </div>
-            {[...Array(8)].map((_, i) => (
+            <div className="absolute -inset-1.5 bg-amber-500/20 blur-md animate-pulse rounded-lg" />
+            <div className="absolute -inset-[2px] rounded-lg overflow-hidden pointer-events-none">
               <div 
-                key={i}
-                className="absolute w-0.5 h-0.5 bg-amber-200 rounded-full animate-pulse"
+                className="absolute inset-[-200%] opacity-80 mix-blend-screen animate-[spin_5s_linear_infinite]"
                 style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 2}s`,
-                  boxShadow: '0 0 5px #fbbf24'
+                  background: 'conic-gradient(from 0deg, transparent 0%, transparent 25%, #fbbf24 50%, transparent 75%, transparent 100%)'
                 }}
               />
-            ))}
+            </div>
           </>
         );
       case 'sparks':
         return (
           <>
-            <div className="absolute inset-0 border-2 border-yellow-500/20 rounded-lg animate-pulse" />
-            {[...Array(6)].map((_, i) => (
+            <div className="absolute -inset-[1px] border border-yellow-500/30 rounded-lg animate-pulse" />
+            {[...Array(8)].map((_, i) => (
               <div 
                 key={i}
                 className="absolute w-px h-3 bg-yellow-200 animate-ping"
@@ -89,7 +97,7 @@ export function ItemVFX({ type, className = "" }: ItemVFXProps) {
                   left: `${Math.random() * 100}%`,
                   transform: `rotate(${Math.random() * 360}deg)`,
                   animationDelay: `${i * 0.4}s`,
-                  opacity: 0.4
+                  opacity: 0.6
                 }}
               />
             ))}
