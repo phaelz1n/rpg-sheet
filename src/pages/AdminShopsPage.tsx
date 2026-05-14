@@ -19,6 +19,7 @@ export function AdminShopsPage() {
   // Global Market Settings
   const [marketTitle, setMarketTitle] = useState('Mercado de Valória');
   const [activeLocation, setActiveLocation] = useState('Geral');
+  const [listFilterLocation, setListFilterLocation] = useState('all');
 
   // Item Filters
   const [itemSearch, setItemSearch] = useState('');
@@ -204,10 +205,26 @@ export function AdminShopsPage() {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.2em] mb-4">Lojas Cadastradas</h2>
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <h2 className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.2em]">Lojas Cadastradas</h2>
+                <select 
+                  value={listFilterLocation}
+                  onChange={e => setListFilterLocation(e.target.value)}
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-[9px] uppercase font-bold text-zinc-400 outline-none"
+                >
+                  <option value="all">Todas Regiões</option>
+                  <option value="Geral">Geral</option>
+                  {uniqueLocations.map(loc => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
+                </select>
+              </div>
+              
               {loading ? (
                 <div className="text-center py-12 italic text-zinc-700">Carregando lojas...</div>
-              ) : shops.map(shop => (
+              ) : shops
+                  .filter(s => listFilterLocation === 'all' || s.location === listFilterLocation)
+                  .map(shop => (
                 <div key={shop.id} className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between group ${
                   editingShop?.id === shop.id ? 'bg-amber-900/20 border-amber-500/50 shadow-xl' : 'bg-zinc-900/40 border-zinc-800 hover:border-zinc-700'
                 }`} onClick={() => setEditingShop(shop)}>

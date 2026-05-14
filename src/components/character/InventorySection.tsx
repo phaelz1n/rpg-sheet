@@ -89,6 +89,8 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
             quantity={item.quantity}
             icon={item.icon || Gem}
             description={item.description}
+            particles={item.particles}
+            rarity={item.rarity}
             onQuantityChange={(newQty) => updateInventoryQuantity(item.id, newQty)}
             onDelete={() => removeFromInventory(item.id)}
           />

@@ -220,7 +220,39 @@
     border-radius: 10px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(180, 83, 9, 0.6);
+  @keyframes border-beam {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .legendary-border-beam {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .legendary-border-beam::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(transparent, transparent, #fbbf24, transparent, transparent);
+    animation: border-beam 4s linear infinite;
+    z-index: 0;
+  }
+
+  .legendary-border-beam::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    background: black;
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  .legendary-border-beam > * {
+    position: relative;
+    z-index: 2;
   }
 }

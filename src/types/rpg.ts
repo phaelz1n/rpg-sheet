@@ -17,6 +17,7 @@ export interface RPGItem {
   beltCapacity?: number;
   rarity?: ItemRarity | string;
   description?: string;
+  particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust';
 }
 
 export interface InventoryItem extends RPGItem {

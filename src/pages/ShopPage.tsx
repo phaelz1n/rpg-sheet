@@ -12,6 +12,7 @@ import { RichDescription } from '../components/rpg/RichDescription';
 import { useUI } from '../context/UIContext';
 import { useAuth } from '../context/AuthContext';
 import { ttrpgApi } from '../lib/ttrpg-api';
+import { ItemVFX } from '../components/rpg/ItemVFX';
 
 export function ShopPage() {
   const navigate = useNavigate();
@@ -269,7 +270,7 @@ export function ShopPage() {
                       <div 
                         key={item.id} 
                         className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 hover:bg-amber-950/10 hover:border-amber-600/40 shadow-xl hover:shadow-amber-900/20 overflow-hidden ${
-                          item.rarity === 'legendary' ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)]' : ''
+                          item.rarity === 'legendary' ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50 legendary-border-beam' : ''
                         }`}
                       >
                         {/* Background rarity glow */}
@@ -279,6 +280,9 @@ export function ShopPage() {
                         {item.rarity === 'rare' && (
                           <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-1000" />
                         )}
+
+                        {/* Particle Effect from Master Config */}
+                        <ItemVFX type={item.particles as any} />
 
                         {/* Item Icon & Rarity Glow */}
                         <div className="flex items-start justify-between mb-4 sm:mb-6">

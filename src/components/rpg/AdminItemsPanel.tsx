@@ -20,6 +20,7 @@ interface GlobalItem {
   type: ItemType;
   rarity: ItemRarity;
   description: string;
+  particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust';
   // Weapon fields
   damage?: string;
   attributeType?: string;
@@ -28,7 +29,7 @@ interface GlobalItem {
   equipmentSlot?: 'head' | 'neck' | 'chest' | 'gloves' | 'belt' | 'pants' | 'boots';
   corruptionLimitBonus?: number;
   statBonus?: string;
-  beltCapacity?: number; // Quantidade de slots de acesso rápido que o cinto oferece
+  beltCapacity?: number; 
   // Potion/Consumable fields
   healingValue?: string;
   effectTarget?: 'health' | 'stamina' | 'sanity' | 'corruption' | 'none';
@@ -299,7 +300,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Tipo</label>
             <select
@@ -323,6 +324,22 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
               {Object.entries(rarityLabels).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Partículas</label>
+            <select
+              value={formData.particles || 'none'}
+              onChange={(e) => setFormData({ ...formData, particles: e.target.value as any })}
+              className="w-full bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+            >
+              <option value="none">Nenhuma</option>
+              <option value="embers">Brasas (Fogo)</option>
+              <option value="frost">Gelo</option>
+              <option value="void">Vazio (Purple)</option>
+              <option value="gold_dust">Poeira de Ouro</option>
+              <option value="sparks">Faíscas</option>
             </select>
           </div>
         </div>

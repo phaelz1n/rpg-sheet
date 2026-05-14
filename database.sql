@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS public.global_items (
     "corruptionLimitBonus" INTEGER DEFAULT 0,
     "statBonus" TEXT,
     "beltCapacity" INTEGER DEFAULT 0,
+    particles TEXT DEFAULT 'none', -- none, embers, sparks, void, frost, gold_dust
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

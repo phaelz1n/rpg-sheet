@@ -16,6 +16,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
 
   const getItemRarity = (itemName: string) => rpgItems.find(i => i.name === itemName)?.rarity;
   const getItemDescription = (itemName: string) => rpgItems.find(i => i.name === itemName)?.description;
+  const getItemParticles = (itemName: string) => rpgItems.find(i => i.name === itemName)?.particles;
 
   return (
     <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">
@@ -29,6 +30,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentHead}
           rarity={getItemRarity(equipmentHead)}
           description={getItemDescription(equipmentHead)}
+          particles={getItemParticles(equipmentHead)}
           icon={Crown}
           onItemNameChange={(val) => updateField('equipmentHead', val)}
           onClear={() => updateField('equipmentHead', '')}
@@ -39,6 +41,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentNeck}
           rarity={getItemRarity(equipmentNeck)}
           description={getItemDescription(equipmentNeck)}
+          particles={getItemParticles(equipmentNeck)}
           icon={Circle}
           onItemNameChange={(val) => updateField('equipmentNeck', val)}
           onClear={() => updateField('equipmentNeck', '')}
@@ -49,6 +52,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentChest}
           rarity={getItemRarity(equipmentChest)}
           description={getItemDescription(equipmentChest)}
+          particles={getItemParticles(equipmentChest)}
           icon={Shirt}
           onItemNameChange={(val) => updateField('equipmentChest', val)}
           onClear={() => updateField('equipmentChest', '')}
@@ -59,6 +63,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentGloves}
           rarity={getItemRarity(equipmentGloves)}
           description={getItemDescription(equipmentGloves)}
+          particles={getItemParticles(equipmentGloves)}
           icon={Hand}
           onItemNameChange={(val) => updateField('equipmentGloves', val)}
           onClear={() => updateField('equipmentGloves', '')}
@@ -69,6 +74,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentBelt}
           rarity={getItemRarity(equipmentBelt)}
           description={getItemDescription(equipmentBelt)}
+          particles={getItemParticles(equipmentBelt)}
           icon={GripHorizontal}
           onItemNameChange={(val) => updateField('equipmentBelt', val)}
           onClear={() => updateField('equipmentBelt', '')}
@@ -79,6 +85,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
           itemName={equipmentPants}
           rarity={getItemRarity(equipmentPants)}
           description={getItemDescription(equipmentPants)}
+          particles={getItemParticles(equipmentPants)}
           icon={CircleDot}
           onItemNameChange={(val) => updateField('equipmentPants', val)}
           onClear={() => updateField('equipmentPants', '')}
@@ -90,6 +97,7 @@ export function BodyEquipmentSection({ onOpenModal }: BodyEquipmentSectionProps)
             itemName={equipmentBoots}
             rarity={getItemRarity(equipmentBoots)}
             description={getItemDescription(equipmentBoots)}
+            particles={getItemParticles(equipmentBoots)}
             icon={Footprints}
             onItemNameChange={(val) => updateField('equipmentBoots', val)}
             onClear={() => updateField('equipmentBoots', '')}
