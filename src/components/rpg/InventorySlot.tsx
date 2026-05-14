@@ -79,7 +79,7 @@ export function InventorySlot({
               </button>
             )}
 
-            <ItemVFX type={particles as any} />
+            <ItemVFX type={particles as any} rarity={rarity} name={itemName} />
 
             {Icon && (
               <Icon

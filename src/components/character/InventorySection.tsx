@@ -2,6 +2,7 @@ import { Sparkles, Minus, Plus, ChevronLeft, ChevronRight, Gem } from 'lucide-re
 import { InventorySlot } from '../rpg/InventorySlot';
 import { EncumbranceBar } from '../rpg/EncumbranceBar';
 import { useCharacterStore } from '../../store/characterStore';
+import { useGlobalStore } from '../../store/globalStore';
 import { audioService } from '../../lib/audio-service';
 
 const ITEMS_PER_PAGE = 8;
@@ -17,11 +18,14 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
     inventory, inventoryCapacity,
     updateField, updateInventoryQuantity, removeFromInventory
   } = useCharacterStore();
+  const { rpgItems } = useGlobalStore();
 
   const totalPages = Math.ceil(inventoryCapacity / ITEMS_PER_PAGE);
   const pageItems = inventory.slice(inventoryPage * ITEMS_PER_PAGE, (inventoryPage + 1) * ITEMS_PER_PAGE);
   const totalSlotsOnThisPage = Math.min(ITEMS_PER_PAGE, inventoryCapacity - (inventoryPage * ITEMS_PER_PAGE));
   const effectiveEmptySlots = Math.max(0, totalSlotsOnThisPage - pageItems.length);
+
+  const getItemData = (name: string) => rpgItems.find(i => i.name === name);
 
   const handlePageChange = (newPage: number) => {
     audioService.playSound('BACKPACK_MOVE');
@@ -94,19 +98,22 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 min-h-[180px]">
-        {pageItems.map((item) => (
-          <InventorySlot
-            key={item.id}
-            itemName={item.name}
-            quantity={item.quantity}
-            icon={item.icon || Gem}
-            description={item.description}
-            particles={item.particles}
-            rarity={item.rarity}
-            onQuantityChange={(newQty) => updateInventoryQuantity(item.id, newQty)}
-            onDelete={() => removeFromInventory(item.id)}
-          />
-        ))}
+        {pageItems.map((item) => {
+          const globalData = getItemData(item.name);
+          return (
+            <InventorySlot
+              key={item.id}
+              itemName={item.name}
+              quantity={item.quantity}
+              icon={item.icon || Gem}
+              description={globalData?.description || item.description}
+              particles={globalData?.particles || item.particles}
+              rarity={globalData?.rarity || item.rarity}
+              onQuantityChange={(newQty) => updateInventoryQuantity(item.id, newQty)}
+              onDelete={() => removeFromInventory(item.id)}
+            />
+          );
+        })}
         {Array.from({ length: effectiveEmptySlots }).map((_, i) => (
           <InventorySlot
             key={`empty-${i}`}
