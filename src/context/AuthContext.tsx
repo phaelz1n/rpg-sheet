@@ -5,6 +5,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   currentUser: string;
   isAdmin: boolean;
+  isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string) => Promise<void>;
   logout: () => void;
@@ -16,6 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check if user is already logged in (from localStorage)
@@ -24,9 +26,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (storedUser) {
       setCurrentUser(storedUser);
-      setIsLoggedIn(true);
       setIsAdmin(storedIsAdmin === 'true');
+      setIsLoggedIn(true);
     }
+    setIsLoading(false);
   }, []);
 
   const login = async (username: string, password: string) => {
@@ -70,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, currentUser, isAdmin, login, register, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, currentUser, isAdmin, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
