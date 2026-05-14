@@ -705,6 +705,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                       }`}>
                         {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
                       </span>
+                      <span className="px-2 py-0.5 bg-zinc-800/60 border border-zinc-700 rounded text-zinc-400 flex items-center gap-1">
+                        {typeLabels[item.type]}
                         {item.type === 'armor' && item.equipmentSlot && (
                           <span className="text-zinc-500 uppercase text-[8px] border-l border-zinc-700 pl-1 ml-1">{slotLabels[item.equipmentSlot]}</span>
                         )}
