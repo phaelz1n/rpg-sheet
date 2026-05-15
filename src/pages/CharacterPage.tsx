@@ -226,9 +226,9 @@ export function CharacterPage() {
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)] mr-1" />
           <span className="text-xs sm:text-sm font-medium">
             {adminViewUsername ? (
-              <>Admin visualizando: <span className="font-bold text-purple-400 uppercase tracking-tight">{adminViewUsername}</span></>
+              <>Admin visualizando: <span className="font-bold text-purple-400 uppercase tracking-tight">{String(adminViewUsername)}</span></>
             ) : (
-              <>Bem-vindo, <span className="font-bold uppercase tracking-tight text-amber-300">{currentUser}</span>!</>
+              <>Bem-vindo, <span className="font-bold uppercase tracking-tight text-amber-300">{String(currentUser || '')}</span>!</>
             )}
           </span>
         </div>
@@ -273,7 +273,7 @@ export function CharacterPage() {
       <div className="max-w-[1600px] mx-auto space-y-6">
         <div className="flex justify-center -mt-2">
           <div className="bg-black/40 border border-amber-900/20 rounded px-4 py-1.5 italic text-[10px] sm:text-xs text-zinc-500 tracking-wide text-center max-w-2xl">
-            "{loreQuote}"
+            "{typeof loreQuote === 'string' ? loreQuote : ''}"
           </div>
         </div>
 
@@ -293,8 +293,8 @@ export function CharacterPage() {
                 
                 return (
                   <CorruptionGauge
-                    current={store.corruption}
-                    max={store.corruptionBaseMax + corruptionBonus}
+                    current={Number(store.corruption || 0)}
+                    max={Number((store.corruptionBaseMax || 0) + corruptionBonus)}
                     onCurrentChange={(val) => store.updateField('corruption', val)}
                     onMaxChange={(val) => store.updateField('corruptionBaseMax', val - corruptionBonus)}
                   />
@@ -309,9 +309,9 @@ export function CharacterPage() {
                 <span className="text-[10px] uppercase tracking-[0.2em]">Inspiração</span>
               </div>
               <div className="flex items-center gap-4 relative z-10">
-                <button onClick={() => store.updateField('inspiration', Math.max(0, store.inspiration - 1))} className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold px-2">-</button>
-                <span className="text-3xl font-black text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">{store.inspiration}</span>
-                <button onClick={() => store.updateField('inspiration', store.inspiration + 1)} className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold px-2">+</button>
+                <button onClick={() => store.updateField('inspiration', Math.max(0, (Number(store.inspiration) || 0) - 1))} className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold px-2">-</button>
+                <span className="text-3xl font-black text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">{String(store.inspiration || 0)}</span>
+                <button onClick={() => store.updateField('inspiration', (Number(store.inspiration) || 0) + 1)} className="text-amber-700 hover:text-amber-500 transition-colors text-xl font-bold px-2">+</button>
               </div>
             </div>
           </div>
