@@ -28,7 +28,7 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
       setLoading(true);
       const response = await ttrpgApi.getAllUsers();
       if (response.users) {
-        setUserList(response.users);
+        setUserList(response.users.filter(u => u.username !== 'admin'));
       }
     } catch (error) {
       console.error('Error loading users:', error);

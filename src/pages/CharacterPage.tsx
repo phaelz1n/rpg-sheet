@@ -78,7 +78,7 @@ export function CharacterPage() {
 
   // Real-time synchronization
   useEffect(() => {
-    if (activeUsername) {
+    if (activeUsername && activeUsername !== 'admin') {
       store.loadCharacter(activeUsername);
       globalStore.loadGlobalItems();
       
@@ -98,12 +98,12 @@ export function CharacterPage() {
 
   // Debounced auto-save
   useEffect(() => {
-    if (!activeUsername) return;
+    if (!activeUsername || activeUsername === 'admin') return;
     const timer = setTimeout(() => {
       store.saveCharacter();
     }, 2000);
     return () => clearTimeout(timer);
-  }, [store]);
+  }, [store, activeUsername]);
 
   const handleLogout = () => {
     logout();
