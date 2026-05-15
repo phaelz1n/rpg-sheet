@@ -288,26 +288,43 @@ export function ShopPage() {
                           <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-1000" />
                         )}
 
-                        {/* Item Icon & Rarity Glow */}
-                        <div className="flex items-start justify-between mb-4 sm:mb-6">
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-amber-900/40 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden ${
-                            item.rarity === 'legendary' ? 'shadow-[0_0_15px_rgba(251,191,36,0.2)] border-amber-500' : 
-                            item.rarity === 'rare' ? 'shadow-[0_0_15px_rgba(168,85,247,0.2)] border-purple-500' : ''
+                        {/* Item Illustration & Price Wrapper */}
+                        <div className="flex gap-4 mb-4 items-stretch h-32">
+                          {/* Left: Prominent Illustration */}
+                          <div className={`relative w-24 sm:w-28 flex items-center justify-center rounded-xl bg-black/40 border border-amber-900/30 overflow-hidden group/img ${
+                            item.rarity === 'divine' ? 'shadow-[0_0_15px_rgba(220,38,38,0.2)] border-red-500/50' :
+                            item.rarity === 'legendary' ? 'shadow-[0_0_15px_rgba(251,191,36,0.2)] border-amber-500/50' : 
+                            item.rarity === 'rare' ? 'shadow-[0_0_15px_rgba(168,85,247,0.2)] border-purple-500/50' : ''
                           }`}>
                             {item.imageUrl ? (
-                              <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain" />
+                              <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-700 scale-95 group-hover/img:scale-110" />
                             ) : (
-                              <Gem className={`w-6 h-6 sm:w-7 sm:h-7 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
+                              <Gem className={`w-8 h-8 sm:w-10 sm:h-10 text-amber-900/40 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
                             )}
-                            {item.rarity === 'legendary' && (
-                              <div className="absolute inset-0 rounded-xl bg-amber-500/20 animate-ping duration-[3000ms] pointer-events-none" />
-                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                           </div>
                           
-                          <div className="text-right min-w-0">
-                            <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block mb-1">Preço</span>
-                            <div className="bg-black/40 px-2 sm:px-3 py-1 rounded-full border border-amber-900/20 shadow-inner">
-                              {formatPrice(shopItem.priceBronze)}
+                          {/* Right: Price & Quick Info */}
+                          <div className="flex-1 flex flex-col justify-center gap-3">
+                            <div className="text-left">
+                              <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block mb-1">Preço Sugerido</span>
+                              <div className="bg-black/60 px-3 py-2 rounded-xl border border-amber-900/40 shadow-inner inline-block">
+                                {formatPrice(shopItem.priceBronze)}
+                              </div>
+                            </div>
+                            
+                            <div className="flex flex-col gap-1">
+                              <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block">Categoria</span>
+                              <div className="flex items-center gap-2">
+                                <span className={`text-[8px] sm:text-[9px] px-2 py-0.5 rounded border uppercase font-bold tracking-tighter ${
+                                  item.rarity === 'divine' ? 'bg-red-950/40 border-red-500 text-red-400' :
+                                  item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-500 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
+                                  item.rarity === 'rare' ? 'bg-purple-950/40 border-purple-500 text-purple-400' :
+                                  'bg-zinc-900/40 border-zinc-700 text-zinc-500'
+                                }`}>
+                                  {item.rarity === 'divine' ? 'Divino' : item.rarity || 'Comum'}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
