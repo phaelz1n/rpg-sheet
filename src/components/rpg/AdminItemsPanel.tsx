@@ -235,11 +235,18 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   };
 
   const handleDelete = async (id: string) => {
+    const itemToDelete = items.find(i => i.id === id);
     setConfirmModal({
       isOpen: true,
       message: 'Tem certeza que deseja deletar este item?',
       onConfirm: async () => {
         try {
+          // 1. Delete the image from storage if it exists
+          if (itemToDelete?.imageUrl) {
+            await ttrpgApi.deleteFile(itemToDelete.imageUrl);
+          }
+
+          // 2. Delete the item from database
           const response = await ttrpgApi.deleteItem(id);
           if (response.error) {
             showToast(response.error, 'error');
@@ -247,7 +254,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           }
 
           await loadItems();
-          showToast('Item deletado com sucesso!', 'success');
+          showToast('Item e imagem deletados com sucesso!', 'success');
         } catch (error) {
           console.error('Error deleting item:', error);
           showToast('Erro ao deletar item', 'error');

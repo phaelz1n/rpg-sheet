@@ -83,30 +83,20 @@ export function InventorySlot({
 
             <ItemVFX type={particles as any} rarity={rarity} name={itemName} />
 
-            <div className="w-10 h-10 flex items-center justify-center mb-1 relative z-10">
+            <div className="relative flex-1 w-full flex items-center justify-center my-1 rounded bg-black/20 border border-white/5 group/img overflow-hidden">
               {imageUrl ? (
-                <img src={imageUrl} alt="" className="w-full h-full object-contain" />
+                <img src={imageUrl} alt="" className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
               ) : Icon ? (
-                <Icon
-                  className={`w-7 h-7 ${
-                    rarity === 'legendary'
-                      ? 'text-amber-400'
-                      : rarity === 'rare'
-                      ? 'text-blue-400'
-                      : 'text-amber-600'
-                  }`}
-                />
-              ) : null}
+                <Icon className="w-6 h-6 text-amber-600 opacity-30" />
+              ) : (
+                <div className="text-zinc-800 opacity-20 text-xs">?</div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
             </div>
-            <div
-              className={`text-[10px] font-black uppercase text-center leading-tight tracking-tighter ${
-                rarity === 'legendary'
-                  ? 'text-amber-300'
-                  : rarity === 'rare'
-                  ? 'text-blue-300'
-                  : 'text-zinc-300'
-              }`}
-            >
+            
+            <div className={`w-full text-[9px] font-black uppercase text-center leading-tight tracking-tighter truncate ${
+              rarity === 'legendary' ? 'text-amber-300' : rarity === 'rare' ? 'text-blue-300' : 'text-zinc-300'
+            }`}>
               {itemName}
             </div>
 

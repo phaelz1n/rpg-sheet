@@ -282,5 +282,25 @@ export const ttrpgApi = {
       .getPublicUrl(filePath);
 
     return { success: true, url: data.publicUrl };
+  },
+
+  async deleteFile(publicUrl: string) {
+    if (!publicUrl) return { success: true };
+    
+    try {
+      // Extract path from public URL
+      // Expected format: .../storage/v1/object/public/item-assets/folder/filename.ext
+      const parts = publicUrl.split('/item-assets/');
+      if (parts.length < 2) return { success: false, error: 'Invalid URL format' };
+      
+      const filePath = parts[1];
+      const { error } = await supabase.storage
+        .from('item-assets')
+        .remove([filePath]);
+        
+      return { success: !error, error: error?.message };
+    } catch (err) {
+      return { success: false, error: (err as Error).message };
+    }
   }
 };

@@ -206,28 +206,35 @@ export function EquipmentSlot({
                 </button>
               )}
 
-              <div className="flex items-center gap-2 mb-2 relative z-10">
-                <div className="w-8 h-8 flex items-center justify-center shrink-0">
-                  {imageUrl ? (
-                    <img src={imageUrl} alt="" className="w-full h-full object-contain" />
-                  ) : (
-                    <Icon className={`w-4 h-4 ${isEmpty ? 'text-zinc-600' : rarity === 'divine' ? 'text-red-500' : 'text-amber-600'} transition-colors`} />
-                  )}
+              <div className="flex flex-col h-full relative z-10">
+                {/* Header: Slot Name & Rarity Sparkle */}
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[8px] text-zinc-500 uppercase tracking-widest font-black leading-none">{slotName}</span>
+                  {(rarity === 'legendary' || rarity === 'divine') && <Sparkles className={`w-3 h-3 animate-pulse ${rarity === 'divine' ? 'text-red-500' : 'text-amber-500'}`} />}
                 </div>
-                <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black">{slotName}</span>
-                {(rarity === 'legendary' || rarity === 'divine') && <Sparkles className={`w-3 h-3 animate-pulse ${rarity === 'divine' ? 'text-red-500' : 'text-amber-500'}`} />}
-              </div>
 
-              <div className="flex flex-col">
-                <div className={`w-full text-sm font-black uppercase tracking-tight ${
-                  rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-zinc-200'
-                }`}>
-                  {itemName}
+                {/* Main Content: Item Illustration */}
+                <div className="relative flex-1 min-h-[50px] flex items-center justify-center my-1 rounded-md overflow-hidden bg-black/20 border border-white/5 group/img">
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="" className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
+                  ) : (
+                    <Icon className={`w-6 h-6 ${isEmpty ? 'text-zinc-600' : rarity === 'divine' ? 'text-red-500' : 'text-amber-600'} opacity-30 transition-colors`} />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
                 </div>
-                <div className={`text-[8px] uppercase font-bold tracking-tighter mt-0.5 ${
-                  rarity === 'divine' ? 'text-red-700' : 'text-zinc-600'
-                }`}>
-                  {rarity === 'divine' ? 'Divino' : rarity || 'Comum'}
+
+                {/* Footer: Item Name & Rarity Label */}
+                <div className="flex flex-col mt-auto">
+                  <div className={`w-full text-[10px] font-black uppercase tracking-tight truncate ${
+                    rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-zinc-200'
+                  }`}>
+                    {itemName}
+                  </div>
+                  <div className={`text-[7px] uppercase font-bold tracking-tighter ${
+                    rarity === 'divine' ? 'text-red-700' : 'text-zinc-600'
+                  }`}>
+                    {rarity === 'divine' ? 'Divino' : rarity || 'Comum'}
+                  </div>
                 </div>
               </div>
 
