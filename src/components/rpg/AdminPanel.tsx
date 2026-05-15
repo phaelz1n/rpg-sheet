@@ -203,9 +203,9 @@ export function AdminPanel({ onAccessCharacter, onLogout, onResetPassword }: Adm
                   <div className="mb-3">
                     <div className="flex items-center gap-2 mb-1">
                       <Users className="w-4 h-4 text-amber-500" />
-                      <h3 className="text-amber-300 font-bold">{user.username}</h3>
+                      <h3 className="text-amber-300 font-bold">{String(user.username)}</h3>
                     </div>
-                    <p className="text-zinc-400 text-sm">{user.characterName}</p>
+                    <p className="text-zinc-400 text-sm">{String(user.characterName || 'Sem nome')}</p>
                   </div>
 
                   <div className="space-y-2">

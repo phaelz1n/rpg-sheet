@@ -80,8 +80,8 @@ export const ttrpgApi = {
       .select('username, character_data');
     
     const users = data?.map(char => ({
-      username: char.username,
-      characterName: char.character_data?.characterName || "Sem ficha salva"
+      username: String(char.username || ''),
+      characterName: String(char.character_data?.characterName || "Sem ficha salva")
     })) || [];
 
     return { users };

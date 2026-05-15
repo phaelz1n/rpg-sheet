@@ -106,7 +106,110 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     try {
       const response = await ttrpgApi.getCharacter(username);
       if (response.exists && response.data) {
-        set({ ...defaultState, ...response.data, isLoading: false, lastActionSource: 'remote' });
+        const d = response.data;
+        const sanitizedData: Partial<CharacterData> = {
+          characterName: String(d.characterName || ''),
+          characterClass: String(d.characterClass || ''),
+          characterFaction: String(d.characterFaction || ''),
+          characterCodename: String(d.characterCodename || ''),
+          characterPortrait: String(d.characterPortrait || ''),
+          health: Number(d.health || 0),
+          maxHealth: Number(d.maxHealth || 10),
+          sanity: Number(d.sanity || 0),
+          maxSanity: Number(d.maxSanity || 10),
+          mana: Number(d.mana || 0),
+          maxMana: Number(d.maxMana || 10),
+          stamina: Number(d.stamina || 0),
+          maxStamina: Number(d.maxStamina || 6),
+          corruption: Number(d.corruption || 0),
+          corruptionBaseMax: Number(d.corruptionBaseMax || 10),
+          damageReduction: Number(d.damageReduction || 0),
+          inspiration: Number(d.inspiration || 0),
+          occultism: Number(d.occultism || 0),
+          dexterity: Number(d.dexterity || 0),
+          vigor: Number(d.vigor || 0),
+          willpower: Number(d.willpower || 0),
+          strength: Number(d.strength || 0),
+          faith: Number(d.faith || 0),
+          coinsBronze: Number(d.coinsBronze || 0),
+          equipmentHead: String(d.equipmentHead || ''),
+          equipmentNeck: String(d.equipmentNeck || ''),
+          equipmentChest: String(d.equipmentChest || ''),
+          equipmentGloves: String(d.equipmentGloves || ''),
+          equipmentBelt: String(d.equipmentBelt || ''),
+          equipmentPants: String(d.equipmentPants || ''),
+          equipmentBoots: String(d.equipmentBoots || ''),
+          beltSlot1: String(d.beltSlot1 || ''),
+          beltSlot2: String(d.beltSlot2 || ''),
+          beltSlot3: String(d.beltSlot3 || ''),
+          beltSlot4: String(d.beltSlot4 || ''),
+          beltSlot5: String(d.beltSlot5 || ''),
+          beltSlot6: String(d.beltSlot6 || ''),
+          beltSlot7: String(d.beltSlot7 || ''),
+          beltSlot8: String(d.beltSlot8 || ''),
+          inventoryCapacity: Number(d.inventoryCapacity || 8),
+          mainWeapon: {
+            id: String(d.mainWeapon?.id || ''),
+            name: String(d.mainWeapon?.name || ''),
+            damage: String(d.mainWeapon?.damage || ''),
+            bonus: String(d.mainWeapon?.bonus || ''),
+            synergy: String(d.mainWeapon?.synergy || ''),
+            special: String(d.mainWeapon?.special || ''),
+            imageUrl: String(d.mainWeapon?.imageUrl || '')
+          },
+          offWeapon: {
+            id: String(d.offWeapon?.id || ''),
+            name: String(d.offWeapon?.name || ''),
+            damage: String(d.offWeapon?.damage || ''),
+            bonus: String(d.offWeapon?.bonus || ''),
+            synergy: String(d.offWeapon?.synergy || ''),
+            special: String(d.offWeapon?.special || ''),
+            imageUrl: String(d.offWeapon?.imageUrl || '')
+          },
+          skills: d.skills ? {
+            acrobacia: Number(d.skills.acrobacia || 0),
+            furtividade: Number(d.skills.furtividade || 0),
+            pontaria: Number(d.skills.pontaria || 0),
+            atletismo: Number(d.skills.atletismo || 0),
+            intimidacao: Number(d.skills.intimidacao || 0),
+            percepcao: Number(d.skills.percepcao || 0),
+            sobrevivencia: Number(d.skills.sobrevivencia || 0),
+            medicina: Number(d.skills.medicina || 0),
+            corrupcao: Number(d.skills.corrupcao || 0),
+            presenca: Number(d.skills.presenca || 0),
+          } : defaultState.skills,
+          abilities: Array.isArray(d.abilities) ? d.abilities.map((a: any) => ({
+            id: String(a.id || ''),
+            name: String(a.name || ''),
+            type: a.type || 'action',
+            effect: String(a.effect || ''),
+            manaCost: a.manaCost !== undefined ? Number(a.manaCost) : undefined,
+            corruptionCost: a.corruptionCost !== undefined ? Number(a.corruptionCost) : undefined,
+            staminaCost: a.staminaCost !== undefined ? Number(a.staminaCost) : undefined,
+            test: a.test ? String(a.test) : undefined,
+            damage: a.damage ? String(a.damage) : undefined,
+            backlash: a.backlash ? String(a.backlash) : undefined,
+          })) : [],
+          curses: Array.isArray(d.curses) ? d.curses.map((c: any) => ({
+            id: String(c.id || ''),
+            title: String(c.title || ''),
+            content: String(c.content || '')
+          })) : [],
+          inventory: Array.isArray(d.inventory) ? d.inventory.map((i: any) => ({
+            id: String(i.id || ''),
+            name: String(i.name || ''),
+            quantity: Number(i.quantity || 1),
+            description: String(i.description || ''),
+            attributeType: i.attributeType,
+            bonus: i.bonus,
+            damage: i.damage,
+            category: i.category,
+            rarity: i.rarity,
+            imageUrl: i.imageUrl,
+            globalItemId: i.globalItemId
+          })) : []
+        };
+        set({ ...defaultState, ...sanitizedData, isLoading: false, lastActionSource: 'remote' });
       } else {
         set({ ...defaultState, isLoading: false, lastActionSource: 'remote' });
       }

@@ -21,22 +21,23 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
       if (response.items) {
         // Map data from DB to the RPGItem interface
         const convertedItems = response.items.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          attributeType: item.attributeType || 'dexterity',
-          bonus: item.bonus || 0,
-          damage: item.damage || '',
+          id: String(item.id || ''),
+          name: String(item.name || ''),
+          attributeType: String(item.attributeType || 'dexterity'),
+          bonus: Number(item.bonus || 0),
+          damage: String(item.damage || ''),
           category: (item.type === 'weapon' ? 'weapon' : 
                     item.type === 'armor' ? 'armor' :
                     item.type === 'material' ? 'material' : 
                     item.type === 'potion' ? 'potion' : 'consumable') as RPGItem['category'],
-          equipmentSlot: item.equipmentSlot || undefined,
-          corruptionLimitBonus: item.corruptionLimitBonus || 0,
-          statBonus: item.statBonus || '',
-          beltCapacity: item.beltCapacity || 0,
-          rarity: item.rarity || 'common',
-          description: item.description || '',
-          imageUrl: item.imageUrl
+          equipmentSlot: item.equipmentSlot ? String(item.equipmentSlot) : undefined,
+          corruptionLimitBonus: Number(item.corruptionLimitBonus || 0),
+          statBonus: String(item.statBonus || ''),
+          beltCapacity: Number(item.beltCapacity || 0),
+          rarity: String(item.rarity || 'common'),
+          description: String(item.description || ''),
+          imageUrl: item.imageUrl ? String(item.imageUrl) : undefined,
+          particles: item.particles ? String(item.particles) : undefined
         }));
         set({ rpgItems: convertedItems, isLoading: false });
       } else {
