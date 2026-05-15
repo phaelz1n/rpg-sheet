@@ -107,7 +107,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
           return (
             <InventorySlot
               key={item.id}
-              itemName={globalData?.name || item.name}
+              itemName={typeof (globalData?.name || item.name) === 'object' ? '' : (globalData?.name || item.name)}
               quantity={item.quantity}
               icon={item.icon || Gem}
               description={globalData?.description || item.description}

@@ -21,7 +21,10 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
            rpgItems.find(i => i.name.toLowerCase() === idOrName.toLowerCase());
   };
 
-  const getItemName = (idOrName: string) => getItemData(idOrName)?.name || idOrName;
+  const getItemName = (idOrName: any) => {
+    if (!idOrName || typeof idOrName === 'object') return '';
+    return getItemData(idOrName)?.name || String(idOrName);
+  };
   const getItemRarity = (idOrName: string) => getItemData(idOrName)?.rarity;
   const getItemDescription = (idOrName: string) => getItemData(idOrName)?.description;
   const getItemParticles = (idOrName: string) => getItemData(idOrName)?.particles;
