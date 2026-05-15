@@ -133,24 +133,25 @@ export function CharacterPage() {
     const rpgItem = item as RPGItem;
     const { type, slot } = itemSelectionModal;
 
-    if (slot?.startsWith('belt') && slot !== 'belt') {
-      const beltNum = slot.replace('belt', '');
-      store.updateBeltSlot(beltNum, rpgItem.name);
-    } else if (type === 'weapon' && slot) {
-      const weaponData = {
-        name: rpgItem.name,
-        damage: rpgItem.damage,
-        bonus: `+${rpgItem.bonus}`,
+    if (type === 'weapon' && slot) {
+      store.equipWeapon(slot as 'main' | 'off', {
+        id: item.id,
+        name: item.name,
+        damage: item.damage,
+        bonus: item.bonus.toString(),
         synergy: '',
-        special: rpgItem.description || '',
-        imageUrl: rpgItem.imageUrl
-      };
-      store.equipWeapon(slot as 'main' | 'off', weaponData);
+        special: item.description || '',
+        imageUrl: item.imageUrl
+      });
     } else if (type === 'armor' && slot) {
-      store.equipArmor(slot, rpgItem.name);
+      store.equipArmor(slot, item.id);
+    } else if (type === 'belt' && slot) {
+      // Handle both the single slot from selection and specific numbered slots
+      const beltNum = slot.startsWith('belt') ? slot.replace('belt', '') : slot;
+      store.updateBeltSlot(beltNum, item.id);
     } else if (type === 'consumable') {
       const { inventory, inventoryCapacity } = store;
-      const existing = inventory.find(i => i.name === rpgItem.name);
+      const existing = inventory.find(i => i.globalItemId === item.id || i.name.toLowerCase() === item.name.toLowerCase());
       if (existing) {
         store.updateInventoryQuantity(existing.id, existing.quantity + 1);
       } else {
@@ -160,16 +161,17 @@ export function CharacterPage() {
         }
         store.setInventory([...inventory, {
           id: Date.now().toString(),
-          name: rpgItem.name,
+          name: item.name,
           quantity: 1,
           icon: Gem,
-          description: rpgItem.description || '',
-          attributeType: rpgItem.attributeType,
-          bonus: rpgItem.bonus,
-          damage: rpgItem.damage,
-          category: rpgItem.category,
-          rarity: rpgItem.rarity,
-          imageUrl: rpgItem.imageUrl
+          description: item.description || '',
+          attributeType: item.attributeType,
+          bonus: item.bonus,
+          damage: item.damage,
+          category: item.category,
+          rarity: item.rarity,
+          imageUrl: item.imageUrl,
+          globalItemId: item.id
         } as any]);
       }
     }

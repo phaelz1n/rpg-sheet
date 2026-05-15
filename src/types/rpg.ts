@@ -24,6 +24,7 @@ export interface RPGItem {
 export interface InventoryItem extends RPGItem {
   quantity: number;
   icon?: any;
+  globalItemId?: string; // Reference to the ID in global_items table
 }
 
 export interface Ability {
@@ -41,6 +42,7 @@ export interface Ability {
 }
 
 export interface WeaponState {
+  id: string; // Global item ID
   name: string;
   damage: string;
   bonus: string;
