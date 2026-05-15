@@ -5,6 +5,7 @@ import { RichDescription } from './RichDescription';
 import { ItemVFX } from './ItemVFX';
 import { audioService } from '../../lib/audio-service';
 import { useSelectedItem } from '../../context/SelectedItemContext';
+import { useCharacterStore } from '../../store/characterStore';
 import { DivineEquipEffect } from './DivineEquipEffect';
 
 interface WeaponCardProps {
@@ -58,6 +59,9 @@ export function WeaponCard({
 
   const isInitialMount = React.useRef(true);
   const lastNameRef = React.useRef(name);
+  const isLoading = useCharacterStore(s => s.isLoading);
+  const wasLoading = React.useRef(false);
+
   // Stores the new name when it arrives before rarity is resolved
   const pendingNameRef = React.useRef<string | null>(null);
   const [isDivineEquipping, setIsDivineEquipping] = React.useState(false);
@@ -67,8 +71,15 @@ export function WeaponCard({
   );
 
   useEffect(() => {
-    if (isInitialMount.current) {
+    // If store is loading, mark it and wait
+    if (isLoading) {
+      wasLoading.current = true;
+      return;
+    }
+
+    if (isInitialMount.current || wasLoading.current) {
       isInitialMount.current = false;
+      wasLoading.current = false;
       lastNameRef.current = name;
       return;
     }

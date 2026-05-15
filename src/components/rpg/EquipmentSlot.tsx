@@ -6,6 +6,7 @@ import { ItemVFX } from './ItemVFX';
 import { DivineEquipEffect } from './DivineEquipEffect';
 import { audioService } from '../../lib/audio-service';
 import { useSelectedItem } from '../../context/SelectedItemContext';
+import { useCharacterStore } from '../../store/characterStore';
 
 interface EquipmentSlotProps {
   slotName: string;
@@ -50,6 +51,9 @@ export function EquipmentSlot({
 
   const isInitialMount = React.useRef(true);
   const lastItemNameRef = React.useRef(itemName);
+  const isLoading = useCharacterStore(s => s.isLoading);
+  const wasLoading = React.useRef(false);
+  
   // Stores the new name when it arrives before rarity is resolved
   const pendingNameRef = React.useRef<string | null>(null);
   const [isDivineEquipping, setIsDivineEquipping] = React.useState(false);
@@ -60,8 +64,15 @@ export function EquipmentSlot({
   );
 
   useEffect(() => {
-    if (isInitialMount.current) {
+    // If store is loading, mark it and wait
+    if (isLoading) {
+      wasLoading.current = true;
+      return;
+    }
+
+    if (isInitialMount.current || wasLoading.current) {
       isInitialMount.current = false;
+      wasLoading.current = false;
       lastItemNameRef.current = itemName;
       return;
     }
