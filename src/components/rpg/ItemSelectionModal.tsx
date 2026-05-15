@@ -76,7 +76,8 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                 {item.rarity === 'divine' && <div className="absolute inset-0 bg-red-600/5 pointer-events-none" />}
                 {item.rarity === 'legendary' && <div className="absolute inset-0 bg-amber-600/5 pointer-events-none" />}
 
-                  <div className="flex items-center gap-3 relative z-10">
+                <div className="flex items-start justify-between mb-1.5 relative z-10">
+                  <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded bg-black/40 border border-amber-900/20 flex items-center justify-center overflow-hidden shrink-0">
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt="" className="w-full h-full object-contain" />
