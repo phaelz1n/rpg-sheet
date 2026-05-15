@@ -114,6 +114,7 @@ export const ttrpgApi = {
       .select('*')
       .order('name');
     
+    const parsedItems = data?.map(item => {
       const mappedItem = {
         ...item,
         imageUrl: item.image_url // Map database field to frontend field
