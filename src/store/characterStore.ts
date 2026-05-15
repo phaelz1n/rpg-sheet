@@ -204,7 +204,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
             bonus: i.bonus,
             damage: i.damage,
             category: i.category,
-            rarity: i.rarity,
+            rarity: i.rarity ? String(i.rarity).toLowerCase() : undefined,
             imageUrl: i.imageUrl,
             globalItemId: i.globalItemId
           })) : []

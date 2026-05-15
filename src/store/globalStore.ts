@@ -34,7 +34,7 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
           corruptionLimitBonus: Number(item.corruptionLimitBonus || 0),
           statBonus: String(item.statBonus || ''),
           beltCapacity: Number(item.beltCapacity || 0),
-          rarity: String(item.rarity || 'common'),
+          rarity: String(item.rarity || 'common').toLowerCase(),
           description: String(item.description || ''),
           imageUrl: item.imageUrl ? String(item.imageUrl) : undefined,
           particles: item.particles ? String(item.particles) : undefined

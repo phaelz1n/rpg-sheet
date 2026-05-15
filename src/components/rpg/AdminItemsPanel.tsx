@@ -188,7 +188,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
     const matchesType = filterType === 'all' || item.type === filterType;
-    const matchesRarity = filterRarity === 'all' || item.rarity === filterRarity;
+    const matchesRarity = filterRarity === 'all' || item.rarity?.toLowerCase() === filterRarity.toLowerCase();
     return matchesSearch && matchesType && matchesRarity;
   });
 

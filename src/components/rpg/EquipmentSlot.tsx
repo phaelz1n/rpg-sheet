@@ -146,7 +146,7 @@ export function EquipmentSlot({
         showAsEmpty
           ? `bg-zinc-900/40 border border-dashed ${borderClass} cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60`
           : `bg-gradient-to-br from-amber-950/30 to-zinc-900/60 border ${borderClass} shadow-lg ${
-              rarity === 'divine' ? 'from-red-950/40' : ''
+              rarity?.toLowerCase() === 'divine' ? 'from-red-950/40' : ''
             }`
       } rounded-lg p-3 transition-all duration-500`}
       onClick={showAsEmpty ? onAddClick : handleSelect}>
@@ -173,7 +173,7 @@ export function EquipmentSlot({
               className="w-full h-full relative"
             >
               {/* Hearthstone Impact Glow */}
-              {rarity === 'legendary' && (
+              {rarity?.toLowerCase() === 'legendary' && (
                 <motion.div 
                   initial={{ opacity: 1, scale: 0.5 }}
                   animate={{ opacity: 0, scale: 2.5 }}
@@ -183,7 +183,7 @@ export function EquipmentSlot({
               )}
 
               {/* Divine Impact Glow */}
-              {rarity === 'divine' && (
+              {rarity?.toLowerCase() === 'divine' && (
                 <motion.div 
                   initial={{ opacity: 1, scale: 0.5 }}
                   animate={{ opacity: 0, scale: 2.5 }}
@@ -210,7 +210,7 @@ export function EquipmentSlot({
                 {/* Header: Slot Name & Rarity Sparkle */}
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[8px] text-zinc-500 uppercase tracking-widest font-black leading-none">{slotName}</span>
-                  {(rarity === 'legendary' || rarity === 'divine') && <Sparkles className={`w-3 h-3 animate-pulse ${rarity === 'divine' ? 'text-red-500' : 'text-amber-500'}`} />}
+                  {(rarity?.toLowerCase() === 'legendary' || rarity?.toLowerCase() === 'divine') && <Sparkles className={`w-3 h-3 animate-pulse ${rarity?.toLowerCase() === 'divine' ? 'text-red-500' : 'text-amber-500'}`} />}
                 </div>
 
                 {/* Main Content: Item Illustration */}
@@ -218,7 +218,7 @@ export function EquipmentSlot({
                   {imageUrl ? (
                     <img src={imageUrl} alt="" className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
                   ) : (
-                    <Icon className={`w-6 h-6 ${isEmpty ? 'text-zinc-600' : rarity === 'divine' ? 'text-red-500' : 'text-amber-600'} opacity-30 transition-colors`} />
+                    <Icon className={`w-6 h-6 ${isEmpty ? 'text-zinc-600' : rarity?.toLowerCase() === 'divine' ? 'text-red-500' : 'text-amber-600'} opacity-30 transition-colors`} />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
                 </div>
@@ -226,27 +226,27 @@ export function EquipmentSlot({
                 {/* Footer: Item Name & Rarity Label */}
                 <div className="flex flex-col mt-auto">
                   <div className={`w-full text-[10px] font-black uppercase tracking-tight truncate ${
-                    rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-zinc-200'
+                    rarity?.toLowerCase() === 'divine' ? 'text-red-500' : rarity?.toLowerCase() === 'legendary' ? 'text-amber-400' : rarity?.toLowerCase() === 'rare' ? 'text-blue-400' : 'text-zinc-200'
                   }`}>
                     {String(itemName || '')}
                   </div>
                   <div className={`text-[7px] uppercase font-bold tracking-tighter ${
-                    rarity === 'divine' ? 'text-red-700' : 'text-zinc-600'
+                    rarity?.toLowerCase() === 'divine' ? 'text-red-700' : 'text-zinc-600'
                   }`}>
-                    {rarity === 'divine' ? 'Divino' : String(rarity || 'Comum')}
+                    {rarity?.toLowerCase() === 'divine' ? 'Divino' : String(rarity || 'Comum')}
                   </div>
                 </div>
               </div>
 
               {description && (
                 <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-zinc-950 border rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-2xl scale-95 group-hover:scale-100 origin-bottom ${
-                  rarity === 'divine' ? 'border-red-900/50' : 'border-amber-800/50'
+                  rarity?.toLowerCase() === 'divine' ? 'border-red-900/50' : 'border-amber-800/50'
                 }`}>
                   <div className={`text-[10px] uppercase tracking-widest font-bold mb-1 border-b pb-1 flex items-center justify-between ${
-                    rarity === 'divine' ? 'text-red-500 border-red-900/30' : 'text-amber-500 border-amber-900/30'
+                    rarity?.toLowerCase() === 'divine' ? 'text-red-500 border-red-900/30' : 'text-amber-500 border-amber-900/30'
                   }`}>
                     <span>{slotName}</span>
-                    <span className="text-zinc-500">{rarity === 'divine' ? 'Divino' : rarity === 'rare' ? 'Raro' : rarity === 'legendary' ? 'Lendário' : 'Comum'}</span>
+                    <span className="text-zinc-500">{rarity?.toLowerCase() === 'divine' ? 'Divino' : rarity?.toLowerCase() === 'rare' ? 'Raro' : rarity?.toLowerCase() === 'legendary' ? 'Lendário' : 'Comum'}</span>
                   </div>
                   <div className="text-zinc-300 text-xs leading-relaxed">
                     <RichDescription text={description} />

@@ -138,8 +138,8 @@ export function WeaponCard({
         showAsEmpty
           ? 'bg-zinc-900/40 border-2 border-dashed border-zinc-700/40 cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60'
           : `bg-gradient-to-br from-orange-950/40 to-zinc-900/80 border-2 shadow-xl shadow-orange-900/20 ${
-              rarity === 'divine' ? 'border-red-600/60 shadow-red-900/40 from-red-950/40' :
-              rarity === 'legendary' ? 'border-amber-600/50' : 'border-orange-900/60'
+              rarity?.toLowerCase() === 'divine' ? 'border-red-600/60 shadow-red-900/40 from-red-950/40' :
+              rarity?.toLowerCase() === 'legendary' ? 'border-amber-600/50' : 'border-orange-900/60'
             }`
       } rounded-lg p-4 transition-all duration-500 min-h-[220px] flex flex-col`}
       onClick={showAsEmpty ? onAddClick : handleSelect}>
@@ -166,13 +166,13 @@ export function WeaponCard({
               className="flex-1 flex flex-col"
             >
               {/* Hearthstone Impact Glow */}
-              {(rarity === 'legendary' || rarity === 'divine') && (
+              {(rarity?.toLowerCase() === 'legendary' || rarity?.toLowerCase() === 'divine') && (
                 <motion.div 
                   initial={{ opacity: 1, scale: 0.5 }}
                   animate={{ opacity: 0, scale: 2.5 }}
                   transition={{ duration: 0.8 }}
                   className={`absolute inset-0 blur-2xl rounded-full pointer-events-none z-0 ${
-                    rarity === 'divine' ? 'bg-red-600/40' : 'bg-amber-500/40'
+                    rarity?.toLowerCase() === 'divine' ? 'bg-red-600/40' : 'bg-amber-500/40'
                   }`}
                 />
               )}
@@ -224,7 +224,7 @@ export function WeaponCard({
 
                     {/* Weapon name */}
                     <h3 className={`w-full mb-3 tracking-tighter font-black uppercase text-base leading-tight ${
-                      rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-amber-100'
+                      rarity?.toLowerCase() === 'divine' ? 'text-red-500' : rarity?.toLowerCase() === 'legendary' ? 'text-amber-400' : rarity?.toLowerCase() === 'rare' ? 'text-blue-400' : 'text-amber-100'
                     }`}>
                       {String(name || '')}
                     </h3>
