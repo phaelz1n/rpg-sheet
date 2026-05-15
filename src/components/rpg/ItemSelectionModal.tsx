@@ -78,9 +78,9 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
 
                 <div className="flex items-start justify-between mb-1.5 relative z-10">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-black/40 border border-amber-900/20 flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-black/40 border border-amber-900/20 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-amber-600/40 transition-colors">
                       {item.imageUrl ? (
-                        <img src={item.imageUrl} alt="" className="w-full h-full object-contain" />
+                        <img src={item.imageUrl} alt="" className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all scale-95 group-hover:scale-105" />
                       ) : (
                         <div className="text-zinc-700 font-bold text-[8px] uppercase tracking-tighter">N/A</div>
                       )}
@@ -90,7 +90,7 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                       item.rarity === 'legendary' ? 'text-amber-400' :
                       item.rarity === 'rare' ? 'text-blue-400' :
                       'text-zinc-200'
-                    } group-hover:text-white transition-colors`}>{item.name}</h4>
+                    } group-hover:text-white transition-colors`}>{String(item.name || '')}</h4>
                   </div>
                   
                   <div className="flex gap-1.5 text-[9px] uppercase font-black tracking-widest">
@@ -141,7 +141,7 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                   )}
                 </div>
 
-                {item.description && (
+                {item.description && typeof item.description === 'string' && (
                   <p className="mt-2 text-[10px] text-zinc-500 line-clamp-1 group-hover:text-zinc-400 transition-colors italic">
                     {item.description.replace(/#\w+/g, '').substring(0, 60)}...
                   </p>
