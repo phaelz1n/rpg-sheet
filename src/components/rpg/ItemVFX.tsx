@@ -9,8 +9,12 @@ interface ItemVFXProps {
 }
 
 export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
+  // Hard safety check against objects as children/props
+  const safeName = typeof name === 'string' ? name : '';
+  
   // Hash function for deterministic randomness
   const getSeed = (str: string) => {
+    if (!str) return 0;
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = (hash << 5) - hash + str.charCodeAt(i);
@@ -19,7 +23,7 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
     return Math.abs(hash);
   };
 
-  const seed = getSeed(name || 'default');
+  const seed = getSeed(safeName || 'default');
   const seededRandom = (i: number) => {
     const x = Math.sin(seed + i) * 10000;
     return x - Math.floor(x);

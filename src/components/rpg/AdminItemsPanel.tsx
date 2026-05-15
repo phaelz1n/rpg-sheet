@@ -335,18 +335,24 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
         <div className="flex flex-col items-center justify-center p-6 bg-black/40 border border-amber-900/20 rounded-xl mb-4 relative overflow-hidden shadow-inner">
           <div className="text-[10px] text-amber-900 uppercase font-black tracking-widest mb-4">Prévia do Jogador</div>
           <div className="w-24 h-24 relative bg-gradient-to-br from-zinc-900 to-black border border-amber-900/40 rounded-xl flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
-            <ItemVFX type={formData.particles} rarity={formData.rarity} name={formData.name} />
+            <ItemVFX type={formData.particles} rarity={formData.rarity} name={String(formData.name || '')} />
             {formData.imageUrl ? (
-              <img src={formData.imageUrl} alt={formData.name} className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity" />
+              <img src={formData.imageUrl} alt={String(formData.name || '')} className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity" />
             ) : (
               <Package className={`w-8 h-8 mb-1 relative z-10 ${
-                formData.rarity === 'legendary' ? 'text-amber-400' : formData.rarity === 'rare' ? 'text-blue-400' : 'text-zinc-500'
+                formData.rarity === 'divine' ? 'text-red-500' :
+                formData.rarity === 'legendary' ? 'text-amber-400' : 
+                formData.rarity === 'rare' ? 'text-blue-400' : 
+                'text-zinc-500'
               }`} />
             )}
             <div className={`text-[8px] font-black uppercase text-center leading-tight tracking-tighter px-1 relative z-20 bg-black/60 w-full py-1 ${
-              formData.rarity === 'legendary' ? 'text-amber-300' : formData.rarity === 'rare' ? 'text-blue-300' : 'text-zinc-300'
+              formData.rarity === 'divine' ? 'text-red-400' :
+              formData.rarity === 'legendary' ? 'text-amber-300' : 
+              formData.rarity === 'rare' ? 'text-blue-300' : 
+              'text-zinc-300'
             }`}>
-              {formData.name || 'Nome do Item'}
+              {String(formData.name || 'Nome do Item')}
             </div>
           </div>
         </div>
@@ -785,53 +791,56 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                             <Package className="w-4 h-4 text-amber-700/50" />
                           )}
                         </div>
-                        <h3 className="text-amber-300 font-bold text-sm truncate">{item.name}</h3>
+                        <h3 className="text-sm font-bold text-zinc-100 group-hover:text-amber-400 transition-colors truncate max-w-[140px]">
+                          {String(item.name || '')}
+                        </h3>
                       </div>
                       
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
-                          <button
-                            onClick={() => openEditModal(item)}
-                            className="w-7 h-7 bg-blue-900/40 border border-blue-700/40 rounded flex items-center justify-center hover:bg-blue-800 transition-colors"
-                          >
-                            <Edit className="w-4 h-4 text-blue-100" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="w-7 h-7 bg-red-900/40 border border-red-700/40 rounded flex items-center justify-center hover:bg-red-800 transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4 text-red-100" />
-                          </button>
-                        </div>
-
-                        <div 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSelect(item.id);
-                          }}
-                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shadow-inner cursor-pointer ${
-                            selectedIds.has(item.id) 
-                              ? 'bg-amber-500 border-amber-300 scale-110 shadow-[0_0_8px_rgba(245,158,11,0.4)]' 
-                              : 'bg-black/40 border-zinc-700 hover:border-amber-900'
-                          }`}
+                      <div className="flex gap-1.5 shrink-0">
+                        <button
+                          onClick={() => openEditModal(item)}
+                          className="w-7 h-7 bg-amber-900/40 border border-amber-700/40 rounded flex items-center justify-center hover:bg-amber-800 transition-colors"
                         >
-                          {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-full" />}
-                        </div>
+                          <Edit className="w-4 h-4 text-amber-100" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="w-7 h-7 bg-red-900/40 border border-red-700/40 rounded flex items-center justify-center hover:bg-red-800 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-100" />
+                        </button>
+                      </div>
+
+                      <div 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSelect(item.id);
+                        }}
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shadow-inner cursor-pointer ${
+                          selectedIds.has(item.id) 
+                            ? 'bg-amber-500 border-amber-300 scale-110 shadow-[0_0_8px_rgba(245,158,11,0.4)]' 
+                            : 'bg-black/40 border-zinc-700 hover:border-amber-900'
+                        }`}
+                      >
+                        {selectedIds.has(item.id) && <div className="w-2 h-2 bg-black rounded-full" />}
                       </div>
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3 text-[10px] uppercase tracking-tighter">
                       <span className={`px-2 py-0.5 rounded border ${
+                        item.rarity === 'divine' ? 'bg-red-950/40 border-red-800/50 text-red-400' :
                         item.rarity === 'rare' ? 'bg-blue-950/40 border-blue-800/50 text-blue-300' :
                         item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-800/50 text-amber-300' :
                         'bg-zinc-800/40 border-zinc-700/50 text-zinc-400'
                       }`}>
-                        {item.rarity === 'rare' ? 'Raro' : item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
+                        {item.rarity === 'divine' ? 'Divino' : 
+                         item.rarity === 'rare' ? 'Raro' : 
+                         item.rarity === 'legendary' ? 'Lendário' : 'Comum'}
                       </span>
                       <span className="px-2 py-0.5 bg-zinc-800/60 border border-zinc-700 rounded text-zinc-400 flex items-center gap-1">
-                        {typeLabels[item.type]}
+                        {String(typeLabels[item.type] || item.type)}
                         {item.type === 'armor' && item.equipmentSlot && (
-                          <span className="text-zinc-500 uppercase text-[8px] border-l border-zinc-700 pl-1 ml-1">{slotLabels[item.equipmentSlot]}</span>
+                          <span className="text-zinc-500 uppercase text-[8px] border-l border-zinc-700 pl-1 ml-1">{String(slotLabels[item.equipmentSlot] || item.equipmentSlot)}</span>
                         )}
                       </span>
                       {item.particles && item.particles !== 'none' && (
@@ -848,23 +857,23 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
                   {item.type === 'weapon' && (
                     <div className="text-xs text-zinc-500 space-y-1">
-                      <div>Dano: <span className="text-red-400">{item.damage}</span></div>
-                      <div>Bônus: <span className="text-amber-400">+{item.bonus}</span></div>
+                      <div>Dano: <span className="text-red-400">{String(item.damage || '0')}</span></div>
+                      <div>Bônus: <span className="text-amber-400">+{String(item.bonus || '0')}</span></div>
                     </div>
                   )}
 
                   {item.type === 'armor' && (
                     <div className="text-xs text-zinc-500 space-y-1">
-                      {(item.bonus ?? 0) > 0 && <div>Defesa: <span className="text-blue-400">+{item.bonus}</span></div>}
+                      {(item.bonus ?? 0) > 0 && <div>Defesa: <span className="text-blue-400">+{String(item.bonus)}</span></div>}
                       {(item.corruptionLimitBonus ?? 0) > 0 && (
-                        <div>Corrupção Limite: <span className="text-purple-400">+{item.corruptionLimitBonus}</span></div>
+                        <div>Corrupção Limite: <span className="text-purple-400">+{String(item.corruptionLimitBonus)}</span></div>
                       )}
                       {(item.beltCapacity ?? 0) > 0 && (
-                        <div>Slots Cinto: <span className="text-amber-400">{item.beltCapacity}</span></div>
+                        <div>Slots Cinto: <span className="text-amber-400">{String(item.beltCapacity)}</span></div>
                       )}
                       {item.statBonus && (
                         <div className="text-amber-400/80 italic text-[11px]">
-                          <RichDescription text={item.statBonus} />
+                          <RichDescription text={typeof item.statBonus === 'string' ? item.statBonus : ''} />
                         </div>
                       )}
                     </div>
@@ -878,8 +887,12 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                         item.effectTarget === 'sanity' ? 'Sanidade' :
                         item.effectTarget === 'corruption' ? 'Corrupção' : 'Especial'
                       }</span></div>
-                      <div>Valor: <span className="text-green-400">{item.healingValue}</span></div>
-                      {item.effect && <div className="text-purple-400 line-clamp-1">{item.effect}</div>}
+                      <div>Valor: <span className="text-green-400">{String(item.healingValue || '0')}</span></div>
+                      {item.effect && (
+                        <div className="text-purple-400 line-clamp-1">
+                          <RichDescription text={typeof item.effect === 'string' ? item.effect : ''} />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
