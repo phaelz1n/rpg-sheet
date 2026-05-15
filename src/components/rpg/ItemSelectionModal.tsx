@@ -76,13 +76,21 @@ export function ItemSelectionModal({ isOpen, title, items, onClose, onSelect }: 
                 {item.rarity === 'divine' && <div className="absolute inset-0 bg-red-600/5 pointer-events-none" />}
                 {item.rarity === 'legendary' && <div className="absolute inset-0 bg-amber-600/5 pointer-events-none" />}
 
-                <div className="flex items-start justify-between mb-1.5 relative z-10">
-                  <h4 className={`font-black text-sm sm:text-base uppercase tracking-tight ${
-                    item.rarity === 'divine' ? 'text-red-500' :
-                    item.rarity === 'legendary' ? 'text-amber-400' :
-                    item.rarity === 'rare' ? 'text-blue-400' :
-                    'text-zinc-200'
-                  } group-hover:text-white transition-colors`}>{item.name}</h4>
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="w-10 h-10 rounded bg-black/40 border border-amber-900/20 flex items-center justify-center overflow-hidden shrink-0">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt="" className="w-full h-full object-contain" />
+                      ) : (
+                        <div className="text-zinc-700 font-bold text-[8px] uppercase tracking-tighter">N/A</div>
+                      )}
+                    </div>
+                    <h4 className={`font-black text-sm sm:text-base uppercase tracking-tight ${
+                      item.rarity === 'divine' ? 'text-red-500' :
+                      item.rarity === 'legendary' ? 'text-amber-400' :
+                      item.rarity === 'rare' ? 'text-blue-400' :
+                      'text-zinc-200'
+                    } group-hover:text-white transition-colors`}>{item.name}</h4>
+                  </div>
                   
                   <div className="flex gap-1.5 text-[9px] uppercase font-black tracking-widest">
                     <span className={`px-2 py-0.5 rounded-md border ${

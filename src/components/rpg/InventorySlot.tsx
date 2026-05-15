@@ -8,6 +8,7 @@ interface InventorySlotProps {
   itemName?: string;
   quantity?: number;
   icon?: LucideIcon;
+  imageUrl?: string;
   description?: string;
   particles?: string;
   rarity?: string;
@@ -20,6 +21,7 @@ export function InventorySlot({
   itemName,
   quantity,
   icon: Icon,
+  imageUrl,
   description,
   particles,
   rarity,
@@ -81,17 +83,21 @@ export function InventorySlot({
 
             <ItemVFX type={particles as any} rarity={rarity} name={itemName} />
 
-            {Icon && (
-              <Icon
-                className={`w-7 h-7 mb-1 ${
-                  rarity === 'legendary'
-                    ? 'text-amber-400'
-                    : rarity === 'rare'
-                    ? 'text-blue-400'
-                    : 'text-amber-600'
-                }`}
-              />
-            )}
+            <div className="w-10 h-10 flex items-center justify-center mb-1 relative z-10">
+              {imageUrl ? (
+                <img src={imageUrl} alt="" className="w-full h-full object-contain" />
+              ) : Icon ? (
+                <Icon
+                  className={`w-7 h-7 ${
+                    rarity === 'legendary'
+                      ? 'text-amber-400'
+                      : rarity === 'rare'
+                      ? 'text-blue-400'
+                      : 'text-amber-600'
+                  }`}
+                />
+              ) : null}
+            </div>
             <div
               className={`text-[10px] font-black uppercase text-center leading-tight tracking-tighter ${
                 rarity === 'legendary'

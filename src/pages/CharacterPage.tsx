@@ -142,7 +142,8 @@ export function CharacterPage() {
         damage: rpgItem.damage,
         bonus: `+${rpgItem.bonus}`,
         synergy: '',
-        special: rpgItem.description || ''
+        special: rpgItem.description || '',
+        imageUrl: rpgItem.imageUrl
       };
       store.equipWeapon(slot as 'main' | 'off', weaponData);
     } else if (type === 'armor' && slot) {
@@ -167,7 +168,8 @@ export function CharacterPage() {
           bonus: rpgItem.bonus,
           damage: rpgItem.damage,
           category: rpgItem.category,
-          rarity: rpgItem.rarity
+          rarity: rpgItem.rarity,
+          imageUrl: rpgItem.imageUrl
         } as any]);
       }
     }
@@ -338,10 +340,8 @@ export function CharacterPage() {
                   special={store.mainWeapon.special}
                   particles={rpgItems.find(i => i.name === store.mainWeapon.name)?.particles}
                   rarity={rpgItems.find(i => i.name === store.mainWeapon.name)?.rarity}
-                  onNameChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, name: value })}
-                  onDamageChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, damage: value })}
-                  onBonusChange={(value) => store.equipWeapon('main', { ...store.mainWeapon, bonus: value })}
-                  onClear={() => store.equipWeapon('main', { name: '', damage: '', bonus: '', synergy: '', special: '' })}
+                  imageUrl={store.mainWeapon.imageUrl || rpgItems.find(i => i.name === store.mainWeapon.name)?.imageUrl}
+                  onClear={() => store.equipWeapon('main', { name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'main')}
                   onImpact={triggerScreenShake}
                 />
@@ -354,10 +354,8 @@ export function CharacterPage() {
                   special={store.offWeapon.special}
                   particles={rpgItems.find(i => i.name === store.offWeapon.name)?.particles}
                   rarity={rpgItems.find(i => i.name === store.offWeapon.name)?.rarity}
-                  onNameChange={(value) => store.equipWeapon('off', { ...store.offWeapon, name: value })}
-                  onDamageChange={(value) => store.equipWeapon('off', { ...store.offWeapon, damage: value })}
-                  onBonusChange={(value) => store.equipWeapon('off', { ...store.offWeapon, bonus: value })}
-                  onClear={() => store.equipWeapon('off', { name: '', damage: '', bonus: '', synergy: '', special: '' })}
+                  imageUrl={store.offWeapon.imageUrl || rpgItems.find(i => i.name === store.offWeapon.name)?.imageUrl}
+                  onClear={() => store.equipWeapon('off', { name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'off')}
                   onImpact={triggerScreenShake}
                 />

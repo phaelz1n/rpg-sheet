@@ -15,7 +15,7 @@ interface EquipmentSlotProps {
   icon: LucideIcon;
   description?: string;
   particles?: string;
-  onItemNameChange?: (value: string) => void;
+  imageUrl?: string;
   onClear?: () => void;
   onAddClick?: () => void;
   onImpact?: () => void;
@@ -28,7 +28,7 @@ export function EquipmentSlot({
   icon: Icon, 
   description, 
   particles, 
-  onItemNameChange, 
+  imageUrl,
   onClear, 
   onAddClick,
   onImpact 
@@ -139,6 +139,7 @@ export function EquipmentSlot({
         icon={Icon} 
         particles={particles} 
         isVisible={isDivineEquipping} 
+        imageUrl={imageUrl}
       />
 
       <div className={`relative group ${
@@ -206,23 +207,23 @@ export function EquipmentSlot({
               )}
 
               <div className="flex items-center gap-2 mb-2 relative z-10">
-                <Icon className={`w-4 h-4 ${isEmpty ? 'text-zinc-600' : rarity === 'divine' ? 'text-red-500' : 'text-amber-600'} transition-colors`} />
+                <div className="w-8 h-8 flex items-center justify-center shrink-0">
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="" className="w-full h-full object-contain" />
+                  ) : (
+                    <Icon className={`w-4 h-4 ${isEmpty ? 'text-zinc-600' : rarity === 'divine' ? 'text-red-500' : 'text-amber-600'} transition-colors`} />
+                  )}
+                </div>
                 <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black">{slotName}</span>
                 {(rarity === 'legendary' || rarity === 'divine') && <Sparkles className={`w-3 h-3 animate-pulse ${rarity === 'divine' ? 'text-red-500' : 'text-amber-500'}`} />}
               </div>
 
               <div className="flex flex-col">
-                <input
-                  type="text"
-                  value={itemName}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    onItemNameChange?.(e.target.value);
-                  }}
-                  className={`w-full bg-transparent text-sm font-black uppercase tracking-tight focus:outline-none ${
-                    rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-zinc-200'
-                  }`}
-                />
+                <div className={`w-full text-sm font-black uppercase tracking-tight ${
+                  rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-zinc-200'
+                }`}>
+                  {itemName}
+                </div>
                 <div className={`text-[8px] uppercase font-bold tracking-tighter mt-0.5 ${
                   rarity === 'divine' ? 'text-red-700' : 'text-zinc-600'
                 }`}>

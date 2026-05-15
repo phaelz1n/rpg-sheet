@@ -114,15 +114,19 @@ export const ttrpgApi = {
       .select('*')
       .order('name');
     
-    const parsedItems = data?.map(item => {
-      if (item.type?.startsWith('armor-')) {
+      const mappedItem = {
+        ...item,
+        imageUrl: item.image_url // Map database field to frontend field
+      };
+
+      if (mappedItem.type?.startsWith('armor-')) {
         return {
-          ...item,
+          ...mappedItem,
           type: 'armor',
-          equipmentSlot: item.type.split('-')[1]
+          equipmentSlot: mappedItem.type.split('-')[1]
         };
       }
-      return item;
+      return mappedItem;
     });
 
     return { items: parsedItems || [], error: error?.message };
@@ -133,6 +137,8 @@ export const ttrpgApi = {
     if (payload.type === 'armor' && payload.equipmentSlot) {
       payload.type = `armor-${payload.equipmentSlot}`;
     }
+    payload.image_url = payload.imageUrl;
+    delete payload.imageUrl;
     delete payload.equipmentSlot;
 
     const { data, error } = await supabase
@@ -148,6 +154,8 @@ export const ttrpgApi = {
     if (payload.type === 'armor' && payload.equipmentSlot) {
       payload.type = `armor-${payload.equipmentSlot}`;
     }
+    payload.image_url = payload.imageUrl;
+    delete payload.imageUrl;
     delete payload.equipmentSlot;
 
     const { data, error } = await supabase
@@ -252,5 +260,26 @@ export const ttrpgApi = {
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
+  },
+
+  // Storage
+  async uploadItemImage(folder: string, file: File) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+    const filePath = `${folder}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('item-assets')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      return { success: false, error: uploadError.message };
+    }
+
+    const { data } = supabase.storage
+      .from('item-assets')
+      .getPublicUrl(filePath);
+
+    return { success: true, url: data.publicUrl };
   }
 };

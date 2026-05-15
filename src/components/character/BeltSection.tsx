@@ -15,6 +15,7 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
   const { rpgItems } = useGlobalStore();
 
   const getItemRarity = (itemName: string) => rpgItems.find(i => i.name === itemName)?.rarity;
+  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name === itemName)?.imageUrl;
 
   const beltItem = rpgItems.find(i => i.name === equipmentBelt && i.beltCapacity && i.beltCapacity > 0);
   const capacity = beltItem?.beltCapacity ?? 0;
@@ -50,7 +51,7 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
               key={slot.key}
               itemName={slot.val}
               rarity={getItemRarity(slot.val)}
-              onItemNameChange={(val) => updateBeltSlot(slot.key, val)}
+              imageUrl={getItemImageUrl(slot.val)}
               onClear={() => updateBeltSlot(slot.key, '')}
               onAddClick={() => onOpenModal('consumable', `belt${slot.key}`)}
             />

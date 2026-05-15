@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package, Plus, Edit, Trash2, X, Sparkles, Search, Info, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Package, Plus, Edit, Trash2, X, Sparkles, Search, Info, CheckCircle2, AlertCircle, Upload, Loader2 } from 'lucide-react';
 import { RichDescription } from './RichDescription';
 import { AutocompleteTextarea } from './AutocompleteTextarea';
 import { ttrpgApi } from '../../lib/ttrpg-api';
@@ -35,6 +35,7 @@ export interface GlobalItem {
   healingValue?: string;
   effectTarget?: 'health' | 'stamina' | 'sanity' | 'corruption' | 'none';
   effect?: string;
+  imageUrl?: string;
 }
 
 const rarityColors = {
@@ -111,8 +112,39 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     beltCapacity: 0,
     healingValue: '',
     effectTarget: 'health',
-    effect: ''
+    effect: '',
+    imageUrl: ''
   });
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      // Create folder path based on category and slot
+      let folder = formData.type;
+      if (formData.type === 'armor' && formData.equipmentSlot) {
+        folder = `armor/${formData.equipmentSlot}`;
+      } else if (formData.type === 'weapon') {
+        folder = 'weapons';
+      }
+
+      const result = await ttrpgApi.uploadItemImage(folder, file);
+      if (result.success && result.url) {
+        setFormData({ ...formData, imageUrl: result.url });
+        audioService.playSound('EQUIP_NORMAL');
+      } else {
+        alert('Erro no upload: ' + result.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro inesperado no upload');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSeed = async () => {
     setConfirmModal({
@@ -277,7 +309,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
       statBonus: '',
       beltCapacity: 0,
       healingValue: '',
-      effect: ''
+      effect: '',
+      imageUrl: ''
     });
   };
 
@@ -296,15 +329,53 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           <div className="text-[10px] text-amber-900 uppercase font-black tracking-widest mb-4">Prévia do Jogador</div>
           <div className="w-24 h-24 relative bg-gradient-to-br from-zinc-900 to-black border border-amber-900/40 rounded-xl flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
             <ItemVFX type={formData.particles} rarity={formData.rarity} name={formData.name} />
-            <Package className={`w-8 h-8 mb-1 relative z-10 ${
-              formData.rarity === 'legendary' ? 'text-amber-400' : formData.rarity === 'rare' ? 'text-blue-400' : 'text-zinc-500'
-            }`} />
-            <div className={`text-[8px] font-black uppercase text-center leading-tight tracking-tighter px-1 relative z-10 ${
+            {formData.imageUrl ? (
+              <img src={formData.imageUrl} alt={formData.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+            ) : (
+              <Package className={`w-8 h-8 mb-1 relative z-10 ${
+                formData.rarity === 'legendary' ? 'text-amber-400' : formData.rarity === 'rare' ? 'text-blue-400' : 'text-zinc-500'
+              }`} />
+            )}
+            <div className={`text-[8px] font-black uppercase text-center leading-tight tracking-tighter px-1 relative z-20 bg-black/60 w-full py-1 ${
               formData.rarity === 'legendary' ? 'text-amber-300' : formData.rarity === 'rare' ? 'text-blue-300' : 'text-zinc-300'
             }`}>
               {formData.name || 'Nome do Item'}
             </div>
           </div>
+        </div>
+
+        <div>
+          <label className="text-amber-400 text-sm uppercase tracking-wide mb-2 block">Ilustração do Item</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={formData.imageUrl || ''}
+              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+              className="flex-1 bg-black/40 border border-amber-900/40 rounded px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-600"
+              placeholder="Caminho local ou URL externa"
+            />
+            <div className="relative">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                disabled={isUploading}
+              />
+              <button
+                type="button"
+                className={`h-full px-4 rounded border flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest transition-all ${
+                  isUploading 
+                    ? 'bg-zinc-800 border-zinc-700 text-zinc-500' 
+                    : 'bg-amber-900/20 border-amber-900/40 text-amber-400 hover:bg-amber-900/40'
+                }`}
+              >
+                {isUploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+                {isUploading ? 'Enviando...' : 'Upload'}
+              </button>
+            </div>
+          </div>
+          <p className="text-[10px] text-zinc-500 mt-1 italic">Dica: Selecione a categoria antes do upload para organizar as pastas no banco.</p>
         </div>
 
         {/* Common fields */}

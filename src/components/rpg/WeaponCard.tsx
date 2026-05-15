@@ -17,9 +17,7 @@ interface WeaponCardProps {
   special?: string;
   particles?: string;
   rarity?: string;
-  onNameChange?: (value: string) => void;
-  onDamageChange?: (value: string) => void;
-  onBonusChange?: (value: string) => void;
+  imageUrl?: string;
   onClear?: () => void;
   onAddClick?: () => void;
   onImpact?: () => void;
@@ -34,9 +32,7 @@ export function WeaponCard({
   special,
   particles,
   rarity,
-  onNameChange,
-  onDamageChange,
-  onBonusChange,
+  imageUrl,
   onClear,
   onAddClick,
   onImpact
@@ -135,6 +131,7 @@ export function WeaponCard({
         icon={slot === 'main' ? Swords : Hand} 
         particles={particles} 
         isVisible={isDivineEquipping} 
+        imageUrl={imageUrl}
       />
 
       <div className={`relative group ${
@@ -209,19 +206,24 @@ export function WeaponCard({
                 {(rarity === 'legendary' || rarity === 'divine') && <Sparkles className={`w-3 h-3 animate-pulse ${rarity === 'divine' ? 'text-red-500' : 'text-amber-500'}`} />}
               </div>
 
+              {/* Weapon Image / Icon */}
+              <div className="relative h-20 mb-3 rounded-lg overflow-hidden flex items-center justify-center bg-black/20 border border-white/5">
+                {imageUrl ? (
+                  <img src={imageUrl} alt={name} className="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" />
+                ) : (
+                  <div className="text-zinc-800 opacity-20">
+                    {slot === 'main' ? <Swords className="w-12 h-12" /> : <Hand className="w-12 h-12" />}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+              </div>
+
               {/* Weapon name */}
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onNameChange?.(e.target.value);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                className={`w-full bg-transparent mb-3 tracking-tighter focus:outline-none border-b border-transparent focus:border-amber-600 font-black uppercase text-base ${
-                  rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-amber-100'
-                }`}
-              />
+              <h3 className={`w-full mb-3 tracking-tighter font-black uppercase text-base ${
+                rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-amber-100'
+              }`}>
+                {name}
+              </h3>
 
             {/* Stats grid */}
             <div className="space-y-2 relative z-10">

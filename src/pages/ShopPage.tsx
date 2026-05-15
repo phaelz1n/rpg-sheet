@@ -290,11 +290,15 @@ export function ShopPage() {
 
                         {/* Item Icon & Rarity Glow */}
                         <div className="flex items-start justify-between mb-4 sm:mb-6">
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-amber-900/40 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative ${
+                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-amber-900/40 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden ${
                             item.rarity === 'legendary' ? 'shadow-[0_0_15px_rgba(251,191,36,0.2)] border-amber-500' : 
                             item.rarity === 'rare' ? 'shadow-[0_0_15px_rgba(168,85,247,0.2)] border-purple-500' : ''
                           }`}>
-                            <Gem className={`w-6 h-6 sm:w-7 sm:h-7 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
+                            {item.imageUrl ? (
+                              <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain" />
+                            ) : (
+                              <Gem className={`w-6 h-6 sm:w-7 sm:h-7 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
+                            )}
                             {item.rarity === 'legendary' && (
                               <div className="absolute inset-0 rounded-xl bg-amber-500/20 animate-ping duration-[3000ms] pointer-events-none" />
                             )}

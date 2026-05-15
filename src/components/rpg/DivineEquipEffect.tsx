@@ -7,10 +7,11 @@ interface DivineEquipEffectProps {
   name: string;
   icon: any;
   particles?: string;
+  imageUrl?: string;
   isVisible: boolean;
 }
 
-export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: DivineEquipEffectProps) {
+export function DivineEquipEffect({ name, icon: Icon, particles, imageUrl, isVisible }: DivineEquipEffectProps) {
   return (
     <AnimatePresence>
       {isVisible && (
@@ -105,8 +106,12 @@ export function DivineEquipEffect({ name, icon: Icon, particles, isVisible }: Di
                 transition={{ duration: 2, repeat: Infinity }}
                 className="flex flex-col items-center gap-6"
               >
-                <div className="p-6 bg-red-950/40 rounded-full border border-red-500/30 shadow-inner">
-                  <Icon className="w-20 h-20 text-red-500" />
+                <div className="p-2 bg-red-950/40 rounded-xl border border-red-500/30 shadow-inner overflow-hidden w-32 h-32 flex items-center justify-center">
+                  {imageUrl ? (
+                    <img src={imageUrl} alt={name} className="w-full h-full object-contain" />
+                  ) : (
+                    <Icon className="w-16 h-16 text-red-500" />
+                  )}
                 </div>
                 
                 <div className="text-center">

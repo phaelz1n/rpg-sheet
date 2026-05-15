@@ -18,6 +18,7 @@ export interface RPGItem {
   rarity?: ItemRarity | string;
   description?: string;
   particles?: 'none' | 'embers' | 'sparks' | 'void' | 'frost' | 'gold_dust' | 'thunder' | 'poison' | 'hologram' | 'divine' | 'cursed';
+  imageUrl?: string;
 }
 
 export interface InventoryItem extends RPGItem {
@@ -45,6 +46,7 @@ export interface WeaponState {
   bonus: string;
   synergy: string;
   special: string;
+  imageUrl?: string;
 }
 
 export interface Curse {

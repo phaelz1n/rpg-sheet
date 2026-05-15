@@ -18,6 +18,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
   const getItemRarity = (itemName: string) => rpgItems.find(i => i.name === itemName)?.rarity;
   const getItemDescription = (itemName: string) => rpgItems.find(i => i.name === itemName)?.description;
   const getItemParticles = (itemName: string) => rpgItems.find(i => i.name === itemName)?.particles;
+  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name === itemName)?.imageUrl;
 
   return (
     <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">
@@ -32,8 +33,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           rarity={getItemRarity(equipmentHead)}
           description={getItemDescription(equipmentHead)}
           particles={getItemParticles(equipmentHead)}
+          imageUrl={getItemImageUrl(equipmentHead)}
           icon={Crown}
-          onItemNameChange={(val) => updateField('equipmentHead', val)}
           onClear={() => updateField('equipmentHead', '')}
           onAddClick={() => onOpenModal('armor', 'head')}
           onImpact={onImpact}
@@ -44,8 +45,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           rarity={getItemRarity(equipmentNeck)}
           description={getItemDescription(equipmentNeck)}
           particles={getItemParticles(equipmentNeck)}
+          imageUrl={getItemImageUrl(equipmentNeck)}
           icon={Circle}
-          onItemNameChange={(val) => updateField('equipmentNeck', val)}
           onClear={() => updateField('equipmentNeck', '')}
           onAddClick={() => onOpenModal('armor', 'neck')}
           onImpact={onImpact}
@@ -56,8 +57,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           rarity={getItemRarity(equipmentChest)}
           description={getItemDescription(equipmentChest)}
           particles={getItemParticles(equipmentChest)}
+          imageUrl={getItemImageUrl(equipmentChest)}
           icon={Shirt}
-          onItemNameChange={(val) => updateField('equipmentChest', val)}
           onClear={() => updateField('equipmentChest', '')}
           onAddClick={() => onOpenModal('armor', 'chest')}
           onImpact={onImpact}
@@ -68,8 +69,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           rarity={getItemRarity(equipmentGloves)}
           description={getItemDescription(equipmentGloves)}
           particles={getItemParticles(equipmentGloves)}
+          imageUrl={getItemImageUrl(equipmentGloves)}
           icon={Hand}
-          onItemNameChange={(val) => updateField('equipmentGloves', val)}
           onClear={() => updateField('equipmentGloves', '')}
           onAddClick={() => onOpenModal('armor', 'gloves')}
           onImpact={onImpact}
@@ -80,8 +81,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           rarity={getItemRarity(equipmentBelt)}
           description={getItemDescription(equipmentBelt)}
           particles={getItemParticles(equipmentBelt)}
+          imageUrl={getItemImageUrl(equipmentBelt)}
           icon={GripHorizontal}
-          onItemNameChange={(val) => updateField('equipmentBelt', val)}
           onClear={() => updateField('equipmentBelt', '')}
           onAddClick={() => onOpenModal('armor', 'belt')}
           onImpact={onImpact}
@@ -92,8 +93,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           rarity={getItemRarity(equipmentPants)}
           description={getItemDescription(equipmentPants)}
           particles={getItemParticles(equipmentPants)}
+          imageUrl={getItemImageUrl(equipmentPants)}
           icon={CircleDot}
-          onItemNameChange={(val) => updateField('equipmentPants', val)}
           onClear={() => updateField('equipmentPants', '')}
           onAddClick={() => onOpenModal('armor', 'pants')}
           onImpact={onImpact}
@@ -105,8 +106,8 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
             rarity={getItemRarity(equipmentBoots)}
             description={getItemDescription(equipmentBoots)}
             particles={getItemParticles(equipmentBoots)}
+            imageUrl={getItemImageUrl(equipmentBoots)}
             icon={Footprints}
-            onItemNameChange={(val) => updateField('equipmentBoots', val)}
             onClear={() => updateField('equipmentBoots', '')}
             onAddClick={() => onOpenModal('armor', 'boots')}
             onImpact={onImpact}
