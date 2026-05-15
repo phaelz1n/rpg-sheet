@@ -4,6 +4,7 @@ interface HexAttributeCardProps {
   name: string;
   bonus: number;
   icon: LucideIcon;
+  description?: string;
   onBonusChange?: (value: number) => void;
 }
 
@@ -17,7 +18,7 @@ function getLevelLabel(bonus: number): string {
   return 'Fraco';
 }
 
-export function HexAttributeCard({ name, bonus, icon: Icon, onBonusChange }: HexAttributeCardProps) {
+export function HexAttributeCard({ name, bonus, icon: Icon, description, onBonusChange }: HexAttributeCardProps) {
   const level = getLevelLabel(bonus);
 
   const bonusColor = bonus >= 3 ? 'text-emerald-400' :
@@ -35,7 +36,7 @@ export function HexAttributeCard({ name, bonus, icon: Icon, onBonusChange }: Hex
                     '';
 
   return (
-    <div className={`relative bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 ${borderColor} rounded-lg p-4 shadow-xl ${glowColor} hover:scale-105 transition-transform`}>
+    <div className={`relative bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 ${borderColor} rounded-lg p-4 shadow-xl ${glowColor} hover:scale-105 transition-all group`}>
       {/* Hexagonal background accent */}
       <div className="absolute inset-0 opacity-5">
         <svg viewBox="0 0 100 100" className="w-full h-full">
@@ -64,6 +65,17 @@ export function HexAttributeCard({ name, bonus, icon: Icon, onBonusChange }: Hex
           <span className="text-zinc-500 text-xs italic">{level}</span>
         </div>
       </div>
+
+      {description && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-zinc-950 border border-amber-800/50 rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-2xl scale-95 group-hover:scale-100 origin-bottom">
+          <div className="text-amber-500 text-[10px] uppercase tracking-widest font-bold mb-1 border-b border-amber-900/30 pb-1">
+            {name}
+          </div>
+          <p className="text-zinc-300 text-xs leading-relaxed">
+            {description}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

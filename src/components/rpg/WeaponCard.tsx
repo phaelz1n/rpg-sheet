@@ -264,6 +264,36 @@ export function WeaponCard({
                   </div>
                 </div>
               </div>
+
+            {/* Hover Tooltip for Full Description */}
+            {(special || synergy) && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 bg-zinc-950 border border-amber-900/50 rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-2xl scale-95 group-hover:scale-100 origin-bottom">
+                <div className={`text-[10px] uppercase tracking-widest font-bold mb-2 border-b border-amber-900/30 pb-1 flex items-center justify-between ${
+                  rarity === 'divine' ? 'text-red-500' : 'text-amber-500'
+                }`}>
+                  <span>{String(name || 'Arma')}</span>
+                  <span className="text-zinc-500">{slot === 'main' ? 'Mão Direita' : 'Mão Esquerda'}</span>
+                </div>
+                
+                {synergy && (
+                  <div className="mb-2">
+                    <div className="text-[8px] text-orange-400 uppercase font-bold mb-1">Sinergia</div>
+                    <div className="text-orange-100 text-xs leading-relaxed italic">
+                      <RichDescription text={synergy} />
+                    </div>
+                  </div>
+                )}
+
+                {special && (
+                  <div>
+                    <div className="text-[8px] text-purple-400 uppercase font-bold mb-1">Efeito Especial</div>
+                    <div className="text-purple-100 text-xs leading-relaxed">
+                      <RichDescription text={special} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         ) : (
           <motion.div

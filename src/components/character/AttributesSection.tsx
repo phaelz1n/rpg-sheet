@@ -19,12 +19,48 @@ export function AttributesSection() {
         <p className="text-xs text-zinc-500 italic hidden md:block">Evolução em +5 requer treinamento</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <HexAttributeCard name="Ocultismo" bonus={occultism} icon={Eye} onBonusChange={(v) => updateField('occultism', v)} />
-        <HexAttributeCard name="Destreza" bonus={dexterity} icon={Zap} onBonusChange={(v) => updateField('dexterity', v)} />
-        <HexAttributeCard name="Vigor" bonus={vigor} icon={Heart} onBonusChange={(v) => updateField('vigor', v)} />
-        <HexAttributeCard name="Vontade" bonus={willpower} icon={Brain} onBonusChange={(v) => updateField('willpower', v)} />
-        <HexAttributeCard name="Força" bonus={strength} icon={Dumbbell} onBonusChange={(v) => updateField('strength', v)} />
-        <HexAttributeCard name="Fé" bonus={faith} icon={Droplet} onBonusChange={(v) => updateField('faith', v)} />
+        <HexAttributeCard 
+          name="Ocultismo" 
+          bonus={occultism} 
+          icon={Eye} 
+          description="Capacidade de compreender o sobrenatural, conjurar rituais e resistir a efeitos paranormais."
+          onBonusChange={(v) => updateField('occultism', v)} 
+        />
+        <HexAttributeCard 
+          name="Destreza" 
+          bonus={dexterity} 
+          icon={Zap} 
+          description="Reflexos, agilidade manual, equilíbrio e coordenação motora fina. Influencia esquiva e ataques leves."
+          onBonusChange={(v) => updateField('dexterity', v)} 
+        />
+        <HexAttributeCard 
+          name="Vigor" 
+          bonus={vigor} 
+          icon={Heart} 
+          description="Resistência física, saúde e capacidade de suportar dor ou fadiga extrema. Aumenta sua Vida máxima."
+          onBonusChange={(v) => updateField('vigor', v)} 
+        />
+        <HexAttributeCard 
+          name="Vontade" 
+          bonus={willpower} 
+          icon={Brain} 
+          description="Força mental, determinação e resiliência psicológica. Aumenta sua Sanidade máxima e resistência mental."
+          onBonusChange={(v) => updateField('willpower', v)} 
+        />
+        <HexAttributeCard 
+          name="Força" 
+          bonus={strength} 
+          icon={Dumbbell} 
+          description="Poder muscular bruto, capacidade de carga e dano em ataques corpo-a-corpo pesados."
+          onBonusChange={(v) => updateField('strength', v)} 
+        />
+        <HexAttributeCard 
+          name="Fé" 
+          bonus={faith} 
+          icon={Droplet} 
+          description="Conexão com o divino ou entidades superiores. Influencia milagres e a regeneração de recursos espirituais."
+          onBonusChange={(v) => updateField('faith', v)} 
+        />
       </div>
     </section>
   );

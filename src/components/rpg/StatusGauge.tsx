@@ -6,11 +6,12 @@ interface StatusGaugeProps {
   max: number;
   icon: LucideIcon;
   color: 'red' | 'blue' | 'purple' | 'green' | 'crimson' | 'amber' | 'emerald';
+  description?: string;
   onCurrentChange?: (value: number) => void;
   onMaxChange?: (value: number) => void;
 }
 
-export function StatusGauge({ label, current, max, icon: Icon, color, onCurrentChange, onMaxChange }: StatusGaugeProps) {
+export function StatusGauge({ label, current, max, icon: Icon, color, description, onCurrentChange, onMaxChange }: StatusGaugeProps) {
   const percentage = (current / max) * 100;
 
   const colorMap = {
@@ -26,9 +27,9 @@ export function StatusGauge({ label, current, max, icon: Icon, color, onCurrentC
   const colors = colorMap[color];
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 group relative">
       <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 min-w-0 flex-shrink">
+        <div className="flex items-center gap-1.5 min-w-0 flex-shrink cursor-help">
           <Icon className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
           <span className="text-amber-400/90 uppercase tracking-wider truncate">{label}</span>
         </div>
@@ -57,6 +58,17 @@ export function StatusGauge({ label, current, max, icon: Icon, color, onCurrentC
           style={{ width: `${percentage}%` }}
         />
       </div>
+
+      {description && (
+        <div className="absolute bottom-full left-0 mb-2 w-48 bg-zinc-950 border border-zinc-800 rounded p-2 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-2xl scale-95 group-hover:scale-100 origin-bottom-left">
+          <div className="text-amber-500 text-[9px] uppercase tracking-widest font-bold mb-1 border-b border-zinc-800 pb-1">
+            {label}
+          </div>
+          <p className="text-zinc-400 text-[10px] leading-tight">
+            {description}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -16,6 +16,7 @@ export function StatusSection() {
         max={maxHealth}
         icon={Heart}
         color="red"
+        description="Sua saúde física. Se chegar a 0, você cai inconsciente ou morre."
         onCurrentChange={(val) => updateField('health', val)}
         onMaxChange={(val) => updateField('maxHealth', val)}
       />
@@ -25,6 +26,7 @@ export function StatusSection() {
         max={maxSanity}
         icon={Brain}
         color="blue"
+        description="Sua estabilidade mental. Se chegar a 0, você sucumbe à loucura ou trauma."
         onCurrentChange={(val) => updateField('sanity', val)}
         onMaxChange={(val) => updateField('maxSanity', val)}
       />
@@ -34,6 +36,7 @@ export function StatusSection() {
         max={maxMana}
         icon={Zap}
         color="amber"
+        description="Pontos de Esforço usados para habilidades especiais e concentração."
         onCurrentChange={(val) => updateField('mana', val)}
         onMaxChange={(val) => updateField('maxMana', val)}
       />
@@ -43,6 +46,7 @@ export function StatusSection() {
         max={maxStamina}
         icon={Footprints}
         color="emerald"
+        description="Energia física para realizar ações extras, esquivas e proezas atléticas."
         onCurrentChange={(val) => updateField('stamina', val)}
         onMaxChange={(val) => updateField('maxStamina', val)}
       />

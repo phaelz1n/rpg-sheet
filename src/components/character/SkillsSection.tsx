@@ -1,8 +1,8 @@
 import { Shield, Hand, Sword, Brain, Eye, Flame } from 'lucide-react';
 import { useCharacterStore } from '../../store/characterStore';
 
-function CompactSkillRow({ name, bonus, onBonusChange, color }: { 
-  name: string, bonus: number, onBonusChange: (v: number) => void, color: string 
+function CompactSkillRow({ name, bonus, onBonusChange, color, description }: { 
+  name: string, bonus: number, onBonusChange: (v: number) => void, color: string, description?: string
 }) {
   const iconColors = {
     emerald: 'text-emerald-500',
@@ -13,8 +13,8 @@ function CompactSkillRow({ name, bonus, onBonusChange, color }: {
   };
 
   return (
-    <div className="flex items-center justify-between py-1 border-b border-zinc-800/50 last:border-0 group">
-      <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium ${iconColors[color as keyof typeof iconColors] || 'text-zinc-400'}`}>
+    <div className="flex items-center justify-between py-1 border-b border-zinc-800/50 last:border-0 group relative">
+      <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium cursor-help ${iconColors[color as keyof typeof iconColors] || 'text-zinc-400'}`}>
         {name}
       </span>
       <div className="flex items-center gap-2">
@@ -25,6 +25,17 @@ function CompactSkillRow({ name, bonus, onBonusChange, color }: {
           className="w-10 bg-transparent border-none text-right text-amber-400 font-bold text-xs focus:outline-none focus:ring-1 focus:ring-amber-600/30 rounded"
         />
       </div>
+
+      {description && (
+        <div className="absolute bottom-full left-0 mb-2 w-48 bg-zinc-950 border border-zinc-800 rounded p-2 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-2xl scale-95 group-hover:scale-100 origin-bottom-left">
+          <div className={`text-[9px] uppercase tracking-widest font-bold mb-1 border-b border-zinc-800 pb-1 ${iconColors[color as keyof typeof iconColors] || 'text-zinc-400'}`}>
+            {name}
+          </div>
+          <p className="text-zinc-400 text-[10px] leading-tight">
+            {description}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -45,9 +56,9 @@ export function SkillsSection() {
           <h3 className="text-[10px] text-emerald-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-emerald-900/30 pb-1 flex items-center gap-2">
             <Hand className="w-3 h-3" /> Destreza
           </h3>
-          <CompactSkillRow name="Acrobacia" bonus={skills.acrobacia} color="emerald" onBonusChange={(v) => updateSkill('acrobacia', v)} />
-          <CompactSkillRow name="Furtividade" bonus={skills.furtividade} color="emerald" onBonusChange={(v) => updateSkill('furtividade', v)} />
-          <CompactSkillRow name="Pontaria" bonus={skills.pontaria} color="emerald" onBonusChange={(v) => updateSkill('pontaria', v)} />
+          <CompactSkillRow name="Acrobacia" bonus={skills.acrobacia} color="emerald" description="Usada para manobras ágeis, equilíbrio e reduzir dano de queda." onBonusChange={(v) => updateSkill('acrobacia', v)} />
+          <CompactSkillRow name="Furtividade" bonus={skills.furtividade} color="emerald" description="Capacidade de se mover sem ser visto ou ouvido." onBonusChange={(v) => updateSkill('furtividade', v)} />
+          <CompactSkillRow name="Pontaria" bonus={skills.pontaria} color="emerald" description="Ataques à distância com arcos, bestas ou armas de arremesso." onBonusChange={(v) => updateSkill('pontaria', v)} />
         </div>
 
         {/* Força / Corpo */}
@@ -55,8 +66,8 @@ export function SkillsSection() {
           <h3 className="text-[10px] text-orange-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-orange-900/30 pb-1 flex items-center gap-2">
             <Sword className="w-3 h-3" /> Corpo
           </h3>
-          <CompactSkillRow name="Atletismo" bonus={skills.atletismo} color="orange" onBonusChange={(v) => updateSkill('atletismo', v)} />
-          <CompactSkillRow name="Intimidação" bonus={skills.intimidacao} color="orange" onBonusChange={(v) => updateSkill('intimidacao', v)} />
+          <CompactSkillRow name="Atletismo" bonus={skills.atletismo} color="orange" description="Escalar, correr, saltar e outras proezas de esforço físico." onBonusChange={(v) => updateSkill('atletismo', v)} />
+          <CompactSkillRow name="Intimidação" bonus={skills.intimidacao} color="orange" description="Infundir medo em outros através de força ou presença ameaçadora." onBonusChange={(v) => updateSkill('intimidacao', v)} />
         </div>
 
         {/* Vontade / Mente */}
@@ -64,9 +75,9 @@ export function SkillsSection() {
           <h3 className="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-blue-900/30 pb-1 flex items-center gap-2">
             <Brain className="w-3 h-3" /> Mente
           </h3>
-          <CompactSkillRow name="Percepção" bonus={skills.percepcao} color="blue" onBonusChange={(v) => updateSkill('percepcao', v)} />
-          <CompactSkillRow name="Sobrevivência" bonus={skills.sobrevivencia} color="blue" onBonusChange={(v) => updateSkill('sobrevivencia', v)} />
-          <CompactSkillRow name="Medicina" bonus={skills.medicina} color="blue" onBonusChange={(v) => updateSkill('medicina', v)} />
+          <CompactSkillRow name="Percepção" bonus={skills.percepcao} color="blue" description="Capacidade de notar detalhes, sons e intenções ocultas." onBonusChange={(v) => updateSkill('percepcao', v)} />
+          <CompactSkillRow name="Sobrevivência" bonus={skills.sobrevivencia} color="blue" description="Rastrear, caçar e se orientar em ambientes selvagens." onBonusChange={(v) => updateSkill('sobrevivencia', v)} />
+          <CompactSkillRow name="Medicina" bonus={skills.medicina} color="blue" description="Tratamento de ferimentos, doenças e venenos." onBonusChange={(v) => updateSkill('medicina', v)} />
         </div>
 
         {/* Ocultismo / Paranormal */}
@@ -74,7 +85,7 @@ export function SkillsSection() {
           <h3 className="text-[10px] text-purple-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-purple-900/30 pb-1 flex items-center gap-2">
             <Eye className="w-3 h-3" /> Paranormal
           </h3>
-          <CompactSkillRow name="Corrupção" bonus={skills.corrupcao} color="purple" onBonusChange={(v) => updateSkill('corrupcao', v)} />
+          <CompactSkillRow name="Corrupção" bonus={skills.corrupcao} color="purple" description="Conhecimento sobre o abismo e resistência ao apodrecimento da alma." onBonusChange={(v) => updateSkill('corrupcao', v)} />
         </div>
 
         {/* Fé / Espírito */}
@@ -82,7 +93,7 @@ export function SkillsSection() {
           <h3 className="text-[10px] text-amber-500 uppercase tracking-[0.2em] font-black mb-2 border-b border-amber-900/30 pb-1 flex items-center gap-2">
             <Flame className="w-3 h-3" /> Espírito
           </h3>
-          <CompactSkillRow name="Presença" bonus={skills.presenca} color="amber" onBonusChange={(v) => updateSkill('presenca', v)} />
+          <CompactSkillRow name="Presença" bonus={skills.presenca} color="amber" description="Influência social, diplomacia e a força do seu espírito sobre outros." onBonusChange={(v) => updateSkill('presenca', v)} />
         </div>
       </div>
     </section>
