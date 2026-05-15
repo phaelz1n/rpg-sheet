@@ -330,7 +330,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
           <div className="w-24 h-24 relative bg-gradient-to-br from-zinc-900 to-black border border-amber-900/40 rounded-xl flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
             <ItemVFX type={formData.particles} rarity={formData.rarity} name={formData.name} />
             {formData.imageUrl ? (
-              <img src={formData.imageUrl} alt={formData.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+              <img src={formData.imageUrl} alt={formData.name} className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity" />
             ) : (
               <Package className={`w-8 h-8 mb-1 relative z-10 ${
                 formData.rarity === 'legendary' ? 'text-amber-400' : formData.rarity === 'rare' ? 'text-blue-400' : 'text-zinc-500'
@@ -770,8 +770,14 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                   
                   <div className="mb-3 relative z-10">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <Package className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="w-8 h-8 rounded bg-black/40 border border-amber-900/20 flex items-center justify-center overflow-hidden shrink-0">
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt="" className="w-full h-full object-contain" />
+                          ) : (
+                            <Package className="w-4 h-4 text-amber-700/50" />
+                          )}
+                        </div>
                         <h3 className="text-amber-300 font-bold text-sm truncate">{item.name}</h3>
                       </div>
                       
