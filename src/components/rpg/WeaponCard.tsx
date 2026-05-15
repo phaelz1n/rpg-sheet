@@ -44,10 +44,10 @@ export function WeaponCard({
     if (!isEmpty) {
       setSelected({
         id: '',
-        name: name || '',
+        name: String(name || ''),
         type: 'weapon',
         rarity: rarity as any,
-        description: special || '',
+        description: String(special || ''),
         particles: particles as any,
       } as any);
     }
@@ -226,19 +226,19 @@ export function WeaponCard({
                     <h3 className={`w-full mb-3 tracking-tighter font-black uppercase text-base leading-tight ${
                       rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-amber-100'
                     }`}>
-                      {name}
+                      {String(name || '')}
                     </h3>
 
                     {/* Stats horizontal grid */}
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       <div className="flex flex-col bg-black/40 border border-red-900/30 rounded p-1.5 px-2">
                         <span className="text-[8px] text-zinc-500 uppercase font-bold leading-none mb-1">Dano</span>
-                        <span className="text-red-400 text-sm font-black leading-none">{damage}</span>
+                        <span className="text-red-400 text-sm font-black leading-none">{String(damage || '0')}</span>
                       </div>
 
                       <div className="flex flex-col bg-black/40 border border-amber-900/30 rounded p-1.5 px-2">
                         <span className="text-[8px] text-zinc-500 uppercase font-bold leading-none mb-1">Bônus</span>
-                        <span className="text-amber-400 text-sm font-black leading-none">{bonus}</span>
+                        <span className="text-amber-400 text-sm font-black leading-none">{String(bonus || '0')}</span>
                       </div>
                     </div>
                   </div>

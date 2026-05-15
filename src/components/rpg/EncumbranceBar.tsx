@@ -20,7 +20,7 @@ export function EncumbranceBar({ current, max }: EncumbranceBarProps) {
         <span className={`text-sm tabular-nums ${
           isFull ? 'text-red-400' : isNearLimit ? 'text-orange-400' : 'text-amber-300'
         }`}>
-          {current} / {max}
+          {String(current)} / {String(max)}
         </span>
       </div>
 

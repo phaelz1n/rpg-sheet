@@ -228,12 +228,12 @@ export function EquipmentSlot({
                   <div className={`w-full text-[10px] font-black uppercase tracking-tight truncate ${
                     rarity === 'divine' ? 'text-red-500' : rarity === 'legendary' ? 'text-amber-400' : rarity === 'rare' ? 'text-blue-400' : 'text-zinc-200'
                   }`}>
-                    {itemName}
+                    {String(itemName || '')}
                   </div>
                   <div className={`text-[7px] uppercase font-bold tracking-tighter ${
                     rarity === 'divine' ? 'text-red-700' : 'text-zinc-600'
                   }`}>
-                    {rarity === 'divine' ? 'Divino' : rarity || 'Comum'}
+                    {rarity === 'divine' ? 'Divino' : String(rarity || 'Comum')}
                   </div>
                 </div>
               </div>

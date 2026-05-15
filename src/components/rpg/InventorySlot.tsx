@@ -36,10 +36,10 @@ export function InventorySlot({
     if (!isEmpty) {
       setSelected({
         id: '',
-        name: itemName,
+        name: String(itemName || ''),
         type: '',
         rarity: rarity as any,
-        description: description || '',
+        description: String(description || ''),
         particles: particles as any,
       } as any);
     }
@@ -57,7 +57,7 @@ export function InventorySlot({
       <AnimatePresence mode="wait">
         {!isEmpty ? (
           <motion.div
-            key={itemName}
+            key={String(itemName)}
             initial={{ scale: 1.5, opacity: 0, filter: 'brightness(2)' }}
             animate={{
               scale: 1,
@@ -81,7 +81,7 @@ export function InventorySlot({
               </button>
             )}
 
-            <ItemVFX type={particles as any} rarity={rarity} name={itemName} />
+            <ItemVFX type={particles as any} rarity={rarity} name={String(itemName || '')} />
 
             <div className="relative flex-1 w-full flex items-center justify-center my-1 rounded bg-black/20 border border-white/5 group/img overflow-hidden">
               {imageUrl ? (
@@ -97,13 +97,13 @@ export function InventorySlot({
             <div className={`w-full text-[9px] font-black uppercase text-center leading-tight tracking-tighter truncate ${
               rarity === 'legendary' ? 'text-amber-300' : rarity === 'rare' ? 'text-blue-300' : 'text-zinc-300'
             }`}>
-              {itemName}
+              {String(itemName || '')}
             </div>
 
             {quantity !== undefined && quantity > 1 && (
               <div className="absolute top-1 right-1">
                 <div className="w-5 h-5 bg-amber-900/80 border border-amber-600 rounded-full text-amber-100 text-[10px] flex items-center justify-center font-bold">
-                  {quantity}
+                  {String(quantity || 0)}
                 </div>
               </div>
             )}

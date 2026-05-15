@@ -121,7 +121,7 @@ export function DivineEquipEffect({ name, icon: Icon, particles, imageUrl, isVis
                     transition={{ delay: 0.6 }}
                     className="text-2xl font-black text-white uppercase tracking-tighter"
                   >
-                    {name}
+                    {String(name || '')}
                   </motion.h2>
                   <motion.div 
                     initial={{ opacity: 0, scale: 0 }}

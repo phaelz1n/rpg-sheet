@@ -63,7 +63,7 @@ export function BeltSlot({ itemName, rarity, icon: Icon, imageUrl, description, 
           <div className={`w-full text-[9px] font-black uppercase text-center leading-tight tracking-tighter truncate ${
             rarity === 'legendary' ? 'text-amber-300' : rarity === 'rare' ? 'text-blue-300' : 'text-zinc-300'
           }`}>
-            {itemName}
+            {String(itemName || '')}
           </div>
 
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-zinc-950 border border-amber-800/50 rounded p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">

@@ -213,7 +213,7 @@ export function ItemCard({
         <div className="flex items-center justify-between text-sm">
           <span className="text-zinc-500">Ataque Total:</span>
           <span className="text-amber-300">
-            {damage} {totalBonus >= 0 ? '+' : ''}{totalBonus}
+            {String(damage || '0')} {totalBonus >= 0 ? '+' : ''}{String(totalBonus)}
           </span>
         </div>
       </div>
