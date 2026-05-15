@@ -6,6 +6,7 @@ interface CharacterStore extends CharacterData {
   isLoading: boolean;
   username: string | null;
   lastLocalUpdate: number; // Timestamp da última alteração local
+  lastActionSource: 'local' | 'remote' | 'initial';
   
   // Actions
   setUsername: (username: string) => void;
@@ -91,6 +92,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
   isLoading: false,
   username: null,
   lastLocalUpdate: 0,
+  lastActionSource: 'initial',
 
   setUsername: (username) => set({ username }),
 
@@ -104,9 +106,9 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     try {
       const response = await ttrpgApi.getCharacter(username);
       if (response.exists && response.data) {
-        set({ ...defaultState, ...response.data, isLoading: false });
+        set({ ...defaultState, ...response.data, isLoading: false, lastActionSource: 'remote' });
       } else {
-        set({ ...defaultState, isLoading: false });
+        set({ ...defaultState, isLoading: false, lastActionSource: 'remote' });
       }
     } catch (error) {
       console.error('Error loading character:', error);
@@ -199,26 +201,28 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
 
   equipWeapon: (slot, weapon) => set((state) => ({
     [slot === 'main' ? 'mainWeapon' : 'offWeapon']: weapon,
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   equipArmor: (slot, itemName) => set((state) => {
     const now = Date.now();
+    const source = 'local';
     switch (slot) {
-      case 'head': return { equipmentHead: itemName, lastLocalUpdate: now };
-      case 'neck': return { equipmentNeck: itemName, lastLocalUpdate: now };
-      case 'chest': return { equipmentChest: itemName, lastLocalUpdate: now };
-      case 'gloves': return { equipmentGloves: itemName, lastLocalUpdate: now };
-      case 'belt': return { equipmentBelt: itemName, lastLocalUpdate: now };
-      case 'pants': return { equipmentPants: itemName, lastLocalUpdate: now };
-      case 'boots': return { equipmentBoots: itemName, lastLocalUpdate: now };
+      case 'head': return { equipmentHead: itemName, lastLocalUpdate: now, lastActionSource: source };
+      case 'neck': return { equipmentNeck: itemName, lastLocalUpdate: now, lastActionSource: source };
+      case 'chest': return { equipmentChest: itemName, lastLocalUpdate: now, lastActionSource: source };
+      case 'gloves': return { equipmentGloves: itemName, lastLocalUpdate: now, lastActionSource: source };
+      case 'belt': return { equipmentBelt: itemName, lastLocalUpdate: now, lastActionSource: source };
+      case 'pants': return { equipmentPants: itemName, lastLocalUpdate: now, lastActionSource: source };
+      case 'boots': return { equipmentBoots: itemName, lastLocalUpdate: now, lastActionSource: source };
       default: return state;
     }
   }),
 
   updateBeltSlot: (slotNum, itemName) => set((state) => {
     const slotKey = `beltSlot${slotNum}` as keyof CharacterData;
-    return { [slotKey]: itemName, lastLocalUpdate: Date.now() };
+    return { [slotKey]: itemName, lastLocalUpdate: Date.now(), lastActionSource: 'local' };
   }),
 
   updateInventoryQuantity: (id, newQuantity) => set((state) => ({

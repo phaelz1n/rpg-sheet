@@ -59,8 +59,7 @@ export function WeaponCard({
 
   const isInitialMount = React.useRef(true);
   const lastNameRef = React.useRef(name);
-  const isLoading = useCharacterStore(s => s.isLoading);
-  const wasLoading = React.useRef(false);
+  const lastActionSource = useCharacterStore(s => s.lastActionSource);
 
   // Stores the new name when it arrives before rarity is resolved
   const pendingNameRef = React.useRef<string | null>(null);
@@ -71,15 +70,8 @@ export function WeaponCard({
   );
 
   useEffect(() => {
-    // If store is loading, mark it and wait
-    if (isLoading) {
-      wasLoading.current = true;
-      return;
-    }
-
-    if (isInitialMount.current || wasLoading.current) {
+    if (isInitialMount.current) {
       isInitialMount.current = false;
-      wasLoading.current = false;
       lastNameRef.current = name;
       return;
     }
@@ -93,17 +85,23 @@ export function WeaponCard({
         lastNameRef.current = name;
         return;
       }
-      // Process normally: name changed and rarity is already known
+      // Process: name changed and rarity is already known
       lastNameRef.current = name;
       pendingNameRef.current = null;
-      triggerEquipEffect(rarity);
+      
+      // ONLY trigger effect if it's a local user action
+      if (lastActionSource === 'local') {
+        triggerEquipEffect(rarity);
+      }
       return;
     }
 
     // Name didn't change, but check if rarity just resolved for a parked name
     if (pendingNameRef.current !== null && rarity !== undefined) {
       pendingNameRef.current = null;
-      triggerEquipEffect(rarity);
+      if (lastActionSource === 'local') {
+        triggerEquipEffect(rarity);
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, rarity, isEmpty]);

@@ -51,8 +51,7 @@ export function EquipmentSlot({
 
   const isInitialMount = React.useRef(true);
   const lastItemNameRef = React.useRef(itemName);
-  const isLoading = useCharacterStore(s => s.isLoading);
-  const wasLoading = React.useRef(false);
+  const lastActionSource = useCharacterStore(s => s.lastActionSource);
   
   // Stores the new name when it arrives before rarity is resolved
   const pendingNameRef = React.useRef<string | null>(null);
@@ -64,15 +63,8 @@ export function EquipmentSlot({
   );
 
   useEffect(() => {
-    // If store is loading, mark it and wait
-    if (isLoading) {
-      wasLoading.current = true;
-      return;
-    }
-
-    if (isInitialMount.current || wasLoading.current) {
+    if (isInitialMount.current) {
       isInitialMount.current = false;
-      wasLoading.current = false;
       lastItemNameRef.current = itemName;
       return;
     }
@@ -86,17 +78,23 @@ export function EquipmentSlot({
         lastItemNameRef.current = itemName;
         return;
       }
-      // Process normally: name changed and rarity is already known
+      // Process: name changed and rarity is already known
       lastItemNameRef.current = itemName;
       pendingNameRef.current = null;
-      triggerEquipEffect(rarity);
+      
+      // ONLY trigger effect if it's a local user action
+      if (lastActionSource === 'local') {
+        triggerEquipEffect(rarity);
+      }
       return;
     }
 
     // Name didn't change, but check if rarity just resolved for a parked name
     if (pendingNameRef.current !== null && rarity !== undefined) {
       pendingNameRef.current = null;
-      triggerEquipEffect(rarity);
+      if (lastActionSource === 'local') {
+        triggerEquipEffect(rarity);
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemName, rarity, isEmpty]);
