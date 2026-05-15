@@ -59,6 +59,10 @@ export function WeaponCard({
   const isInitialMount = React.useRef(true);
   const lastNameRef = React.useRef(name);
   const [isDivineEquipping, setIsDivineEquipping] = React.useState(false);
+  // Controls whether the divine item is visible in the card (hidden during the cinematic)
+  const [isDivineRevealed, setIsDivineRevealed] = React.useState(
+    () => rarity?.toLowerCase() === 'divine' ? true : false
+  );
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -70,10 +74,14 @@ export function WeaponCard({
     // Só dispara se o nome mudou de verdade e não está vazio
     if (!isEmpty && name !== lastNameRef.current) {
       if (rarity?.toLowerCase() === 'divine') {
+        // Hide the item while the cinematic plays
+        setIsDivineRevealed(false);
         setIsDivineEquipping(true);
-        audioService.playSound('EQUIP_LEGENDARY');
+        // After the main animation (2.5s), play sound + reveal item + trigger impact
         setTimeout(() => {
           setIsDivineEquipping(false);
+          audioService.playSound('EQUIP_LEGENDARY');
+          setIsDivineRevealed(true);
           if (onImpact) onImpact();
         }, 2500);
       } else if (rarity?.toLowerCase() === 'legendary') {
@@ -86,6 +94,9 @@ export function WeaponCard({
     lastNameRef.current = name;
   }, [name, onImpact, rarity, isEmpty]);
 
+  // For divine items: treat card as empty while the cinematic is playing
+  const showAsEmpty = isEmpty || (rarity?.toLowerCase() === 'divine' && isDivineEquipping && !isDivineRevealed);
+
   return (
     <>
       {/* Divine Equip Animation Overlay */}
@@ -97,17 +108,17 @@ export function WeaponCard({
       />
 
       <div className={`relative group ${
-        isEmpty
+        showAsEmpty
           ? 'bg-zinc-900/40 border-2 border-dashed border-zinc-700/40 cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60'
           : `bg-gradient-to-br from-orange-950/40 to-zinc-900/80 border-2 shadow-xl shadow-orange-900/20 ${
               rarity === 'divine' ? 'border-red-600/60 shadow-red-900/40 from-red-950/40' :
               rarity === 'legendary' ? 'border-amber-600/50' : 'border-orange-900/60'
             }`
       } rounded-lg p-4 transition-all duration-500 min-h-[220px] flex flex-col`}
-      onClick={isEmpty ? onAddClick : handleSelect}>
+      onClick={showAsEmpty ? onAddClick : handleSelect}>
 
         <AnimatePresence mode="wait">
-          {!isEmpty ? (
+          {!showAsEmpty ? (
             <motion.div
               key={name}
               initial={{ scale: 2, opacity: 0, filter: 'brightness(3) blur(10px)' }}

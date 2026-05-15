@@ -51,6 +51,11 @@ export function EquipmentSlot({
   const isInitialMount = React.useRef(true);
   const lastItemNameRef = React.useRef(itemName);
   const [isDivineEquipping, setIsDivineEquipping] = React.useState(false);
+  // Controls whether the divine item is visible in the slot (hidden during the cinematic)
+  const [isDivineRevealed, setIsDivineRevealed] = React.useState(
+    // On mount, if there's already a divine item it should be visible
+    () => rarity?.toLowerCase() === 'divine' ? true : false
+  );
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -61,10 +66,14 @@ export function EquipmentSlot({
 
     if (!isEmpty && (itemName !== lastItemNameRef.current)) {
       if (rarity?.toLowerCase() === 'divine') {
+        // Hide the item in the slot while the cinematic plays
+        setIsDivineRevealed(false);
         setIsDivineEquipping(true);
-        audioService.playSound('EQUIP_LEGENDARY'); // Use legendary sound for now or add a new one
+        // After the main animation (2.5s), play sound + reveal item + trigger impact
         setTimeout(() => {
           setIsDivineEquipping(false);
+          audioService.playSound('EQUIP_LEGENDARY');
+          setIsDivineRevealed(true);
           if (onImpact) onImpact();
         }, 2500);
       } else if (rarity?.toLowerCase() === 'legendary') {
@@ -86,6 +95,9 @@ export function EquipmentSlot({
 
   const borderClass = !isEmpty && rarity ? rarityColors[rarity.toLowerCase()] || 'border-amber-800/50' : 'border-zinc-700/40';
 
+  // For divine items: treat slot as empty while the cinematic is playing
+  const showAsEmpty = isEmpty || (rarity?.toLowerCase() === 'divine' && isDivineEquipping && !isDivineRevealed);
+
   return (
     <>
       {/* Divine Equip Animation Overlay */}
@@ -97,16 +109,16 @@ export function EquipmentSlot({
       />
 
       <div className={`relative group ${
-        isEmpty
+        showAsEmpty
           ? `bg-zinc-900/40 border border-dashed ${borderClass} cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60`
           : `bg-gradient-to-br from-amber-950/30 to-zinc-900/60 border ${borderClass} shadow-lg ${
               rarity === 'divine' ? 'from-red-950/40' : ''
             }`
       } rounded-lg p-3 transition-all duration-500`}
-      onClick={isEmpty ? onAddClick : handleSelect}>
+      onClick={showAsEmpty ? onAddClick : handleSelect}>
 
         <AnimatePresence mode="wait">
-          {!isEmpty ? (
+          {!showAsEmpty ? (
             <motion.div
               key={itemName}
               initial={{ scale: 2, opacity: 0, filter: 'brightness(3) blur(10px)' }}
