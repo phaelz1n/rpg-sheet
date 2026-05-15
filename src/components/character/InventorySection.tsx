@@ -25,7 +25,11 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
   const totalSlotsOnThisPage = Math.min(ITEMS_PER_PAGE, inventoryCapacity - (inventoryPage * ITEMS_PER_PAGE));
   const effectiveEmptySlots = Math.max(0, totalSlotsOnThisPage - pageItems.length);
 
-  const getItemData = (name: string) => rpgItems.find(i => i.name.toLowerCase() === name.toLowerCase());
+  const getItemData = (idOrName: string) => {
+    if (!idOrName) return null;
+    return rpgItems.find(i => i.id === idOrName) || 
+           rpgItems.find(i => i.name.toLowerCase() === idOrName.toLowerCase());
+  };
 
   const handlePageChange = (newPage: number) => {
     audioService.playSound('BACKPACK_MOVE');
@@ -99,11 +103,11 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 min-h-[180px]">
         {pageItems.map((item) => {
-          const globalData = getItemData(item.name);
+          const globalData = getItemData(item.globalItemId || item.name);
           return (
             <InventorySlot
               key={item.id}
-              itemName={item.name}
+              itemName={globalData?.name || item.name}
               quantity={item.quantity}
               icon={item.icon || Gem}
               description={globalData?.description || item.description}
