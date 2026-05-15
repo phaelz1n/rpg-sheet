@@ -145,9 +145,8 @@ export function CharacterPage() {
       });
     } else if (type === 'armor' && slot) {
       store.equipArmor(slot, item.id);
-    } else if (type === 'belt' && slot) {
-      // Handle both the single slot from selection and specific numbered slots
-      const beltNum = slot.startsWith('belt') ? slot.replace('belt', '') : slot;
+    } else if (slot?.startsWith('belt')) {
+      const beltNum = slot.replace('belt', '');
       store.updateBeltSlot(beltNum, item.id);
     } else if (type === 'consumable') {
       const { inventory, inventoryCapacity } = store;
