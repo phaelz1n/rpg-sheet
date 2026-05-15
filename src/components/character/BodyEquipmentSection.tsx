@@ -15,10 +15,17 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
   } = useCharacterStore();
   const { rpgItems } = useGlobalStore();
 
-  const getItemRarity = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.rarity;
-  const getItemDescription = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.description;
-  const getItemParticles = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.particles;
-  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.imageUrl;
+  const getItemData = (idOrName: string) => {
+    if (!idOrName) return null;
+    return rpgItems.find(i => i.id === idOrName) || 
+           rpgItems.find(i => i.name.toLowerCase() === idOrName.toLowerCase());
+  };
+
+  const getItemName = (idOrName: string) => getItemData(idOrName)?.name || idOrName;
+  const getItemRarity = (idOrName: string) => getItemData(idOrName)?.rarity;
+  const getItemDescription = (idOrName: string) => getItemData(idOrName)?.description;
+  const getItemParticles = (idOrName: string) => getItemData(idOrName)?.particles;
+  const getItemImageUrl = (idOrName: string) => getItemData(idOrName)?.imageUrl;
 
   return (
     <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">
@@ -29,7 +36,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
       <div className="grid grid-cols-2 gap-3">
         <EquipmentSlot
           slotName="Cabeça"
-          itemName={equipmentHead}
+          itemName={getItemName(equipmentHead)}
           rarity={getItemRarity(equipmentHead)}
           description={getItemDescription(equipmentHead)}
           particles={getItemParticles(equipmentHead)}
@@ -41,7 +48,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
         />
         <EquipmentSlot
           slotName="Pescoço"
-          itemName={equipmentNeck}
+          itemName={getItemName(equipmentNeck)}
           rarity={getItemRarity(equipmentNeck)}
           description={getItemDescription(equipmentNeck)}
           particles={getItemParticles(equipmentNeck)}
@@ -53,7 +60,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
         />
         <EquipmentSlot
           slotName="Peito"
-          itemName={equipmentChest}
+          itemName={getItemName(equipmentChest)}
           rarity={getItemRarity(equipmentChest)}
           description={getItemDescription(equipmentChest)}
           particles={getItemParticles(equipmentChest)}
@@ -65,7 +72,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
         />
         <EquipmentSlot
           slotName="Luvas"
-          itemName={equipmentGloves}
+          itemName={getItemName(equipmentGloves)}
           rarity={getItemRarity(equipmentGloves)}
           description={getItemDescription(equipmentGloves)}
           particles={getItemParticles(equipmentGloves)}
@@ -77,7 +84,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
         />
         <EquipmentSlot
           slotName="Cinto"
-          itemName={equipmentBelt}
+          itemName={getItemName(equipmentBelt)}
           rarity={getItemRarity(equipmentBelt)}
           description={getItemDescription(equipmentBelt)}
           particles={getItemParticles(equipmentBelt)}
@@ -89,7 +96,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
         />
         <EquipmentSlot
           slotName="Calças"
-          itemName={equipmentPants}
+          itemName={getItemName(equipmentPants)}
           rarity={getItemRarity(equipmentPants)}
           description={getItemDescription(equipmentPants)}
           particles={getItemParticles(equipmentPants)}
@@ -102,7 +109,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
         <div className="col-span-2">
           <EquipmentSlot
             slotName="Botas"
-            itemName={equipmentBoots}
+            itemName={getItemName(equipmentBoots)}
             rarity={getItemRarity(equipmentBoots)}
             description={getItemDescription(equipmentBoots)}
             particles={getItemParticles(equipmentBoots)}

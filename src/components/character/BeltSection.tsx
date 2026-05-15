@@ -14,10 +14,17 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
   } = useCharacterStore();
   const { rpgItems } = useGlobalStore();
 
-  const getItemRarity = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.rarity;
-  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.imageUrl;
+  const getItemData = (idOrName: string) => {
+    if (!idOrName) return null;
+    return rpgItems.find(i => i.id === idOrName) || 
+           rpgItems.find(i => i.name.toLowerCase() === idOrName.toLowerCase());
+  };
 
-  const beltItem = rpgItems.find(i => i.name.toLowerCase() === equipmentBelt.toLowerCase() && i.beltCapacity && i.beltCapacity > 0);
+  const getItemName = (idOrName: string) => getItemData(idOrName)?.name || idOrName;
+  const getItemRarity = (idOrName: string) => getItemData(idOrName)?.rarity;
+  const getItemImageUrl = (idOrName: string) => getItemData(idOrName)?.imageUrl;
+
+  const beltItem = rpgItems.find(i => (i.id === equipmentBelt || i.name.toLowerCase() === equipmentBelt.toLowerCase()) && i.beltCapacity && i.beltCapacity > 0);
   const capacity = beltItem?.beltCapacity ?? 0;
 
   return (
@@ -49,7 +56,7 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
           ].slice(0, capacity).map(slot => (
             <BeltSlot
               key={slot.key}
-              itemName={slot.val}
+              itemName={getItemName(slot.val)}
               rarity={getItemRarity(slot.val)}
               imageUrl={getItemImageUrl(slot.val)}
               onClear={() => updateBeltSlot(slot.key, '')}
