@@ -58,6 +58,8 @@ export function WeaponCard({
 
   const isInitialMount = React.useRef(true);
   const lastNameRef = React.useRef(name);
+  // Stores the new name when it arrives before rarity is resolved
+  const pendingNameRef = React.useRef<string | null>(null);
   const [isDivineEquipping, setIsDivineEquipping] = React.useState(false);
   // Controls whether the divine item is visible in the card (hidden during the cinematic)
   const [isDivineRevealed, setIsDivineRevealed] = React.useState(
@@ -70,29 +72,48 @@ export function WeaponCard({
       lastNameRef.current = name;
       return;
     }
-    
-    // Só dispara se o nome mudou de verdade e não está vazio
-    if (!isEmpty && name !== lastNameRef.current) {
-      if (rarity?.toLowerCase() === 'divine') {
-        // Hide the item while the cinematic plays
-        setIsDivineRevealed(false);
-        setIsDivineEquipping(true);
-        // After the main animation (2.5s), play sound + reveal item + trigger impact
-        setTimeout(() => {
-          setIsDivineEquipping(false);
-          audioService.playSound('EQUIP_LEGENDARY');
-          setIsDivineRevealed(true);
-          if (onImpact) onImpact();
-        }, 2500);
-      } else if (rarity?.toLowerCase() === 'legendary') {
-        if (onImpact) onImpact();
-        audioService.playSound('EQUIP_LEGENDARY');
-      } else {
-        audioService.playSound('EQUIP_NORMAL');
+
+    const nameChanged = !isEmpty && name !== lastNameRef.current;
+
+    if (nameChanged) {
+      if (rarity === undefined) {
+        // rarity not resolved yet — park the name and wait
+        pendingNameRef.current = name;
+        lastNameRef.current = name;
+        return;
       }
+      // Process normally: name changed and rarity is already known
+      lastNameRef.current = name;
+      pendingNameRef.current = null;
+      triggerEquipEffect(rarity);
+      return;
     }
-    lastNameRef.current = name;
-  }, [name, onImpact, rarity, isEmpty]);
+
+    // Name didn't change, but check if rarity just resolved for a parked name
+    if (pendingNameRef.current !== null && rarity !== undefined) {
+      pendingNameRef.current = null;
+      triggerEquipEffect(rarity);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [name, rarity, isEmpty]);
+
+  function triggerEquipEffect(resolvedRarity: string | undefined) {
+    if (resolvedRarity?.toLowerCase() === 'divine') {
+      setIsDivineRevealed(false);
+      setIsDivineEquipping(true);
+      setTimeout(() => {
+        setIsDivineEquipping(false);
+        audioService.playSound('EQUIP_LEGENDARY');
+        setIsDivineRevealed(true);
+        if (onImpact) onImpact();
+      }, 2500);
+    } else if (resolvedRarity?.toLowerCase() === 'legendary') {
+      if (onImpact) onImpact();
+      audioService.playSound('EQUIP_LEGENDARY');
+    } else {
+      audioService.playSound('EQUIP_NORMAL');
+    }
+  }
 
   // For divine items: treat card as empty while the cinematic is playing
   const showAsEmpty = isEmpty || (rarity?.toLowerCase() === 'divine' && isDivineEquipping && !isDivineRevealed);

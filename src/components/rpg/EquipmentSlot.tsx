@@ -50,6 +50,8 @@ export function EquipmentSlot({
 
   const isInitialMount = React.useRef(true);
   const lastItemNameRef = React.useRef(itemName);
+  // Stores the new name when it arrives before rarity is resolved
+  const pendingNameRef = React.useRef<string | null>(null);
   const [isDivineEquipping, setIsDivineEquipping] = React.useState(false);
   // Controls whether the divine item is visible in the slot (hidden during the cinematic)
   const [isDivineRevealed, setIsDivineRevealed] = React.useState(
@@ -64,27 +66,49 @@ export function EquipmentSlot({
       return;
     }
 
-    if (!isEmpty && (itemName !== lastItemNameRef.current)) {
-      if (rarity?.toLowerCase() === 'divine') {
-        // Hide the item in the slot while the cinematic plays
-        setIsDivineRevealed(false);
-        setIsDivineEquipping(true);
-        // After the main animation (2.5s), play sound + reveal item + trigger impact
-        setTimeout(() => {
-          setIsDivineEquipping(false);
-          audioService.playSound('EQUIP_LEGENDARY');
-          setIsDivineRevealed(true);
-          if (onImpact) onImpact();
-        }, 2500);
-      } else if (rarity?.toLowerCase() === 'legendary') {
-        if (onImpact) onImpact();
-        audioService.playSound('EQUIP_LEGENDARY');
-      } else {
-        audioService.playSound('EQUIP_NORMAL');
+    const nameChanged = !isEmpty && itemName !== lastItemNameRef.current;
+
+    if (nameChanged) {
+      if (rarity === undefined) {
+        // rarity not resolved yet — park the name and wait
+        pendingNameRef.current = itemName ?? null;
+        lastItemNameRef.current = itemName;
+        return;
       }
+      // Process normally: name changed and rarity is already known
+      lastItemNameRef.current = itemName;
+      pendingNameRef.current = null;
+      triggerEquipEffect(rarity);
+      return;
     }
-    lastItemNameRef.current = itemName;
-  }, [itemName, onImpact, rarity, isEmpty]);
+
+    // Name didn't change, but check if rarity just resolved for a parked name
+    if (pendingNameRef.current !== null && rarity !== undefined) {
+      pendingNameRef.current = null;
+      triggerEquipEffect(rarity);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemName, rarity, isEmpty]);
+
+  function triggerEquipEffect(resolvedRarity: string | undefined) {
+    if (resolvedRarity?.toLowerCase() === 'divine') {
+      // Hide the item in the slot while the cinematic plays
+      setIsDivineRevealed(false);
+      setIsDivineEquipping(true);
+      // After the main animation (2.5s), play sound + reveal item + trigger impact
+      setTimeout(() => {
+        setIsDivineEquipping(false);
+        audioService.playSound('EQUIP_LEGENDARY');
+        setIsDivineRevealed(true);
+        if (onImpact) onImpact();
+      }, 2500);
+    } else if (resolvedRarity?.toLowerCase() === 'legendary') {
+      if (onImpact) onImpact();
+      audioService.playSound('EQUIP_LEGENDARY');
+    } else {
+      audioService.playSound('EQUIP_NORMAL');
+    }
+  }
 
   const rarityColors: Record<string, string> = {
     'common': 'border-zinc-500/50',
