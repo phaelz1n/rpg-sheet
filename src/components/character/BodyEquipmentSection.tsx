@@ -15,10 +15,10 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
   } = useCharacterStore();
   const { rpgItems } = useGlobalStore();
 
-  const getItemRarity = (itemName: string) => rpgItems.find(i => i.name === itemName)?.rarity;
-  const getItemDescription = (itemName: string) => rpgItems.find(i => i.name === itemName)?.description;
-  const getItemParticles = (itemName: string) => rpgItems.find(i => i.name === itemName)?.particles;
-  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name === itemName)?.imageUrl;
+  const getItemRarity = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.rarity;
+  const getItemDescription = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.description;
+  const getItemParticles = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.particles;
+  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.imageUrl;
 
   return (
     <section className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-5 shadow-xl">

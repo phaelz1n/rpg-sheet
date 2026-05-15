@@ -338,9 +338,9 @@ export function CharacterPage() {
                   bonus={store.mainWeapon.bonus}
                   synergy={store.mainWeapon.synergy}
                   special={store.mainWeapon.special}
-                  particles={rpgItems.find(i => i.name === store.mainWeapon.name)?.particles}
-                  rarity={rpgItems.find(i => i.name === store.mainWeapon.name)?.rarity}
-                  imageUrl={store.mainWeapon.imageUrl || rpgItems.find(i => i.name === store.mainWeapon.name)?.imageUrl}
+                  particles={rpgItems.find(i => i.name.toLowerCase() === store.mainWeapon.name.toLowerCase())?.particles}
+                  rarity={rpgItems.find(i => i.name.toLowerCase() === store.mainWeapon.name.toLowerCase())?.rarity}
+                  imageUrl={store.mainWeapon.imageUrl || rpgItems.find(i => i.name.toLowerCase() === store.mainWeapon.name.toLowerCase())?.imageUrl}
                   onClear={() => store.equipWeapon('main', { name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'main')}
                   onImpact={triggerScreenShake}
@@ -352,9 +352,9 @@ export function CharacterPage() {
                   bonus={store.offWeapon.bonus}
                   synergy={store.offWeapon.synergy}
                   special={store.offWeapon.special}
-                  particles={rpgItems.find(i => i.name === store.offWeapon.name)?.particles}
-                  rarity={rpgItems.find(i => i.name === store.offWeapon.name)?.rarity}
-                  imageUrl={store.offWeapon.imageUrl || rpgItems.find(i => i.name === store.offWeapon.name)?.imageUrl}
+                  particles={rpgItems.find(i => i.name.toLowerCase() === store.offWeapon.name.toLowerCase())?.particles}
+                  rarity={rpgItems.find(i => i.name.toLowerCase() === store.offWeapon.name.toLowerCase())?.rarity}
+                  imageUrl={store.offWeapon.imageUrl || rpgItems.find(i => i.name.toLowerCase() === store.offWeapon.name.toLowerCase())?.imageUrl}
                   onClear={() => store.equipWeapon('off', { name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'off')}
                   onImpact={triggerScreenShake}

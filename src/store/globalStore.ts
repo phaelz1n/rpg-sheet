@@ -35,7 +35,8 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
           statBonus: item.statBonus || '',
           beltCapacity: item.beltCapacity || 0,
           rarity: item.rarity || 'common',
-          description: item.description || ''
+          description: item.description || '',
+          imageUrl: item.imageUrl
         }));
         set({ rpgItems: convertedItems, isLoading: false });
       } else {

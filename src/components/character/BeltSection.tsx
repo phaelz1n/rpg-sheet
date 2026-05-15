@@ -14,10 +14,10 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
   } = useCharacterStore();
   const { rpgItems } = useGlobalStore();
 
-  const getItemRarity = (itemName: string) => rpgItems.find(i => i.name === itemName)?.rarity;
-  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name === itemName)?.imageUrl;
+  const getItemRarity = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.rarity;
+  const getItemImageUrl = (itemName: string) => rpgItems.find(i => i.name.toLowerCase() === itemName.toLowerCase())?.imageUrl;
 
-  const beltItem = rpgItems.find(i => i.name === equipmentBelt && i.beltCapacity && i.beltCapacity > 0);
+  const beltItem = rpgItems.find(i => i.name.toLowerCase() === equipmentBelt.toLowerCase() && i.beltCapacity && i.beltCapacity > 0);
   const capacity = beltItem?.beltCapacity ?? 0;
 
   return (

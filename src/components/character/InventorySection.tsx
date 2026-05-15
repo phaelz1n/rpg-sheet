@@ -25,7 +25,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
   const totalSlotsOnThisPage = Math.min(ITEMS_PER_PAGE, inventoryCapacity - (inventoryPage * ITEMS_PER_PAGE));
   const effectiveEmptySlots = Math.max(0, totalSlotsOnThisPage - pageItems.length);
 
-  const getItemData = (name: string) => rpgItems.find(i => i.name === name);
+  const getItemData = (name: string) => rpgItems.find(i => i.name.toLowerCase() === name.toLowerCase());
 
   const handlePageChange = (newPage: number) => {
     audioService.playSound('BACKPACK_MOVE');
