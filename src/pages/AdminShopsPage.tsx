@@ -4,6 +4,9 @@ import {
   ShoppingBag, ArrowLeft, Plus, Trash2, Save, User, Package, Gem, 
   Coins, Eye, EyeOff, MapPin, Globe, Search, Filter, ChevronRight
 } from 'lucide-react';
+import goldImg from '../assets/gold.png';
+import silverImg from '../assets/silver.png';
+import bronzeImg from '../assets/bronze.png';
 import { ttrpgApi } from '../lib/ttrpg-api';
 import { useUI } from '../context/UIContext';
 import { Shop, ShopItem, RPGItem } from '../types/rpg';
@@ -423,9 +426,9 @@ export function AdminShopsPage() {
                               <div className="flex-1 min-w-0">
                                 <div className="font-bold text-zinc-200 text-xs truncate">{itemData?.name || 'Item Desconhecido'}</div>
                                 <div className="flex items-center gap-3 mt-2">
-                                  <div className="flex items-center gap-2">
-                                    <div className="flex flex-col">
-                                      <span className="text-[8px] text-yellow-600 uppercase font-bold text-center">Ouro</span>
+                                    <div className="flex items-center gap-2">
+                                    <div className="flex flex-col items-center">
+                                      <img src={goldImg} alt="O" className="w-3 h-3 object-contain mb-0.5" />
                                       <input 
                                         type="number" 
                                         value={Math.floor(shopItem.priceBronze / 100)} 
@@ -438,8 +441,8 @@ export function AdminShopsPage() {
                                         className="w-10 bg-zinc-900 border border-yellow-900/40 rounded px-1 py-1 text-[10px] text-center text-yellow-400 focus:border-yellow-600 outline-none" 
                                       />
                                     </div>
-                                    <div className="flex flex-col">
-                                      <span className="text-[8px] text-zinc-500 uppercase font-bold text-center">Prata</span>
+                                    <div className="flex flex-col items-center">
+                                      <img src={silverImg} alt="S" className="w-3 h-3 object-contain mb-0.5" />
                                       <input 
                                         type="number" 
                                         value={Math.floor((shopItem.priceBronze % 100) / 10)} 
@@ -452,8 +455,8 @@ export function AdminShopsPage() {
                                         className="w-10 bg-zinc-900 border border-zinc-700/40 rounded px-1 py-1 text-[10px] text-center text-zinc-300 focus:border-zinc-500 outline-none" 
                                       />
                                     </div>
-                                    <div className="flex flex-col">
-                                      <span className="text-[8px] text-orange-700 uppercase font-bold text-center">Bronze</span>
+                                    <div className="flex flex-col items-center">
+                                      <img src={bronzeImg} alt="B" className="w-3 h-3 object-contain mb-0.5" />
                                       <input 
                                         type="number" 
                                         value={shopItem.priceBronze % 10} 

@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { 
   ShoppingBag, ArrowLeft, Coins, Gem, User, Package, 
-  Sparkles, ScrollText, ShieldCheck, Flame, Sword, MapPin
+  Sparkles, ScrollText, ShieldCheck, Flame, Sword, MapPin 
 } from 'lucide-react';
+import goldImg from '../assets/gold.png';
+import silverImg from '../assets/silver.png';
+import bronzeImg from '../assets/bronze.png';
 import { useShopStore } from '../store/shopStore';
 import { useCharacterStore } from '../store/characterStore';
 import { useGlobalStore } from '../store/globalStore';
@@ -98,18 +101,18 @@ export function ShopPage() {
       <div className="flex items-center gap-2">
         {g > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_#facc15] animate-pulse" />
+            <img src={goldImg} alt="G" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" />
             <span className="text-yellow-400 font-bold">{g}</span>
           </div>
         )}
         {s > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-zinc-300 shadow-[0_0_8px_#d4d4d8]" />
+            <img src={silverImg} alt="S" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(212,212,216,0.4)]" />
             <span className="text-zinc-300 font-bold">{s}</span>
           </div>
         )}
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-full bg-orange-600 shadow-[0_0_8px_#ea580c]" />
+          <img src={bronzeImg} alt="B" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(234,88,12,0.4)]" />
           <span className="text-orange-500 font-bold">{b}</span>
         </div>
       </div>

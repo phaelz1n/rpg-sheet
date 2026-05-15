@@ -1,6 +1,9 @@
 import { Coins, Plus, Minus, TrendingUp, TrendingDown } from 'lucide-react';
 import { useCharacterStore } from '../../store/characterStore';
 import { useState } from 'react';
+import goldImg from '../../assets/gold.png';
+import silverImg from '../../assets/silver.png';
+import bronzeImg from '../../assets/bronze.png';
 
 export function CoinPouch() {
   const { coinsBronze, addCoins, removeCoins } = useCharacterStore();
@@ -28,15 +31,15 @@ export function CoinPouch() {
   return (
     <div className="bg-zinc-900/60 border-2 border-amber-900/50 rounded-xl p-4 shadow-xl">
       <h2 className="text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2 text-sm font-bold">
-        <Coins className="w-5 h-5" />
+        <img src={goldImg} alt="" className="w-5 h-5 object-contain" />
         Sacola de Moedas
       </h2>
 
       <div className="flex items-center justify-around mb-6 bg-black/40 rounded-lg p-3 border border-amber-900/20">
         {/* OURO */}
         <div className="flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 to-amber-600 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.3)] mb-1">
-            <span className="text-black font-black text-xs">O</span>
+          <div className="w-12 h-12 flex items-center justify-center mb-1 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">
+            <img src={goldImg} alt="Ouro" className="w-full h-full object-contain" />
           </div>
           <span className="text-xl font-black text-amber-400">{gold}</span>
           <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Ouro</span>
@@ -46,8 +49,8 @@ export function CoinPouch() {
 
         {/* PRATA */}
         <div className="flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-300 to-zinc-500 flex items-center justify-center shadow-[0_0_15px_rgba(212,212,216,0.2)] mb-1">
-            <span className="text-black font-black text-xs">P</span>
+          <div className="w-12 h-12 flex items-center justify-center mb-1 drop-shadow-[0_0_8px_rgba(212,212,216,0.2)]">
+            <img src={silverImg} alt="Prata" className="w-full h-full object-contain" />
           </div>
           <span className="text-xl font-black text-zinc-300">{silver}</span>
           <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Prata</span>
@@ -57,8 +60,8 @@ export function CoinPouch() {
 
         {/* BRONZE */}
         <div className="flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-800 flex items-center justify-center shadow-[0_0_15px_rgba(234,88,12,0.2)] mb-1">
-            <span className="text-black font-black text-xs">B</span>
+          <div className="w-12 h-12 flex items-center justify-center mb-1 drop-shadow-[0_0_8px_rgba(234,88,12,0.2)]">
+            <img src={bronzeImg} alt="Bronze" className="w-full h-full object-contain" />
           </div>
           <span className="text-xl font-black text-orange-400">{bronze}</span>
           <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Bronze</span>
