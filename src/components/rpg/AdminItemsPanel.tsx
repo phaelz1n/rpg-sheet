@@ -124,7 +124,7 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
     setIsUploading(true);
     try {
       // Create folder path based on category and slot
-      let folder: string = formData.type;
+      let folder: string = formData.type || 'other';
       if (formData.type === 'armor' && formData.equipmentSlot) {
         folder = `armor/${formData.equipmentSlot}`;
       } else if (formData.type === 'weapon') {
