@@ -1,4 +1,5 @@
 import { LucideIcon, X, Plus } from 'lucide-react';
+import { RichDescription } from './RichDescription';
 
 interface BeltSlotProps {
   itemName?: string;
@@ -65,11 +66,11 @@ export function BeltSlot({ itemName, rarity, icon: Icon, imageUrl, description, 
             {itemName}
           </div>
 
-          {description && (
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-zinc-950 border border-amber-800/50 rounded p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-              <p className="text-zinc-300 text-xs">{description}</p>
+              <div className="text-zinc-300 text-xs">
+                <RichDescription text={typeof description === 'string' ? description : ''} />
+              </div>
             </div>
-          )}
         </>
       )}
     </div>

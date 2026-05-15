@@ -11,7 +11,7 @@ interface RichDescriptionProps {
 }
 
 export function RichDescription({ text, className = "" }: RichDescriptionProps) {
-  if (!text) return null;
+  if (!text || typeof text !== 'string') return null;
 
   // Pattern to match #hashtags and [brackets]
   const parts = text.split(/(#[a-záàâãéèêíïóôõöúç]+|\[[a-záàâãéèêíïóôõöúç\s]+\])/gi);
