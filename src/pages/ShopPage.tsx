@@ -59,9 +59,8 @@ export function ShopPage() {
     };
   }, [currentUser]);
 
-  // Filter shops by location and visibility
+  // Filter shops by location
   const visibleShops = shops.filter(s => 
-    s.is_visible !== false && 
     (s.location === activeLocation || !activeLocation || activeLocation === 'Geral')
   );
 
@@ -73,7 +72,15 @@ export function ShopPage() {
     }
   }, [visibleShops]);
 
-  const currentShop = visibleShops.find(s => s.id === selectedShopId) || (visibleShops.length > 0 ? visibleShops[0] : null);
+  const currentShopRaw = visibleShops.find(s => s.id === selectedShopId) || (visibleShops.length > 0 ? visibleShops[0] : null);
+
+  const currentShop = currentShopRaw ? {
+    ...currentShopRaw,
+    npcName: currentShopRaw.is_visible ? currentShopRaw.npcName : 'Mercador Ausente',
+    npcPortrait: currentShopRaw.is_visible ? currentShopRaw.npcPortrait : '',
+    welcomeMessage: currentShopRaw.is_visible ? currentShopRaw.welcomeMessage : 'A barraca está vazia. O mercador não se encontra no momento.',
+    inventory: currentShopRaw.is_visible ? currentShopRaw.inventory : []
+  } : null;
 
   // Typewriter effect state
   const [displayedMessage, setDisplayedMessage] = useState('');
@@ -238,7 +245,9 @@ export function ShopPage() {
                         : 'bg-black/40 border-amber-900/10 text-amber-900 hover:border-amber-900/40 hover:text-amber-700'
                     }`}
                   >
-                    <div className="text-xs font-bold uppercase tracking-tight relative z-10">{shop.name}</div>
+                    <div className="text-xs font-bold uppercase tracking-tight relative z-10">
+                      {!shop.is_visible ? 'Mercador Ausente' : shop.name}
+                    </div>
                     {selectedShopId === shop.id && (
                       <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-transparent animate-shimmer" />
                     )}

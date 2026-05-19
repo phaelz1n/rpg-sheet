@@ -83,7 +83,7 @@ export function AdminShopsPage() {
   const handleLocationChange = (newLoc: string) => {
     setActiveLocation(newLoc);
     if (newLoc !== 'Geral') {
-      setMarketTitle(`Mercado de ${newLoc}`);
+      setMarketTitle(newLoc);
     } else {
       setMarketTitle('Mercado Global');
     }
