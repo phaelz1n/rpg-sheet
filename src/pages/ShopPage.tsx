@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { 
   ShoppingBag, ArrowLeft, Coins, Gem, User, Package, 
   Sparkles, ScrollText, ShieldCheck, Flame, Sword, MapPin,
-  X, Plus, Minus
+  X, Plus, Minus, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import goldImg from '../assets/gold.png';
 import silverImg from '../assets/silver.png';
@@ -28,8 +28,18 @@ export function ShopPage() {
   const { showToast, showConfirm } = useUI();
   
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
   const [buyingItemId, setBuyingItemId] = useState<string | null>(null);
   
+  const translateRarity = (r?: string) => {
+    if (!r) return 'Comum';
+    const lower = r.toLowerCase();
+    if (lower === 'divine') return 'Divino';
+    if (lower === 'legendary') return 'Lendário';
+    if (lower === 'rare') return 'Raro';
+    return 'Comum';
+  };
+
   const [purchaseModal, setPurchaseModal] = useState<{
     isOpen: boolean;
     item: RPGItem | null;
@@ -80,6 +90,10 @@ export function ShopPage() {
       setSelectedShopId(null);
     }
   }, [visibleShops]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [selectedShopId]);
 
   const currentShopRaw = visibleShops.find(s => s.id === selectedShopId) || (visibleShops.length > 0 ? visibleShops[0] : null);
 
@@ -220,7 +234,7 @@ export function ShopPage() {
         <aside className="w-full lg:w-[400px] xl:w-[450px] border-r border-amber-900/20 bg-black/40 flex flex-col shrink-0">
           
           {/* NPC Portrait Wrapper */}
-          <div className="relative aspect-square lg:aspect-auto lg:flex-1 overflow-hidden group">
+          <div className="relative aspect-square lg:aspect-[3/4] overflow-hidden group">
             {currentShop?.npcPortrait ? (
               <img 
                 src={currentShop.npcPortrait} 
@@ -302,138 +316,181 @@ export function ShopPage() {
                   <div className="h-px flex-1 bg-gradient-to-r from-amber-900/30 to-transparent" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-                  {currentShop.inventory.map(shopItem => {
-                    const item = rpgItems.find(i => i.id === shopItem.itemId);
-                    if (!item) return null;
+                  {(() => {
+                    const ITEMS_PER_PAGE = 6;
+                    const totalItems = currentShop.inventory.length;
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+                    const paginatedInventory = currentShop.inventory.slice(
+                      currentPage * ITEMS_PER_PAGE,
+                      (currentPage + 1) * ITEMS_PER_PAGE
+                    );
 
                     return (
-                      <div 
-                        key={item.id} 
-                        className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 shadow-xl ${
-                          shopItem.stock <= 0 
-                            ? 'grayscale opacity-60 pointer-events-none' 
-                            : 'hover:bg-amber-950/10 hover:border-amber-600/40 hover:shadow-amber-900/20'
-                        } ${
-                          item.rarity === 'legendary' && shopItem.stock > 0 ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50' : ''
-                        }`}
-                      >
-                        <ItemVFX type={item.particles as any} rarity={item.rarity} name={item.name} />
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                          {paginatedInventory.map(shopItem => {
+                            const item = rpgItems.find(i => i.id === shopItem.itemId);
+                            if (!item) return null;
 
-                        {/* Background rarity glow */}
-                        {item.rarity === 'legendary' && (
-                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 blur-[50px] group-hover:bg-amber-500/10 transition-all duration-1000" />
-                        )}
-                        {item.rarity === 'rare' && (
-                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-1000" />
-                        )}
+                            return (
+                              <div 
+                                key={item.id} 
+                                className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 shadow-xl ${
+                                  shopItem.stock <= 0 
+                                    ? 'grayscale opacity-60 pointer-events-none' 
+                                    : 'hover:bg-amber-950/10 hover:border-amber-600/40 hover:shadow-amber-900/20'
+                                } ${
+                                  item.rarity === 'legendary' && shopItem.stock > 0 ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50' : ''
+                                }`}
+                              >
+                                <ItemVFX type={item.particles as any} rarity={item.rarity} name={item.name} />
 
-                        {/* Item Illustration & Price Wrapper */}
-                        <div className="flex gap-4 mb-4 items-stretch h-32">
-                          {/* Left: Prominent Illustration */}
-                          <div className={`relative w-24 sm:w-28 flex items-center justify-center rounded-xl bg-black/40 border border-amber-900/30 overflow-hidden group/img ${
-                            item.rarity === 'divine' ? 'shadow-[0_0_15px_rgba(220,38,38,0.2)] border-red-500/50' :
-                            item.rarity === 'legendary' ? 'shadow-[0_0_15px_rgba(251,191,36,0.2)] border-amber-500/50' : 
-                            item.rarity === 'rare' ? 'shadow-[0_0_15px_rgba(168,85,247,0.2)] border-purple-500/50' : ''
-                          }`}>
-                            {item.imageUrl ? (
-                              <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-700 scale-95 group-hover/img:scale-110" />
-                            ) : (
-                              <Gem className={`w-8 h-8 sm:w-10 sm:h-10 text-amber-900/40 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
-                            )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                          </div>
-                          
-                          {/* Right: Price & Quick Info */}
-                          <div className="flex-1 flex flex-col justify-center gap-3">
-                            <div className="text-left">
-                              <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block mb-1">Preço Sugerido</span>
-                              <div className="bg-black/60 px-3 py-2 rounded-xl border border-amber-900/40 shadow-inner inline-block">
-                                {formatPrice(shopItem.priceBronze)}
+                                {/* Background rarity glow */}
+                                {item.rarity === 'legendary' && (
+                                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 blur-[50px] group-hover:bg-amber-500/10 transition-all duration-1000" />
+                                )}
+                                {item.rarity === 'rare' && (
+                                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-1000" />
+                                )}
+
+                                {/* Item Illustration & Price Wrapper */}
+                                <div className="flex gap-4 mb-4 items-stretch h-32">
+                                  {/* Left: Prominent Illustration */}
+                                  <div className={`relative w-24 sm:w-28 flex items-center justify-center rounded-xl bg-black/40 border border-amber-900/30 overflow-hidden group/img ${
+                                    item.rarity === 'divine' ? 'shadow-[0_0_15px_rgba(220,38,38,0.2)] border-red-500/50' :
+                                    item.rarity === 'legendary' ? 'shadow-[0_0_15px_rgba(251,191,36,0.2)] border-amber-500/50' : 
+                                    item.rarity === 'rare' ? 'shadow-[0_0_15px_rgba(168,85,247,0.2)] border-purple-500/50' : ''
+                                  }`}>
+                                    {item.imageUrl ? (
+                                      <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-700 scale-95 group-hover/img:scale-110" />
+                                    ) : (
+                                      <Gem className={`w-8 h-8 sm:w-10 sm:h-10 text-amber-900/40 ${item.rarity === 'legendary' ? 'animate-pulse' : ''}`} />
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                                  </div>
+                                  
+                                  {/* Right: Price & Quick Info */}
+                                  <div className="flex-1 flex flex-col justify-center gap-3">
+                                    <div className="text-left">
+                                      <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block mb-1">Preço Sugerido</span>
+                                      <div className="bg-black/60 px-3 py-2 rounded-xl border border-amber-900/40 shadow-inner inline-block">
+                                        {formatPrice(shopItem.priceBronze)}
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="flex flex-col gap-1">
+                                      <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block">Categoria</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className={`text-[8px] sm:text-[9px] px-2 py-0.5 rounded border uppercase font-bold tracking-tighter ${
+                                          item.rarity === 'divine' ? 'bg-red-950/40 border-red-500 text-red-400' :
+                                          item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-500 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
+                                          item.rarity === 'rare' ? 'bg-purple-950/40 border-purple-500 text-purple-400' :
+                                          'bg-zinc-900/40 border-zinc-700 text-zinc-500'
+                                        }`}>
+                                          {translateRarity(item.rarity)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex-1 space-y-2 relative z-10">
+                                  <h4 className="text-base sm:text-lg font-black text-amber-100 group-hover:text-amber-400 transition-colors uppercase tracking-tight truncate">
+                                    {item.name}
+                                  </h4>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`text-[8px] sm:text-[9px] px-2 py-0.5 rounded border uppercase font-bold tracking-tighter ${
+                                      item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-500 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
+                                      item.rarity === 'rare' ? 'bg-purple-950/40 border-purple-500 text-purple-400' :
+                                      'bg-zinc-900/40 border-zinc-700 text-zinc-500'
+                                    }`}>
+                                      {translateRarity(item.rarity)}
+                                    </span>
+                                    <span className="text-[8px] text-amber-800 uppercase font-black tracking-widest">{item.category}</span>
+                                  </div>
+                                  <div className="text-xs sm:text-sm text-amber-100/40 italic line-clamp-3 pt-2">
+                                    <RichDescription text={item.description || ''} />
+                                  </div>
+                                </div>
+
+                                {/* Buy Action */}
+                                <div className="mt-6 sm:mt-8 flex items-center justify-between gap-4">
+                                  <div className="flex flex-col">
+                                    <span className={`text-[8px] uppercase font-black tracking-widest ${shopItem.stock <= 0 ? 'text-zinc-600' : shopItem.stock <= 2 ? 'text-red-500 animate-pulse' : 'text-amber-900'}`}>
+                                      {shopItem.stock <= 0 ? 'Esgotado' : shopItem.stock <= 2 ? 'Últimas!' : 'Estoque'}
+                                    </span>
+                                    <div className="flex items-center gap-1 mt-0.5">
+                                      {Array.from({ length: Math.min(3, shopItem.stock) }).map((_, i) => (
+                                        <div 
+                                          key={i} 
+                                          className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full transition-all duration-1000 ${
+                                            shopItem.stock === 1 ? 'bg-red-500 shadow-[0_0_5px_#ef4444]' : 
+                                            shopItem.stock <= 3 ? 'bg-orange-500' : 
+                                            'bg-emerald-600'
+                                          }`} 
+                                        />
+                                      ))}
+                                      <span className="text-[10px] text-zinc-500 font-bold ml-1">({shopItem.stock})</span>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    onClick={() => openPurchaseModal(item, shopItem)}
+                                    disabled={buyingItemId === item.id || shopItem.stock <= 0}
+                                    className={`relative flex-1 group/btn overflow-hidden ${shopItem.stock <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                                  >
+                                    <div className={`absolute inset-0 bg-gradient-to-r from-amber-700 to-amber-900 opacity-0 ${shopItem.stock > 0 ? 'group-hover/btn:opacity-100' : ''} transition-opacity duration-500`} />
+                                    <div className={`relative px-3 sm:px-6 py-2 bg-amber-900/40 border border-amber-700/50 rounded-xl text-amber-100 font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${shopItem.stock > 0 ? 'group-hover/btn:text-black' : ''}`}>
+                                      {buyingItemId === item.id ? (
+                                        <div className="w-3 h-3 border-2 border-amber-500 border-t-white rounded-full animate-spin" />
+                                      ) : shopItem.stock <= 0 ? (
+                                        <>Sem Estoque</>
+                                      ) : (
+                                        <>
+                                          <Coins className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" />
+                                          Comprar
+                                        </>
+                                      )}
+                                    </div>
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                            
-                            <div className="flex flex-col gap-1">
-                              <span className="text-[8px] text-amber-900 uppercase font-black tracking-widest block">Categoria</span>
-                              <div className="flex items-center gap-2">
-                                <span className={`text-[8px] sm:text-[9px] px-2 py-0.5 rounded border uppercase font-bold tracking-tighter ${
-                                  item.rarity === 'divine' ? 'bg-red-950/40 border-red-500 text-red-400' :
-                                  item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-500 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
-                                  item.rarity === 'rare' ? 'bg-purple-950/40 border-purple-500 text-purple-400' :
-                                  'bg-zinc-900/40 border-zinc-700 text-zinc-500'
-                                }`}>
-                                  {item.rarity === 'divine' ? 'Divino' : item.rarity || 'Comum'}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                            );
+                          })}
                         </div>
 
-                        {/* Content */}
-                        <div className="flex-1 space-y-2 relative z-10">
-                          <h4 className="text-base sm:text-lg font-black text-amber-100 group-hover:text-amber-400 transition-colors uppercase tracking-tight truncate">
-                            {item.name}
-                          </h4>
-                          <div className="flex items-center gap-2">
-                            <span className={`text-[8px] sm:text-[9px] px-2 py-0.5 rounded border uppercase font-bold tracking-tighter ${
-                              item.rarity === 'legendary' ? 'bg-amber-950/40 border-amber-500 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
-                              item.rarity === 'rare' ? 'bg-purple-950/40 border-purple-500 text-purple-400' :
-                              'bg-zinc-900/40 border-zinc-700 text-zinc-500'
-                            }`}>
-                              {item.rarity || 'Comum'}
+                        {/* Store Inventory Pagination Controls */}
+                        {totalPages > 1 && (
+                          <div className="flex items-center justify-center gap-4 mt-8 bg-zinc-950/40 border border-amber-900/20 rounded-2xl p-4 max-w-sm mx-auto shadow-inner">
+                            <button 
+                              onClick={() => {
+                                audioService.playSound('BACKPACK_MOVE');
+                                setCurrentPage(prev => Math.max(0, prev - 1));
+                              }}
+                              disabled={currentPage === 0}
+                              className="flex items-center gap-1 px-3 py-1.5 bg-black/40 border border-amber-900/30 rounded-lg text-amber-500 hover:text-amber-400 disabled:text-zinc-700 disabled:border-zinc-800/40 disabled:bg-transparent transition-all text-xs uppercase font-bold tracking-wider"
+                            >
+                              <ChevronLeft className="w-4 h-4" /> Anterior
+                            </button>
+                            <span className="text-[10px] sm:text-xs text-amber-500/80 font-bold uppercase tracking-widest bg-black/40 border border-amber-900/20 rounded px-3 py-1.5">
+                              Pág {currentPage + 1} de {totalPages}
                             </span>
-                            <span className="text-[8px] text-amber-800 uppercase font-black tracking-widest">{item.category}</span>
+                            <button 
+                              onClick={() => {
+                                audioService.playSound('BACKPACK_MOVE');
+                                setCurrentPage(prev => Math.min(totalPages - 1, prev + 1));
+                              }}
+                              disabled={currentPage >= totalPages - 1}
+                              className="flex items-center gap-1 px-3 py-1.5 bg-black/40 border border-amber-900/30 rounded-lg text-amber-500 hover:text-amber-400 disabled:text-zinc-700 disabled:border-zinc-800/40 disabled:bg-transparent transition-all text-xs uppercase font-bold tracking-wider"
+                            >
+                              Próximo <ChevronRight className="w-4 h-4" />
+                            </button>
                           </div>
-                          <div className="text-xs sm:text-sm text-amber-100/40 italic line-clamp-3 pt-2">
-                            <RichDescription text={item.description || ''} />
-                          </div>
-                        </div>
-
-                        {/* Buy Action */}
-                        <div className="mt-6 sm:mt-8 flex items-center justify-between gap-4">
-                          <div className="flex flex-col">
-                            <span className={`text-[8px] uppercase font-black tracking-widest ${shopItem.stock <= 0 ? 'text-zinc-600' : shopItem.stock <= 2 ? 'text-red-500 animate-pulse' : 'text-amber-900'}`}>
-                              {shopItem.stock <= 0 ? 'Esgotado' : shopItem.stock <= 2 ? 'Últimas!' : 'Estoque'}
-                            </span>
-                            <div className="flex items-center gap-1 mt-0.5">
-                              {Array.from({ length: Math.min(3, shopItem.stock) }).map((_, i) => (
-                                <div 
-                                  key={i} 
-                                  className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full transition-all duration-1000 ${
-                                    shopItem.stock === 1 ? 'bg-red-500 shadow-[0_0_5px_#ef4444]' : 
-                                    shopItem.stock <= 3 ? 'bg-orange-500' : 
-                                    'bg-emerald-600'
-                                  }`} 
-                                />
-                              ))}
-                              <span className="text-[10px] text-zinc-500 font-bold ml-1">({shopItem.stock})</span>
-                            </div>
-                          </div>
-
-                          <button
-                            onClick={() => openPurchaseModal(item, shopItem)}
-                            disabled={buyingItemId === item.id || shopItem.stock <= 0}
-                            className={`relative flex-1 group/btn overflow-hidden ${shopItem.stock <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}
-                          >
-                            <div className={`absolute inset-0 bg-gradient-to-r from-amber-700 to-amber-900 opacity-0 ${shopItem.stock > 0 ? 'group-hover/btn:opacity-100' : ''} transition-opacity duration-500`} />
-                            <div className={`relative px-3 sm:px-6 py-2 bg-amber-900/40 border border-amber-700/50 rounded-xl text-amber-100 font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${shopItem.stock > 0 ? 'group-hover/btn:text-black' : ''}`}>
-                              {buyingItemId === item.id ? (
-                                <div className="w-3 h-3 border-2 border-amber-500 border-t-white rounded-full animate-spin" />
-                              ) : shopItem.stock <= 0 ? (
-                                <>Sem Estoque</>
-                              ) : (
-                                <>
-                                  <Coins className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" />
-                                  Comprar
-                                </>
-                              )}
-                            </div>
-                          </button>
-                        </div>
-                      </div>
+                        )}
+                      </>
                     );
-                  })}
-                </div>
+                  })()}
               </div>
 
               {/* Decorative Banner */}
