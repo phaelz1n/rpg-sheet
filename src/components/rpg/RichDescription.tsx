@@ -21,8 +21,9 @@ export function RichDescription({ text, className = "" }: RichDescriptionProps) 
     // Atributos
     '#corrupção': { icon: Skull, color: 'text-purple-500', label: 'Corrupção', type: 'hashtag' },
     '#corrupcao': { icon: Skull, color: 'text-purple-500', label: 'Corrupção', type: 'hashtag' },
-    '#fé': { icon: Droplet, color: 'text-blue-400', label: 'Fé', type: 'hashtag' },
-    '#fe': { icon: Droplet, color: 'text-blue-400', label: 'Fé', type: 'hashtag' },
+    '#mana': { icon: Droplet, color: 'text-blue-400', label: 'Mana', type: 'hashtag' },
+    '#fé': { icon: Flame, color: 'text-amber-500', label: 'Fé', type: 'hashtag' },
+    '#fe': { icon: Flame, color: 'text-amber-500', label: 'Fé', type: 'hashtag' },
     '#fôlego': { icon: Zap, color: 'text-green-400', label: 'Fôlego', type: 'hashtag' },
     '#folego': { icon: Zap, color: 'text-green-400', label: 'Fôlego', type: 'hashtag' },
     '#stamina': { icon: Zap, color: 'text-green-400', label: 'Stamina', type: 'hashtag' },
