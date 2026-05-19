@@ -209,9 +209,9 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
             globalItemId: i.globalItemId
           })) : []
         };
-        set({ ...defaultState, ...sanitizedData, isLoading: false, lastActionSource: 'remote' });
+        set({ ...defaultState, ...sanitizedData, username, isLoading: false, lastActionSource: 'remote' });
       } else {
-        set({ ...defaultState, isLoading: false, lastActionSource: 'remote' });
+        set({ ...defaultState, username, isLoading: false, lastActionSource: 'remote' });
       }
     } catch (error) {
       console.error('Error loading character:', error);
