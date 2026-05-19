@@ -239,7 +239,7 @@ export function ShopPage() {
               <img 
                 src={currentShop.npcPortrait} 
                 alt={currentShop.npcName} 
-                className="w-full h-full object-cover grayscale-[0.2] sepia-[0.2] brightness-75 group-hover:brightness-90 transition-all duration-[3000ms] scale-110 group-hover:scale-100 animate-pulse-slow"
+                className="w-full h-full object-cover object-top grayscale-[0.2] sepia-[0.2] brightness-75 group-hover:brightness-90 transition-all duration-[3000ms] scale-100 group-hover:scale-105 animate-pulse-slow"
               />
             ) : (
               <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-800">
@@ -473,7 +473,7 @@ export function ShopPage() {
                             >
                               <ChevronLeft className="w-4 h-4" /> Anterior
                             </button>
-                            <span className="text-[10px] sm:text-xs text-amber-500/80 font-bold uppercase tracking-widest bg-black/40 border border-amber-900/20 rounded px-3 py-1.5">
+                            <span className="text-[10px] sm:text-xs text-amber-500/80 font-bold uppercase tracking-wider bg-black/40 border border-amber-900/20 rounded px-3 py-1.5 whitespace-nowrap">
                               Pág {currentPage + 1} de {totalPages}
                             </span>
                             <button 
