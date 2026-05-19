@@ -13,22 +13,43 @@ function CompactSkillRow({ name, bonus, onBonusChange, color, description }: {
   };
 
   return (
-    <div className="flex items-center justify-between py-1 border-b border-zinc-800/50 last:border-0 group relative">
-      <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium cursor-help ${iconColors[color as keyof typeof iconColors] || 'text-zinc-400'}`}>
-        {name}
-      </span>
+    <div className={`flex items-center justify-between py-1 border-b border-zinc-800/50 last:border-0 group relative transition-all duration-300 ${
+      bonus === 0 ? 'opacity-30 hover:opacity-100' : 'opacity-100'
+    }`}>
+      <div className="flex items-center gap-1.5 min-w-0">
+        {bonus > 0 && (
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+            color === 'emerald' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse' :
+            color === 'orange' ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] animate-pulse' :
+            color === 'blue' ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' :
+            color === 'purple' ? 'bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.8)] animate-pulse' :
+            'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse'
+          }`} />
+        )}
+        <span className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium cursor-help transition-colors truncate ${
+          bonus === 0 
+            ? 'text-zinc-600' 
+            : (iconColors[color as keyof typeof iconColors] || 'text-zinc-200 font-bold')
+        }`}>
+          {name}
+        </span>
+      </div>
       <div className="flex items-center gap-2">
         <input
           type="number"
           value={bonus}
           onChange={(e) => onBonusChange(Number(e.target.value))}
-          className="w-10 bg-transparent border-none text-right text-amber-400 font-bold text-xs focus:outline-none focus:ring-1 focus:ring-amber-600/30 rounded"
+          className={`w-10 bg-transparent border-none text-right font-bold text-xs focus:outline-none focus:ring-1 focus:ring-amber-600/30 rounded transition-colors ${
+            bonus === 0 ? 'text-zinc-600' : 'text-amber-400'
+          }`}
         />
       </div>
 
       {description && (
         <div className="absolute bottom-full left-0 mb-2 w-48 bg-zinc-950 border border-zinc-800 rounded p-2 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-2xl scale-95 group-hover:scale-100 origin-bottom-left">
-          <div className={`text-[9px] uppercase tracking-widest font-bold mb-1 border-b border-zinc-800 pb-1 ${iconColors[color as keyof typeof iconColors] || 'text-zinc-400'}`}>
+          <div className={`text-[9px] uppercase tracking-widest font-bold mb-1 border-b border-zinc-800 pb-1 ${
+            bonus === 0 ? 'text-zinc-500' : (iconColors[color as keyof typeof iconColors] || 'text-zinc-400')
+          }`}>
             {name}
           </div>
           <p className="text-zinc-400 text-[10px] leading-tight">
