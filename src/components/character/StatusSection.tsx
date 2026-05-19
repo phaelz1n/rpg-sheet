@@ -1,4 +1,4 @@
-import { Heart, Brain, Zap, Footprints } from 'lucide-react';
+import { Heart, Brain, Footprints, Droplet } from 'lucide-react';
 import { StatusGauge } from '../rpg/StatusGauge';
 import { useCharacterStore } from '../../store/characterStore';
 
@@ -25,18 +25,18 @@ export function StatusSection() {
         current={sanity}
         max={maxSanity}
         icon={Brain}
-        color="blue"
+        color="purple"
         description="Sua estabilidade mental. Se chegar a 0, você sucumbe à loucura ou trauma."
         onCurrentChange={(val) => updateField('sanity', val)}
         onMaxChange={(val) => updateField('maxSanity', val)}
       />
       <StatusGauge
-        label="Esforço (PE)"
+        label="Mana (PM)"
         current={mana}
         max={maxMana}
-        icon={Zap}
-        color="amber"
-        description="Pontos de Esforço usados para habilidades especiais e concentração."
+        icon={Droplet}
+        color="blue"
+        description="Pontos de Mana usados para habilidades especiais e concentração."
         onCurrentChange={(val) => updateField('mana', val)}
         onMaxChange={(val) => updateField('maxMana', val)}
       />
