@@ -185,7 +185,7 @@ export function WeaponCard({
                     e.stopPropagation();
                     onClear();
                   }}
-                  className="absolute top-0 right-0 w-6 h-6 bg-red-950 border border-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-800 z-30 shadow-lg"
+                  className="absolute top-0 right-0 w-6 h-6 bg-red-950 border border-red-500 rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-red-800 z-30 shadow-lg"
                 >
                   <X className="w-3.5 h-3.5 text-red-100" />
                 </button>

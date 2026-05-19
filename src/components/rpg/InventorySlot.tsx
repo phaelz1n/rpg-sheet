@@ -75,7 +75,7 @@ export function InventorySlot({
                   e.stopPropagation();
                   onDelete();
                 }}
-                className="absolute top-1 left-1 w-4 h-4 bg-red-900/80 border border-red-700 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-800 z-10"
+                className="absolute top-1 left-1 w-4 h-4 bg-red-900/80 border border-red-700 rounded flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-red-800 z-10"
               >
                 <X className="w-3 h-3 text-red-100" />
               </button>

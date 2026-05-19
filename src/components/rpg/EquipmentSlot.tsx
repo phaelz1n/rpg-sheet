@@ -200,7 +200,7 @@ export function EquipmentSlot({
                     e.stopPropagation();
                     onClear();
                   }}
-                  className="absolute -top-2 -right-2 w-5 h-5 bg-red-950 border border-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-800 z-30 shadow-lg"
+                  className="absolute -top-2 -right-2 w-5 h-5 bg-red-950 border border-red-500 rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-red-800 z-30 shadow-lg"
                 >
                   <X className="w-3 h-3 text-red-100" />
                 </button>
