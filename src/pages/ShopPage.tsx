@@ -92,8 +92,8 @@ export function ShopPage() {
     let i = 0;
     const message = currentShop.welcomeMessage;
     const interval = setInterval(() => {
-      setDisplayedMessage(prev => prev + message.charAt(i));
       i++;
+      setDisplayedMessage(message.substring(0, i));
       if (i >= message.length) clearInterval(interval);
     }, 30);
     
