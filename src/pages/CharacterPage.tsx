@@ -260,16 +260,28 @@ export function CharacterPage() {
       store.updateBeltSlot(beltNum, item.id);
     } else if (type === 'consumable') {
       const { inventory, inventoryCapacity } = store;
-      const existing = inventory.find(i => i.globalItemId === item.id || i.name.toLowerCase() === item.name.toLowerCase());
-      if (existing) {
-        store.updateInventoryQuantity(existing.id, existing.quantity + 1);
+      const MAX_STACK = 5;
+
+      // Find an incomplete stack of this item (quantity < 5)
+      const existingStackIndex = inventory.findIndex(i => 
+        (i.globalItemId === item.id || i.name.toLowerCase() === item.name.toLowerCase()) && 
+        i.quantity < MAX_STACK
+      );
+
+      if (existingStackIndex > -1) {
+        const updatedInventory = [...inventory];
+        updatedInventory[existingStackIndex] = {
+          ...updatedInventory[existingStackIndex],
+          quantity: updatedInventory[existingStackIndex].quantity + 1
+        };
+        store.setInventory(updatedInventory);
       } else {
         if (inventory.length >= inventoryCapacity) {
           showToast('Mochila cheia!', 'error');
           return;
         }
         store.setInventory([...inventory, {
-          id: Date.now().toString(),
+          id: Date.now().toString() + Math.random().toString(36).substring(7),
           name: item.name,
           quantity: 1,
           icon: Gem,
