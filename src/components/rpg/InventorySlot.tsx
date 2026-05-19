@@ -100,12 +100,37 @@ export function InventorySlot({
               {String(itemName || '')}
             </div>
 
-            {quantity !== undefined && quantity > 1 && (
-              <div className="absolute top-1 right-1">
-                <div className="w-5 h-5 bg-amber-900/80 border border-amber-600 rounded-full text-amber-100 text-[10px] flex items-center justify-center font-bold">
-                  {String(quantity || 0)}
+            {quantity !== undefined && (
+              <>
+                <div className={`absolute top-1 right-1 z-10 ${onQuantityChange ? 'group-hover:hidden' : ''}`}>
+                  {quantity > 1 && (
+                    <div className="w-5 h-5 bg-amber-900/80 border border-amber-600 rounded-full text-amber-100 text-[10px] flex items-center justify-center font-bold shadow-lg">
+                      {quantity}
+                    </div>
+                  )}
                 </div>
-              </div>
+                
+                {onQuantityChange && (
+                  <div className="absolute top-1 right-1 z-20 hidden group-hover:flex items-center h-6 bg-black/95 border border-amber-700/50 rounded-full shadow-2xl backdrop-blur-md">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.max(1, quantity - 1)); }}
+                      className="h-full px-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-l-full flex items-center justify-center transition-colors"
+                    >
+                      -
+                    </button>
+                    <div className={`px-1 text-[10px] font-bold min-w-[16px] text-center ${quantity >= 5 ? 'text-emerald-400' : 'text-amber-300'}`}>
+                      {quantity}
+                    </div>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.min(5, quantity + 1)); }}
+                      className={`h-full px-2 rounded-r-full flex items-center justify-center transition-colors ${quantity >= 5 ? 'text-zinc-600 cursor-not-allowed' : 'text-amber-400 hover:text-amber-200 hover:bg-amber-900/40'}`}
+                      disabled={quantity >= 5}
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
+              </>
             )}
 
             {description && (
