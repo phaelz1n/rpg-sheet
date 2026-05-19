@@ -283,8 +283,12 @@ export function ShopPage() {
                     return (
                       <div 
                         key={item.id} 
-                        className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 hover:bg-amber-950/10 hover:border-amber-600/40 shadow-xl hover:shadow-amber-900/20 ${
-                          item.rarity === 'legendary' ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50' : ''
+                        className={`group relative bg-zinc-900/30 border border-amber-900/20 rounded-2xl p-4 sm:p-5 flex flex-col transition-all duration-500 shadow-xl ${
+                          shopItem.stock <= 0 
+                            ? 'grayscale opacity-60 pointer-events-none' 
+                            : 'hover:bg-amber-950/10 hover:border-amber-600/40 hover:shadow-amber-900/20'
+                        } ${
+                          item.rarity === 'legendary' && shopItem.stock > 0 ? 'hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] border-amber-500/50' : ''
                         }`}
                       >
                         <ItemVFX type={item.particles as any} rarity={item.rarity} name={item.name} />
@@ -361,8 +365,8 @@ export function ShopPage() {
                         {/* Buy Action */}
                         <div className="mt-6 sm:mt-8 flex items-center justify-between gap-4">
                           <div className="flex flex-col">
-                            <span className={`text-[8px] uppercase font-black tracking-widest ${shopItem.stock <= 2 ? 'text-red-500 animate-pulse' : 'text-amber-900'}`}>
-                              {shopItem.stock <= 2 ? 'Últimas!' : 'Estoque'}
+                            <span className={`text-[8px] uppercase font-black tracking-widest ${shopItem.stock <= 0 ? 'text-zinc-600' : shopItem.stock <= 2 ? 'text-red-500 animate-pulse' : 'text-amber-900'}`}>
+                              {shopItem.stock <= 0 ? 'Esgotado' : shopItem.stock <= 2 ? 'Últimas!' : 'Estoque'}
                             </span>
                             <div className="flex items-center gap-1 mt-0.5">
                               {Array.from({ length: Math.min(3, shopItem.stock) }).map((_, i) => (
@@ -381,13 +385,15 @@ export function ShopPage() {
 
                           <button
                             onClick={() => handleBuy(item, shopItem.priceBronze)}
-                            disabled={buyingItemId === item.id}
-                            className="relative flex-1 group/btn overflow-hidden"
+                            disabled={buyingItemId === item.id || shopItem.stock <= 0}
+                            className={`relative flex-1 group/btn overflow-hidden ${shopItem.stock <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}
                           >
-                            <div className="absolute inset-0 bg-gradient-to-r from-amber-700 to-amber-900 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
-                            <div className="relative px-3 sm:px-6 py-2 bg-amber-900/40 border border-amber-700/50 rounded-xl text-amber-100 font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group-hover/btn:text-black">
+                            <div className={`absolute inset-0 bg-gradient-to-r from-amber-700 to-amber-900 opacity-0 ${shopItem.stock > 0 ? 'group-hover/btn:opacity-100' : ''} transition-opacity duration-500`} />
+                            <div className={`relative px-3 sm:px-6 py-2 bg-amber-900/40 border border-amber-700/50 rounded-xl text-amber-100 font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${shopItem.stock > 0 ? 'group-hover/btn:text-black' : ''}`}>
                               {buyingItemId === item.id ? (
                                 <div className="w-3 h-3 border-2 border-amber-500 border-t-white rounded-full animate-spin" />
+                              ) : shopItem.stock <= 0 ? (
+                                <>Sem Estoque</>
                               ) : (
                                 <>
                                   <Coins className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" />
