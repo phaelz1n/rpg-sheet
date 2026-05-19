@@ -1025,24 +1025,48 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
 
                 <section className="bg-zinc-950/80 p-4 border border-amber-900/40 rounded-lg">
                   <h3 className="text-amber-400 font-bold mb-3 uppercase text-xs tracking-wider flex items-center gap-2">
-                    ⚡ Tabela de Afinidade Elemental (Estilo Pokémon)
+                    ⚡ Tabela de Afinidade Elemental
                   </h3>
-                  <p className="text-[11px] text-zinc-400 mb-3">
+                  <p className="text-[11px] text-zinc-400 mb-4">
                     Os tipos de dano elemental causam **Dano Dobrado (2x)** ou **Metade do Dano (0.5x)** contra inimigos afinados a certos elementos:
                   </p>
-                  <div className="space-y-2 text-[11px] leading-relaxed">
-                    <div>🔥 <span className="text-orange-400 font-bold">Fogo:</span> Forte contra <span className="text-cyan-300">#gelo</span> e <span className="text-green-500">#planta</span>. Fraco contra <span className="text-blue-400">#água</span> e <span className="text-yellow-700">#terra</span>.</div>
-                    <div>💧 <span className="text-blue-400 font-bold">Água:</span> Forte contra <span className="text-orange-500">#fogo</span>, <span className="text-yellow-700">#terra</span> e <span className="text-lime-400">#ácido</span>. Fraco contra <span className="text-green-500">#planta</span> e <span className="text-yellow-300">#raio</span>.</div>
-                    <div>❄️ <span className="text-cyan-300 font-bold">Gelo:</span> Forte contra <span className="text-green-500">#planta</span> e <span className="text-yellow-700">#terra</span>. Fraco contra <span className="text-orange-500">#fogo</span> e <span className="text-yellow-300">#raio</span>.</div>
-                    <div>⚡ <span className="text-yellow-300 font-bold">Raio:</span> Forte contra <span className="text-blue-400">#água</span>, <span className="text-cyan-300">#gelo</span> e <span className="text-zinc-500">#balístico</span>. Fraco contra <span className="text-yellow-700">#terra</span> e <span className="text-green-500">#planta</span>.</div>
-                    <div>⛰️ <span className="text-yellow-700 font-bold">Terra:</span> Forte contra <span className="text-yellow-300">#raio</span>, <span className="text-lime-400">#ácido</span> e <span className="text-orange-500">#fogo</span>. Fraco contra <span className="text-blue-400">#água</span>, <span className="text-cyan-300">#gelo</span> e <span className="text-green-500">#planta</span>.</div>
-                    <div>🌿 <span className="text-green-500 font-bold">Planta:</span> Forte contra <span className="text-blue-400">#água</span> e <span className="text-yellow-700">#terra</span>. Fraco contra <span className="text-orange-500">#fogo</span>, <span className="text-cyan-300">#gelo</span> e <span className="text-lime-400">#ácido</span>.</div>
-                    <div>🧪 <span className="text-lime-400 font-bold">Ácido:</span> Forte contra <span className="text-green-500">#planta</span>, <span className="text-zinc-500">#balístico</span> e <span className="text-zinc-300">#contusão</span>. Fraco contra <span className="text-blue-400">#água</span> e <span className="text-yellow-700">#terra</span>.</div>
-                    <div>☀️ <span className="text-amber-300 font-bold">Luz:</span> Forte contra <span className="text-purple-900">#trevas</span> e <span className="text-pink-400">#mental</span>. Fraco contra <span className="text-purple-900">#trevas</span>.</div>
-                    <div>🌙 <span className="text-purple-900 font-bold">Trevas:</span> Forte contra <span className="text-amber-300">#luz</span> e <span className="text-pink-400">#mental</span>. Fraco contra <span className="text-amber-300">#luz</span>.</div>
-                    <div>🧠 <span className="text-pink-400 font-bold">Mental:</span> Forte contra <span className="text-zinc-500">#balístico</span>, <span className="text-zinc-400">#corte</span>, <span className="text-red-400">#perfurante</span> e <span className="text-zinc-300">#contusão</span>. Fraco contra <span className="text-purple-900">#trevas</span> e <span className="text-amber-300">#luz</span>.</div>
-                    <div>🔊 <span className="text-cyan-500 font-bold">Sonoro:</span> Forte contra <span className="text-pink-400">#mental</span> e <span className="text-cyan-300">#gelo</span>. Fraco contra <span className="text-yellow-700">#terra</span>.</div>
-                    <div>💥 <span className="text-red-500 font-bold">Explosão:</span> Forte contra <span className="text-yellow-700">#terra</span> e <span className="text-zinc-300">#contusão</span>. Fraco contra <span className="text-cyan-300">#gelo</span> e <span className="text-blue-400">#água</span>.</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    {[
+                      { name: 'Fogo', icon: '🔥', color: 'text-orange-400', strong: ['#gelo', '#planta'], weak: ['#água', '#terra'] },
+                      { name: 'Água', icon: '💧', color: 'text-blue-400', strong: ['#fogo', '#terra', '#ácido'], weak: ['#planta', '#raio'] },
+                      { name: 'Gelo', icon: '❄️', color: 'text-cyan-300', strong: ['#planta', '#terra'], weak: ['#fogo', '#raio'] },
+                      { name: 'Raio', icon: '⚡', color: 'text-yellow-300', strong: ['#água', '#gelo', '#balístico'], weak: ['#terra', '#planta'] },
+                      { name: 'Terra', icon: '⛰️', color: 'text-yellow-700', strong: ['#raio', '#ácido', '#fogo'], weak: ['#água', '#gelo', '#planta'] },
+                      { name: 'Planta', icon: '🌿', color: 'text-green-500', strong: ['#água', '#terra'], weak: ['#fogo', '#gelo', '#ácido'] },
+                      { name: 'Ácido', icon: '🧪', color: 'text-lime-400', strong: ['#planta', '#balístico', '#contusão'], weak: ['#água', '#terra'] },
+                      { name: 'Luz', icon: '☀️', color: 'text-amber-300', strong: ['#trevas', '#mental'], weak: ['#trevas'] },
+                      { name: 'Trevas', icon: '🌙', color: 'text-purple-900', strong: ['#luz', '#mental'], weak: ['#luz'] },
+                      { name: 'Mental', icon: '🧠', color: 'text-pink-400', strong: ['#balístico', '#corte', '#perfurante', '#contusão'], weak: ['#trevas', '#luz'] },
+                      { name: 'Sonoro', icon: '🔊', color: 'text-cyan-500', strong: ['#mental', '#gelo'], weak: ['#terra'] },
+                      { name: 'Explosão', icon: '💥', color: 'text-red-500', strong: ['#terra', '#contusão'], weak: ['#gelo', '#água'] }
+                    ].map(elem => (
+                      <div key={elem.name} className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-800/80 flex flex-col gap-2">
+                        <div className="flex items-center gap-2 font-bold text-zinc-200 border-b border-zinc-800 pb-1.5">
+                          <span>{elem.icon}</span>
+                          <span className={elem.color}>{elem.name}</span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                          <span className="text-emerald-500 font-bold shrink-0">Forte (2x):</span>
+                          {elem.strong.map(tag => (
+                            <RichDescription key={tag} text={tag} />
+                          ))}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                          <span className="text-rose-500 font-bold shrink-0">Fraco (0.5x):</span>
+                          {elem.weak.map(tag => (
+                            <RichDescription key={tag} text={tag} />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 border-t border-zinc-800/60 pt-3 text-[10px] text-zinc-500 text-center">
+                    * Danos físicos convencionais (<RichDescription text="#corte" />, <RichDescription text="#perfurante" />, <RichDescription text="#contusão" /> e <RichDescription text="#balístico" />) interagem conforme o equipamento defensivo e armaduras do alvo.
                   </div>
                 </section>
 
