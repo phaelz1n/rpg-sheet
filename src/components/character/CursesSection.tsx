@@ -1,6 +1,7 @@
 import { Skull, Plus, Trash2 } from 'lucide-react';
 import { useCharacterStore } from '../../store/characterStore';
 import { RichDescription } from '../rpg/RichDescription';
+import { AutocompleteTextarea } from '../rpg/AutocompleteTextarea';
 
 export function CursesSection() {
   const { curses, updateField } = useCharacterStore();
@@ -54,14 +55,14 @@ export function CursesSection() {
               className="bg-transparent border-none text-red-400 font-bold text-sm w-full focus:outline-none mb-1 uppercase tracking-tight"
               placeholder="Título da Marca"
             />
-            <div className="relative">
-              <textarea 
+            <div className="relative group/curse">
+              <AutocompleteTextarea 
                 value={curse.content}
                 onChange={(e) => updateCurse(index, 'content', e.target.value)}
-                className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[100px] resize-none opacity-0 focus:opacity-100 absolute inset-0 z-10"
+                className="bg-transparent border-none text-zinc-400 text-xs w-full focus:outline-none min-h-[100px] resize-none opacity-0 focus:opacity-100 absolute inset-0 focus:relative focus:inset-auto z-10"
                 placeholder="Descreva os efeitos..."
               />
-              <div className="text-zinc-400 text-xs min-h-[100px] pointer-events-none pb-2">
+              <div className="text-zinc-400 text-xs min-h-[100px] pointer-events-none pb-2 group-focus-within/curse:hidden">
                 <RichDescription text={curse.content || "Descreva os efeitos..."} />
               </div>
             </div>
