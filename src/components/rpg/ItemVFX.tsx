@@ -33,7 +33,7 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
 
   // Fallback inteligente baseado no nome se o tipo não for especificado (undefined, null ou vazio)
   let fallbackType: ItemVFXProps['type'] = 'none';
-  if (isHighRarity && (type === undefined || type === null || type === '')) {
+  if (isHighRarity && (!type || (type as string) === '')) {
     const lowerName = name?.toLowerCase() || '';
     if (lowerName.includes('chama') || lowerName.includes('fogo') || lowerName.includes('brasa')) {
       fallbackType = 'embers';
@@ -44,7 +44,7 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
     }
   }
 
-  const finalType = (type !== undefined && type !== null && type !== '') ? type : fallbackType;
+  const finalType = (type && (type as string) !== '') ? type : fallbackType;
   
   if (finalType === 'none') return null;
 
