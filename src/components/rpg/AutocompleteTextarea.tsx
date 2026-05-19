@@ -61,8 +61,20 @@ export function AutocompleteTextarea({ value = '', onChange, className = '', ...
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const adjustHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e);
+    adjustHeight();
     const text = e.target.value;
     const cursor = e.target.selectionStart;
     

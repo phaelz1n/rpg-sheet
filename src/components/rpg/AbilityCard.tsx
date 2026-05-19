@@ -264,10 +264,10 @@ export function AbilityCard({
         <AutocompleteTextarea
           value={effect}
           onChange={(e) => onEffectChange?.(e.target.value)}
-          className="w-full bg-transparent text-zinc-300 text-sm leading-relaxed focus:outline-none resize-none min-h-[60px] absolute inset-0 p-3 z-10 opacity-0 focus:opacity-100"
+          className="w-full bg-transparent text-zinc-300 text-sm leading-relaxed focus:outline-none resize-none min-h-[60px] absolute inset-0 focus:relative focus:inset-auto p-3 focus:p-0 z-10 opacity-0 focus:opacity-100"
           placeholder="Descrição da habilidade..."
         />
-        <div className="text-zinc-300 text-sm leading-relaxed min-h-[60px] pointer-events-none group-focus-within/effect:opacity-0 transition-opacity">
+        <div className="text-zinc-300 text-sm leading-relaxed min-h-[60px] pointer-events-none group-focus-within/effect:hidden transition-opacity">
           <RichDescription text={effect || "Descrição da habilidade..."} />
         </div>
       </div>
@@ -279,10 +279,10 @@ export function AbilityCard({
           <AutocompleteTextarea
             value={backlash}
             onChange={(e) => onBacklashChange?.(e.target.value)}
-            className="w-full bg-transparent text-red-300 text-xs leading-relaxed focus:outline-none resize-none min-h-[40px] absolute inset-x-0 bottom-0 p-2 pt-6 z-10 opacity-0 focus:opacity-100"
+            className="w-full bg-transparent text-red-300 text-xs leading-relaxed focus:outline-none resize-none min-h-[40px] absolute inset-x-0 bottom-0 focus:relative focus:inset-auto p-2 pt-6 focus:p-0 z-10 opacity-0 focus:opacity-100"
             placeholder="Efeito de falha..."
           />
-          <div className="text-red-300 text-xs leading-relaxed min-h-[40px] pointer-events-none group-focus-within/backlash:opacity-0 transition-opacity">
+          <div className="text-red-300 text-xs leading-relaxed min-h-[40px] pointer-events-none group-focus-within/backlash:hidden transition-opacity">
             <RichDescription text={backlash || "Efeito de falha..."} />
           </div>
         </div>
