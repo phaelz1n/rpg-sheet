@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { 
   ShoppingBag, ArrowLeft, Coins, Gem, User, Package, 
-  Sparkles, ScrollText, ShieldCheck, Flame, Sword, MapPin 
+  Sparkles, ScrollText, ShieldCheck, Flame, Sword, MapPin,
+  X, Plus, Minus
 } from 'lucide-react';
 import goldImg from '../assets/gold.png';
 import silverImg from '../assets/silver.png';
@@ -23,11 +24,19 @@ export function ShopPage() {
   const { currentUser } = useAuth();
   const { shops, loadShops, subscribeToShops, buyItem, isLoading } = useShopStore();
   const { rpgItems, loadGlobalItems } = useGlobalStore();
-  const { coinsBronze, loadCharacter } = useCharacterStore();
+  const { coinsBronze, loadCharacter, inventory, inventoryCapacity } = useCharacterStore();
   const { showToast, showConfirm } = useUI();
   
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
   const [buyingItemId, setBuyingItemId] = useState<string | null>(null);
+  
+  const [purchaseModal, setPurchaseModal] = useState<{
+    isOpen: boolean;
+    item: RPGItem | null;
+    shopItem: any | null;
+    quantity: number;
+    maxQuantity: number;
+  }>({ isOpen: false, item: null, shopItem: null, quantity: 1, maxQuantity: 1 });
   
   // Dynamic RP Configs
   const [marketTitle, setMarketTitle] = useState('Mercado de Valória');
@@ -126,25 +135,47 @@ export function ShopPage() {
     );
   };
 
-  const handleBuy = async (item: RPGItem, price: number) => {
-    if (!currentShop || !currentUser) return;
-    if (coinsBronze < price) {
-      showToast('Moedas insuficientes!', 'error');
+  const openPurchaseModal = (item: RPGItem, shopItem: any) => {
+    const maxStack = 5;
+    const existingItems = inventory.filter(i => i.globalItemId === item.id || i.name === item.name);
+    const emptySpaceInStacks = existingItems.reduce((acc, i) => acc + Math.max(0, maxStack - i.quantity), 0);
+    const usedSlots = inventory.length;
+    const availableSlots = Math.max(0, inventoryCapacity - usedSlots);
+    const backpackMax = emptySpaceInStacks + (availableSlots * maxStack);
+
+    const affordMax = Math.floor(coinsBronze / shopItem.priceBronze);
+    const absoluteMax = Math.max(0, Math.min(shopItem.stock, affordMax, backpackMax));
+
+    if (absoluteMax === 0) {
+      if (shopItem.stock <= 0) showToast('Item esgotado!', 'error');
+      else if (affordMax <= 0) showToast('Moedas insuficientes!', 'error');
+      else if (backpackMax <= 0) showToast('Espaço insuficiente na mochila!', 'error');
       return;
     }
 
-    showConfirm(`Deseja comprar ${item.name} por ${price} bronzes?`, async () => {
-      setBuyingItemId(item.id);
-      const result = await buyItem(currentShop.id, item.id, currentUser);
-      setBuyingItemId(null);
-      
-      if (result.success) {
-        audioService.playSound('BUY_ITEM');
-        showToast(`${item.name} comprado com sucesso!`, 'success');
-      } else {
-        showToast(result.error || 'Erro na compra', 'error');
-      }
+    setPurchaseModal({
+      isOpen: true,
+      item,
+      shopItem,
+      quantity: 1,
+      maxQuantity: absoluteMax
     });
+  };
+
+  const handleConfirmBuy = async (item: RPGItem, shopItem: any, quantity: number) => {
+    if (!currentShop || !currentUser) return;
+
+    setBuyingItemId(item.id);
+    const result = await buyItem(currentShop.id, item.id, currentUser, quantity);
+    setBuyingItemId(null);
+    
+    if (result.success) {
+      audioService.playSound('BUY_ITEM');
+      showToast(`${quantity}x ${item.name} comprado com sucesso!`, 'success');
+      setPurchaseModal(prev => ({ ...prev, isOpen: false }));
+    } else {
+      showToast(result.error || 'Erro na compra', 'error');
+    }
   };
 
   return (
@@ -384,7 +415,7 @@ export function ShopPage() {
                           </div>
 
                           <button
-                            onClick={() => handleBuy(item, shopItem.priceBronze)}
+                            onClick={() => openPurchaseModal(item, shopItem)}
                             disabled={buyingItemId === item.id || shopItem.stock <= 0}
                             className={`relative flex-1 group/btn overflow-hidden ${shopItem.stock <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}
                           >
@@ -430,6 +461,85 @@ export function ShopPage() {
           )}
         </section>
       </main>
+
+      {/* Purchase Modal */}
+      {purchaseModal.isOpen && purchaseModal.item && purchaseModal.shopItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-zinc-950 border border-amber-900/50 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-700 to-amber-500" />
+            
+            <button 
+              onClick={() => setPurchaseModal({ ...purchaseModal, isOpen: false })}
+              className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="p-6">
+              <h3 className="text-xl font-black text-amber-500 uppercase tracking-tight mb-1 pr-6 leading-tight">
+                Comprar Item
+              </h3>
+              <p className="text-sm text-amber-100/70 mb-6 font-bold truncate">
+                {purchaseModal.item.name}
+              </p>
+
+              <div className="flex flex-col items-center gap-6">
+                {/* Quantity Controls */}
+                <div className="flex items-center gap-4 bg-black/40 p-2 rounded-xl border border-amber-900/30 w-full justify-center">
+                  <button
+                    onClick={() => setPurchaseModal(prev => ({ ...prev, quantity: Math.max(1, prev.quantity - 1) }))}
+                    disabled={purchaseModal.quantity <= 1}
+                    className="w-12 h-12 rounded-lg bg-amber-900/20 text-amber-500 flex items-center justify-center hover:bg-amber-900/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    <Minus className="w-6 h-6" />
+                  </button>
+                  
+                  <div className="w-20 text-center flex flex-col items-center justify-center">
+                    <span className="text-3xl font-black text-white leading-none">{purchaseModal.quantity}</span>
+                    <span className="block text-[9px] text-zinc-500 uppercase tracking-widest font-bold mt-1">
+                      Max: {purchaseModal.maxQuantity}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => setPurchaseModal(prev => ({ ...prev, quantity: Math.min(prev.maxQuantity, prev.quantity + 1) }))}
+                    disabled={purchaseModal.quantity >= purchaseModal.maxQuantity}
+                    className="w-12 h-12 rounded-lg bg-amber-900/20 text-amber-500 flex items-center justify-center hover:bg-amber-900/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    <Plus className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Total Price */}
+                <div className="w-full bg-black/60 rounded-xl p-4 border border-amber-900/20 flex items-center justify-between">
+                  <span className="text-xs text-amber-900 font-black uppercase tracking-widest">Total:</span>
+                  <div className="scale-110 origin-right">
+                    {formatPrice(purchaseModal.shopItem.priceBronze * purchaseModal.quantity)}
+                  </div>
+                </div>
+
+                {/* Confirm Button */}
+                <button
+                  onClick={() => {
+                    handleConfirmBuy(purchaseModal.item!, purchaseModal.shopItem, purchaseModal.quantity);
+                  }}
+                  disabled={buyingItemId === purchaseModal.item?.id}
+                  className="w-full py-4 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 rounded-xl text-black font-black uppercase tracking-[0.2em] text-sm transition-all shadow-[0_0_20px_rgba(217,119,6,0.3)] hover:shadow-[0_0_30px_rgba(217,119,6,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {buyingItemId === purchaseModal.item?.id ? (
+                    <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-4 h-4" />
+                      Confirmar Compra
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

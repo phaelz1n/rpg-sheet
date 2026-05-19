@@ -44,7 +44,7 @@ export const useShopStore = create<ShopStore>((set, get) => ({
     });
   },
 
-  buyItem: async (shopId, itemId, buyerUsername) => {
+  buyItem: async (shopId, itemId, buyerUsername, quantity = 1) => {
     // 0. Fetch the LATEST version of the shop from DB to avoid race conditions
     const { shops: latestShops } = await ttrpgApi.getShops();
     const shop = latestShops?.find(s => s.id === shopId);
@@ -52,10 +52,12 @@ export const useShopStore = create<ShopStore>((set, get) => ({
     if (!shop) return { success: false, error: 'Loja não encontrada' };
     
     const shopItem = shop.inventory.find((i: any) => i.itemId === itemId);
-    if (!shopItem || shopItem.stock <= 0) return { success: false, error: 'Item esgotado ou não disponível' };
+    if (!shopItem || shopItem.stock < quantity) return { success: false, error: 'Estoque insuficiente ou item não disponível' };
 
     const charStore = useCharacterStore.getState();
-    if (charStore.coinsBronze < shopItem.priceBronze) {
+    const totalPrice = shopItem.priceBronze * quantity;
+
+    if (charStore.coinsBronze < totalPrice) {
       return { success: false, error: 'Moedas insuficientes' };
     }
 
@@ -64,34 +66,78 @@ export const useShopStore = create<ShopStore>((set, get) => ({
     const rpgItem = items.find((i: any) => i.id === itemId);
     if (!rpgItem) return { success: false, error: 'Dados do item não encontrados' };
 
-    // 2. Update Shop (Shared state)
-    // Decrement stock. If stock hits 0, it's removed from display.
-    const newInventory = shop.inventory.map((i: any) => 
-      i.itemId === itemId ? { ...i, stock: i.stock - 1 } : i
+    // 2. Check Inventory Capacity and Stacking limits
+    const MAX_STACK = 5;
+    let remainingToAdd = quantity;
+    let spaceInExistingStacks = 0;
+    
+    const existingInventory = [...charStore.inventory];
+
+    existingInventory.forEach(item => {
+      // Use globalItemId or fallback to name match
+      if ((item.globalItemId === rpgItem.id || item.name === rpgItem.name) && item.quantity < MAX_STACK) {
+        spaceInExistingStacks += (MAX_STACK - item.quantity);
+      }
+    });
+
+    let newSlotsNeeded = 0;
+    if (remainingToAdd > spaceInExistingStacks) {
+      const itemsForNewSlots = remainingToAdd - spaceInExistingStacks;
+      newSlotsNeeded = Math.ceil(itemsForNewSlots / MAX_STACK);
+    }
+
+    if (existingInventory.length + newSlotsNeeded > charStore.inventoryCapacity) {
+      return { success: false, error: 'Espaço insuficiente na mochila' };
+    }
+
+    // 3. Update Inventory Logic
+    // Fill existing stacks first
+    for (let i = 0; i < existingInventory.length && remainingToAdd > 0; i++) {
+       const item = existingInventory[i];
+       if ((item.globalItemId === rpgItem.id || item.name === rpgItem.name) && item.quantity < MAX_STACK) {
+          const space = MAX_STACK - item.quantity;
+          const toAdd = Math.min(space, remainingToAdd);
+          // Need to clone the item object to avoid mutating state directly without zustand knowing
+          existingInventory[i] = { ...item, quantity: item.quantity + toAdd };
+          remainingToAdd -= toAdd;
+       }
+    }
+
+    // Create new stacks for the rest
+    while (remainingToAdd > 0) {
+       const toAdd = Math.min(MAX_STACK, remainingToAdd);
+       const newInvItem = {
+         id: Date.now().toString() + Math.random().toString(36).substring(7),
+         globalItemId: rpgItem.id,
+         name: rpgItem.name,
+         quantity: toAdd,
+         description: rpgItem.description || '',
+         attributeType: rpgItem.attributeType,
+         bonus: rpgItem.bonus,
+         damage: rpgItem.damage,
+         category: rpgItem.category,
+         rarity: rpgItem.rarity,
+         imageUrl: rpgItem.imageUrl // Keep image
+       };
+       existingInventory.push(newInvItem as any);
+       remainingToAdd -= toAdd;
+    }
+
+    // 4. Update Shop (Shared state)
+    const newShopInventory = shop.inventory.map((i: any) => 
+      i.itemId === itemId ? { ...i, stock: i.stock - quantity } : i
     ).filter((i: any) => i.stock > 0);
 
-    const updatedShop = { ...shop, inventory: newInventory };
+    const updatedShop = { ...shop, inventory: newShopInventory };
     const shopResponse = await ttrpgApi.saveShop(updatedShop);
     
     if (!shopResponse.success) {
       return { success: false, error: 'Erro ao atualizar estoque da loja. Tente novamente.' };
     }
 
-    // 3. Update Character (Private state)
-    const newInvItem = {
-      id: Date.now().toString(),
-      name: rpgItem.name,
-      quantity: 1,
-      description: rpgItem.description || '',
-      attributeType: rpgItem.attributeType,
-      bonus: rpgItem.bonus,
-      damage: rpgItem.damage,
-      category: rpgItem.category,
-      rarity: rpgItem.rarity
-    };
-
-    charStore.removeCoins(shopItem.priceBronze);
-    charStore.setInventory([...charStore.inventory, newInvItem as any]);
+    // 5. Update Character (Private state)
+    charStore.removeCoins(totalPrice);
+    charStore.setInventory(existingInventory);
     await charStore.saveCharacter();
 
     return { success: true };
