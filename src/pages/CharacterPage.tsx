@@ -392,34 +392,97 @@ export function CharacterPage() {
 
         {showTips && (
           <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
-            <div className="bg-gradient-to-br from-zinc-900 to-black border-2 border-amber-900/60 rounded-xl p-6 max-w-2xl w-full shadow-2xl relative">
+            <div className="bg-gradient-to-br from-zinc-900 to-black border-2 border-amber-900/60 rounded-xl p-6 max-w-3xl w-full shadow-2xl relative">
               <button onClick={() => setShowTips(false)} className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300"><X className="w-6 h-6" /></button>
               <h2 className="text-2xl font-bold text-amber-400 mb-6 flex items-center gap-3"><Info className="w-7 h-7" />Guia de Formatação e Tags</h2>
-              <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar text-left">
+                
                 <section>
-                  <h3 className="text-amber-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-amber-900/30 pb-1">Atributos (Ícones)</h3>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    {['#força', '#destreza', '#vigor', '#vontade', '#fé', '#ocultismo', '#corrupção'].map(tag => (
-                      <div key={tag} className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
-                        <span className="text-amber-400 font-mono">{tag}</span> <RichDescription text={tag} />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-                <section>
-                  <h3 className="text-red-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-red-900/30 pb-1">Status e Condições</h3>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <h3 className="text-amber-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-amber-900/30 pb-1">Atributos e Recursos</h3>
+                  <p className="text-zinc-400 text-[11px] mb-2">Digite estas hashtags no editor para exibir ícones inline:</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                     {[
-                      { t: '#marcado', c: 'text-red-400' }, { t: '#envenenado', c: 'text-green-400' },
-                      { t: '#queimando', c: 'text-orange-500' }, { t: '#congelado', c: 'text-cyan-400' },
-                      { t: '#sangrando', c: 'text-red-600' }, { t: '#rd', c: 'text-zinc-400' }
+                      '#força', '#destreza', '#vigor', '#vontade', '#fé', '#ocultismo',
+                      '#vida', '#mana', '#stamina', '#fôlego', '#sanidade', '#corrupção'
                     ].map(tag => (
-                      <div key={tag.t} className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between">
-                        <span className={`${tag.c} font-mono`}>{tag.t}</span> <RichDescription text={tag.t} />
+                      <div key={tag} className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between gap-1">
+                        <span className="text-zinc-500 font-mono text-[10px]">{tag}</span> <RichDescription text={tag} />
                       </div>
                     ))}
                   </div>
                 </section>
+
+                <section>
+                  <h3 className="text-emerald-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-emerald-900/30 pb-1">Perícias</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    {[
+                      '#acrobacia', '#furtividade', '#pontaria', '#atletismo', '#intimidação',
+                      '#percepção', '#sobrevivência', '#medicina', '#presença'
+                    ].map(tag => (
+                      <div key={tag} className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between gap-1">
+                        <span className="text-zinc-500 font-mono text-[10px]">{tag}</span> <RichDescription text={tag} />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-red-500 font-bold mb-2 uppercase text-sm tracking-widest border-b border-red-900/30 pb-1">Efeitos e Condições</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    {[
+                      '#sangramento', '#congelado', '#eletrocutado', '#envenenado', '#exausto',
+                      '#queimado', '#louco', '#paralisado', '#nojo', '#cego',
+                      '#surdo', '#infecção', '#amedrontado', '#corrosão', '#amaldiçoado',
+                      '#marcado', '#vulnerável', '#rd'
+                    ].map(tag => (
+                      <div key={tag} className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between gap-1">
+                        <span className="text-zinc-500 font-mono text-[10px]">{tag}</span> <RichDescription text={tag} />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-cyan-400 font-bold mb-2 uppercase text-sm tracking-widest border-b border-cyan-900/30 pb-1">Tipos de Dano</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                    {[
+                      '#fogo', '#água', '#trevas', '#luz', '#planta', '#terra', '#corte',
+                      '#perfurante', '#contusão', '#gelo', '#raio', '#ácido', '#sonoro',
+                      '#mental', '#explosão', '#balístico'
+                    ].map(tag => (
+                      <div key={tag} className="bg-zinc-900/50 p-2 rounded border border-zinc-800 text-zinc-300 flex items-center justify-between gap-1">
+                        <span className="text-zinc-500 font-mono text-[10px]">{tag}</span> <RichDescription text={tag} />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="bg-zinc-950/80 p-4 border border-amber-900/40 rounded-lg">
+                  <h3 className="text-amber-400 font-bold mb-3 uppercase text-xs tracking-wider flex items-center gap-2">
+                    ⚡ Tabela de Afinidade Elemental (Estilo Pokémon)
+                  </h3>
+                  <p className="text-[11px] text-zinc-400 mb-3">
+                    Os tipos de dano elemental causam **Dano Dobrado (2x)** ou **Metade do Dano (0.5x)** contra inimigos afinados a certos elementos:
+                  </p>
+                  <div className="space-y-2 text-[11px] leading-relaxed">
+                    <div>🔥 <span className="text-orange-400 font-bold">Fogo:</span> Forte contra <span className="text-cyan-300">#gelo</span> e <span className="text-green-500">#planta</span>. Fraco contra <span className="text-blue-400">#água</span> e <span className="text-yellow-700">#terra</span>.</div>
+                    <div>💧 <span className="text-blue-400 font-bold">Água:</span> Forte contra <span className="text-orange-500">#fogo</span>, <span className="text-yellow-700">#terra</span> e <span className="text-lime-400">#ácido</span>. Fraco contra <span className="text-green-500">#planta</span> e <span className="text-yellow-300">#raio</span>.</div>
+                    <div>❄️ <span className="text-cyan-300 font-bold">Gelo:</span> Forte contra <span className="text-green-500">#planta</span> e <span className="text-yellow-700">#terra</span>. Fraco contra <span className="text-orange-500">#fogo</span> e <span className="text-yellow-300">#raio</span>.</div>
+                    <div>⚡ <span className="text-yellow-300 font-bold">Raio:</span> Forte contra <span className="text-blue-400">#água</span>, <span className="text-cyan-300">#gelo</span> e <span className="text-zinc-500">#balístico</span>. Fraco contra <span className="text-yellow-700">#terra</span> e <span className="text-green-500">#planta</span>.</div>
+                    <div>⛰️ <span className="text-yellow-700 font-bold">Terra:</span> Forte contra <span className="text-yellow-300">#raio</span>, <span className="text-lime-400">#ácido</span> e <span className="text-orange-500">#fogo</span>. Fraco contra <span className="text-blue-400">#água</span>, <span className="text-cyan-300">#gelo</span> e <span className="text-green-500">#planta</span>.</div>
+                    <div>🌿 <span className="text-green-500 font-bold">Planta:</span> Forte contra <span className="text-blue-400">#água</span> e <span className="text-yellow-700">#terra</span>. Fraco contra <span className="text-orange-500">#fogo</span>, <span className="text-cyan-300">#gelo</span> e <span className="text-lime-400">#ácido</span>.</div>
+                    <div>🧪 <span className="text-lime-400 font-bold">Ácido:</span> Forte contra <span className="text-green-500">#planta</span>, <span className="text-zinc-500">#balístico</span> e <span className="text-zinc-300">#contusão</span>. Fraco contra <span className="text-blue-400">#água</span> e <span className="text-yellow-700">#terra</span>.</div>
+                    <div>☀️ <span className="text-amber-300 font-bold">Luz:</span> Forte contra <span className="text-purple-900">#trevas</span> e <span className="text-pink-400">#mental</span>. Fraco contra <span className="text-purple-900">#trevas</span>.</div>
+                    <div>🌙 <span className="text-purple-900 font-bold">Trevas:</span> Forte contra <span className="text-amber-300">#luz</span> e <span className="text-pink-400">#mental</span>. Fraco contra <span className="text-amber-300">#luz</span>.</div>
+                    <div>🧠 <span className="text-pink-400 font-bold">Mental:</span> Forte contra <span className="text-zinc-500">#balístico</span>, <span className="text-zinc-400">#corte</span>, <span className="text-red-400">#perfurante</span> e <span className="text-zinc-300">#contusão</span>. Fraco contra <span className="text-purple-900">#trevas</span> e <span className="text-amber-300">#luz</span>.</div>
+                    <div>🔊 <span className="text-cyan-500 font-bold">Sonoro:</span> Forte contra <span className="text-pink-400">#mental</span> e <span className="text-cyan-300">#gelo</span>. Fraco contra <span className="text-yellow-700">#terra</span>.</div>
+                    <div>💥 <span className="text-red-500 font-bold">Explosão:</span> Forte contra <span className="text-yellow-700">#terra</span> e <span className="text-zinc-300">#contusão</span>. Fraco contra <span className="text-cyan-300">#gelo</span> and <span className="text-blue-400">#água</span>.</div>
+                    <div className="mt-2 border-t border-zinc-800 pt-2 text-[10px] text-zinc-500">
+                      * Danos físicos convencionais (<span className="text-zinc-400">#corte</span>, <span className="text-zinc-400">#perfurante</span>, <span className="text-zinc-400">#contusão</span> e <span className="text-zinc-400">#balístico</span>) interagem conforme o equipamento defensivo e armaduras do alvo.
+                    </div>
+                  </div>
+                </section>
+
               </div>
               <button onClick={() => setShowTips(false)} className="w-full mt-8 py-3 bg-amber-600 hover:bg-amber-500 text-black font-bold rounded-lg transition-colors">Entendido!</button>
             </div>
