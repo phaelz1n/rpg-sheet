@@ -125,8 +125,8 @@ export const useShopStore = create<ShopStore>((set, get) => ({
 
     // 4. Update Shop (Shared state)
     const newShopInventory = shop.inventory.map((i: any) => 
-      i.itemId === itemId ? { ...i, stock: i.stock - quantity } : i
-    ).filter((i: any) => i.stock > 0);
+      i.itemId === itemId ? { ...i, stock: Math.max(0, i.stock - quantity) } : i
+    );
 
     const updatedShop = { ...shop, inventory: newShopInventory };
     const shopResponse = await ttrpgApi.saveShop(updatedShop);
