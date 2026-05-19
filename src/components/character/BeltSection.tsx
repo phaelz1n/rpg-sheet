@@ -5,9 +5,10 @@ import { useGlobalStore } from '../../store/globalStore';
 
 interface BeltSectionProps {
   onOpenModal: (type: 'weapon' | 'armor' | 'consumable', slot: string) => void;
+  onSelectSlot?: (slot: string) => void;
 }
 
-export function BeltSection({ onOpenModal }: BeltSectionProps) {
+export function BeltSection({ onOpenModal, onSelectSlot }: BeltSectionProps) {
   const {
     equipmentBelt, beltSlot1, beltSlot2, beltSlot3, beltSlot4, beltSlot5, beltSlot6, beltSlot7, beltSlot8,
     updateBeltSlot
@@ -25,6 +26,7 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
     return getItemData(idOrName)?.name || String(idOrName);
   };
   const getItemRarity = (idOrName: string) => getItemData(idOrName)?.rarity;
+  const getItemDescription = (idOrName: string) => getItemData(idOrName)?.description;
   const getItemImageUrl = (idOrName: string) => getItemData(idOrName)?.imageUrl;
 
   const beltItem = rpgItems.find(i => (i.id === equipmentBelt || i.name.toLowerCase() === equipmentBelt.toLowerCase()) && i.beltCapacity && i.beltCapacity > 0);
@@ -62,8 +64,10 @@ export function BeltSection({ onOpenModal }: BeltSectionProps) {
               itemName={getItemName(slot.val)}
               rarity={getItemRarity(slot.val)}
               imageUrl={getItemImageUrl(slot.val)}
+              description={getItemDescription(slot.val)}
               onClear={() => updateBeltSlot(slot.key, '')}
               onAddClick={() => onOpenModal('consumable', `belt${slot.key}`)}
+              onSelect={() => onSelectSlot?.(`beltSlot${slot.key}`)}
             />
           ))}
         </div>

@@ -11,9 +11,10 @@ interface InventorySectionProps {
   inventoryPage: number;
   onPageChange: (page: number) => void;
   onOpenModal: (type: 'weapon' | 'armor' | 'consumable') => void;
+  onSelectItem?: (itemId: string) => void;
 }
 
-export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: InventorySectionProps) {
+export function InventorySection({ inventoryPage, onPageChange, onOpenModal, onSelectItem }: InventorySectionProps) {
   const {
     inventory, inventoryCapacity,
     updateField, updateInventoryQuantity, removeFromInventory
@@ -116,6 +117,7 @@ export function InventorySection({ inventoryPage, onPageChange, onOpenModal }: I
               imageUrl={globalData?.imageUrl || item.imageUrl}
               onQuantityChange={(newQty) => updateInventoryQuantity(item.id, newQty)}
               onDelete={() => removeFromInventory(item.id)}
+              onSelect={() => onSelectItem?.(item.id)}
             />
           );
         })}

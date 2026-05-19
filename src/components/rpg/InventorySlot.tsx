@@ -15,6 +15,7 @@ interface InventorySlotProps {
   onQuantityChange?: (value: number) => void;
   onDelete?: () => void;
   onAddClick?: () => void;
+  onSelect?: () => void;
 }
 
 export function InventorySlot({
@@ -28,20 +29,25 @@ export function InventorySlot({
   onQuantityChange,
   onDelete,
   onAddClick,
+  onSelect,
 }: InventorySlotProps) {
   const isEmpty = !itemName;
   const { setSelected } = useSelectedItem();
 
   const handleSelect = () => {
     if (!isEmpty) {
-      setSelected({
-        id: '',
-        name: String(itemName || ''),
-        type: '',
-        rarity: rarity as any,
-        description: String(description || ''),
-        particles: particles as any,
-      } as any);
+      if (onSelect) {
+        onSelect();
+      } else {
+        setSelected({
+          id: '',
+          name: String(itemName || ''),
+          type: '',
+          rarity: rarity as any,
+          description: String(description || ''),
+          particles: particles as any,
+        } as any);
+      }
     }
   };
 
@@ -102,7 +108,7 @@ export function InventorySlot({
 
             {quantity !== undefined && (
               <>
-                <div className={`absolute top-1 right-1 z-10 ${onQuantityChange ? 'group-hover:hidden' : ''}`}>
+                <div className={`absolute top-1 right-1 z-10 ${onQuantityChange ? 'hidden md:block md:group-hover:hidden' : ''}`}>
                   {quantity > 1 && (
                     <div className="w-5 h-5 bg-amber-900/80 border border-amber-600 rounded-full text-amber-100 text-[10px] flex items-center justify-center font-bold shadow-lg">
                       {quantity}
@@ -111,7 +117,7 @@ export function InventorySlot({
                 </div>
                 
                 {onQuantityChange && (
-                  <div className="absolute top-1 right-1 z-20 hidden group-hover:flex flex-col items-center w-6 bg-black/95 border border-amber-700/50 rounded-full shadow-2xl backdrop-blur-md">
+                  <div className="absolute top-1 right-1 z-20 flex md:hidden md:group-hover:flex flex-col items-center w-6 bg-black/95 border border-amber-700/50 rounded-full shadow-2xl backdrop-blur-md">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.min(5, quantity + 1)); }}
                       className={`w-full h-5 rounded-t-full flex items-center justify-center transition-colors ${quantity >= 5 ? 'text-zinc-600 cursor-not-allowed' : 'text-amber-400 hover:text-amber-200 hover:bg-amber-900/40'}`}

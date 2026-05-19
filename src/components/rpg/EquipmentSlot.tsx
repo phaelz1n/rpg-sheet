@@ -19,6 +19,7 @@ interface EquipmentSlotProps {
   onClear?: () => void;
   onAddClick?: () => void;
   onImpact?: () => void;
+  onSelect?: () => void;
 }
 
 export function EquipmentSlot({ 
@@ -31,21 +32,26 @@ export function EquipmentSlot({
   imageUrl,
   onClear, 
   onAddClick,
-  onImpact 
+  onImpact,
+  onSelect
 }: EquipmentSlotProps) {
   const isEmpty = !itemName;
   const { setSelected } = useSelectedItem();
 
   const handleSelect = () => {
     if (!isEmpty) {
-      setSelected({
-        id: '',
-        name: itemName || '',
-        type: '',
-        rarity: rarity as any,
-        description: description || '',
-        particles: particles as any,
-      } as any);
+      if (onSelect) {
+        onSelect();
+      } else {
+        setSelected({
+          id: '',
+          name: itemName || '',
+          type: '',
+          rarity: rarity as any,
+          description: description || '',
+          particles: particles as any,
+        } as any);
+      }
     }
   };
 

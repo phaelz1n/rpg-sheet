@@ -26,6 +26,7 @@ import { WeaponCard } from '../components/rpg/WeaponCard';
 import { DamageReductionBadge } from '../components/rpg/DamageReductionBadge';
 import { ItemSelectionModal } from '../components/rpg/ItemSelectionModal';
 import { RichDescription } from '../components/rpg/RichDescription';
+import { ItemDetailModal, DetailItem } from '../components/rpg/ItemDetailModal';
 
 import {
   Sparkles, Skull, Sword, Shield, LogOut, Info, Database, X, Gem
@@ -66,6 +67,11 @@ export function CharacterPage() {
     type: 'weapon' | 'armor' | 'consumable' | null;
     slot?: string;
   }>({ isOpen: false, type: null });
+
+  const [detailModal, setDetailModal] = useState<{
+    isOpen: boolean;
+    item: DetailItem | null;
+  }>({ isOpen: false, item: null });
 
   // Check if admin is viewing another user's character
   const adminViewUsername = searchParams.get('admin-view');
@@ -129,6 +135,108 @@ export function CharacterPage() {
   // Selection Modal Actions
   const handleOpenSelectionModal = (type: 'weapon' | 'armor' | 'consumable', slot?: string) => {
     setItemSelectionModal({ isOpen: true, type, slot });
+  };
+
+  const handleSelectEquipped = (slotKey: string) => {
+    if (slotKey === 'mainWeapon' || slotKey === 'offWeapon') {
+      const weapon = slotKey === 'mainWeapon' ? store.mainWeapon : store.offWeapon;
+      if (!weapon || !weapon.name) return;
+      const globalItem = rpgItems.find(i => i.id === weapon.id || i.name.toLowerCase() === weapon.name.toLowerCase());
+      setDetailModal({
+        isOpen: true,
+        item: {
+          id: weapon.id,
+          name: weapon.name,
+          category: 'weapon',
+          rarity: globalItem?.rarity || 'common',
+          description: weapon.special || globalItem?.description || '',
+          particles: globalItem?.particles || 'none',
+          imageUrl: weapon.imageUrl || globalItem?.imageUrl || '',
+          damage: weapon.damage || globalItem?.damage || '0',
+          bonus: weapon.bonus || globalItem?.bonus || 0,
+          isEquipped: true,
+          equippedInSlot: slotKey
+        }
+      });
+    } else {
+      const val = (store as any)[slotKey];
+      if (!val) return;
+      const globalItem = rpgItems.find(i => i.id === val || i.name.toLowerCase() === val.toLowerCase());
+      if (!globalItem) return;
+      setDetailModal({
+        isOpen: true,
+        item: {
+          id: globalItem.id,
+          name: globalItem.name,
+          category: globalItem.category,
+          rarity: globalItem.rarity || 'common',
+          description: globalItem.description || '',
+          particles: globalItem.particles || 'none',
+          imageUrl: globalItem.imageUrl || '',
+          damage: globalItem.damage || '0',
+          bonus: globalItem.bonus || 0,
+          equipmentSlot: globalItem.equipmentSlot,
+          isEquipped: true,
+          equippedInSlot: slotKey
+        }
+      });
+    }
+  };
+
+  const handleSelectInventoryItem = (itemId: string) => {
+    const invItem = store.inventory.find(i => i.id === itemId);
+    if (!invItem) return;
+    const globalItem = rpgItems.find(i => i.id === invItem.globalItemId || i.name.toLowerCase() === invItem.name.toLowerCase());
+    setDetailModal({
+      isOpen: true,
+      item: {
+        id: invItem.id,
+        globalItemId: invItem.globalItemId,
+        name: invItem.name,
+        category: invItem.category,
+        rarity: invItem.rarity || globalItem?.rarity || 'common',
+        description: invItem.description || globalItem?.description || '',
+        particles: invItem.particles || globalItem?.particles || 'none',
+        imageUrl: invItem.imageUrl || globalItem?.imageUrl || '',
+        damage: invItem.damage || globalItem?.damage || '0',
+        bonus: invItem.bonus || globalItem?.bonus || 0,
+        equipmentSlot: globalItem?.equipmentSlot,
+        quantity: invItem.quantity,
+        isEquipped: false
+      }
+    });
+  };
+
+  const handleDetailEquip = (item: DetailItem, weaponSlot?: string) => {
+    if (item.category === 'weapon') {
+      const slot = weaponSlot || 'main';
+      store.equipWeapon(slot as 'main' | 'off', {
+        id: item.globalItemId || item.id,
+        name: item.name,
+        damage: item.damage || '0',
+        bonus: (item.bonus || 0).toString(),
+        synergy: '',
+        special: item.description || '',
+        imageUrl: item.imageUrl
+      });
+    } else if (item.category === 'armor' && item.equipmentSlot) {
+      store.equipArmor(item.equipmentSlot, item.globalItemId || item.id);
+    }
+  };
+
+  const handleDetailUnequip = (item: DetailItem) => {
+    if (!item.equippedInSlot) return;
+    if (item.equippedInSlot === 'mainWeapon' || item.equippedInSlot === 'offWeapon') {
+      store.equipWeapon(item.equippedInSlot === 'mainWeapon' ? 'main' : 'off', {
+        id: '', name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: ''
+      });
+    } else if (item.equippedInSlot.startsWith('beltSlot')) {
+      const slotNum = item.equippedInSlot.replace('beltSlot', '');
+      store.updateBeltSlot(slotNum, '');
+    } else {
+      const slotKey = item.equippedInSlot.replace('equipment', ''); // Head, Neck, Chest, Gloves, Belt, Pants, Boots
+      store.equipArmor(slotKey.toLowerCase(), '');
+    }
   };
 
   const handleItemSelect = (item: any) => {
@@ -339,6 +447,7 @@ export function CharacterPage() {
                   onClear={() => store.equipWeapon('main', { id: '', name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'main')}
                   onImpact={triggerScreenShake}
+                  onSelect={() => handleSelectEquipped('mainWeapon')}
                 />
                 <WeaponCard
                   slot="off"
@@ -353,6 +462,7 @@ export function CharacterPage() {
                   onClear={() => store.equipWeapon('off', { id: '', name: '', damage: '', bonus: '', synergy: '', special: '', imageUrl: '' })}
                   onAddClick={() => handleOpenSelectionModal('weapon', 'off')}
                   onImpact={triggerScreenShake}
+                  onSelect={() => handleSelectEquipped('offWeapon')}
                 />
                 <DamageReductionBadge value={store.damageReduction} onValueChange={(val) => store.updateField('damageReduction', val)} />
               </div>
@@ -362,13 +472,21 @@ export function CharacterPage() {
           {/* RIGHT COLUMN: Equipment, Belt, Curses, Inventory */}
           <div className="space-y-6">
             <CoinPouch />
-            <BodyEquipmentSection onOpenModal={handleOpenSelectionModal} onImpact={triggerScreenShake} />
-            <BeltSection onOpenModal={handleOpenSelectionModal} />
+            <BodyEquipmentSection 
+              onOpenModal={handleOpenSelectionModal} 
+              onImpact={triggerScreenShake}
+              onSelectSlot={handleSelectEquipped}
+            />
+            <BeltSection 
+              onOpenModal={handleOpenSelectionModal} 
+              onSelectSlot={handleSelectEquipped}
+            />
             <CursesSection />
             <InventorySection 
               inventoryPage={inventoryPage} 
               onPageChange={setInventoryPage} 
               onOpenModal={handleOpenSelectionModal} 
+              onSelectItem={handleSelectInventoryItem}
             />
           </div>
         </div>
@@ -388,6 +506,16 @@ export function CharacterPage() {
           })}
           onClose={() => setItemSelectionModal({ isOpen: false, type: null })}
           onSelect={handleItemSelect}
+        />
+
+        <ItemDetailModal
+          isOpen={detailModal.isOpen}
+          item={detailModal.item}
+          onClose={() => setDetailModal({ isOpen: false, item: null })}
+          onEquip={handleDetailEquip}
+          onUnequip={handleDetailUnequip}
+          onDelete={(item) => store.removeFromInventory(item.id)}
+          onQuantityChange={(item, newQty) => store.updateInventoryQuantity(item.id, newQty)}
         />
 
         {showTips && (

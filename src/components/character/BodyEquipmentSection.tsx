@@ -6,9 +6,10 @@ import { useGlobalStore } from '../../store/globalStore';
 interface BodyEquipmentSectionProps {
   onOpenModal: (type: 'weapon' | 'armor' | 'consumable', slot: string) => void;
   onImpact?: () => void;
+  onSelectSlot?: (slot: string) => void;
 }
 
-export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSectionProps) {
+export function BodyEquipmentSection({ onOpenModal, onImpact, onSelectSlot }: BodyEquipmentSectionProps) {
   const {
     equipmentHead, equipmentNeck, equipmentChest, equipmentGloves, equipmentBelt, equipmentPants, equipmentBoots,
     updateField
@@ -48,6 +49,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           onClear={() => updateField('equipmentHead', '')}
           onAddClick={() => onOpenModal('armor', 'head')}
           onImpact={onImpact}
+          onSelect={() => onSelectSlot?.('equipmentHead')}
         />
         <EquipmentSlot
           slotName="Pescoço"
@@ -60,6 +62,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           onClear={() => updateField('equipmentNeck', '')}
           onAddClick={() => onOpenModal('armor', 'neck')}
           onImpact={onImpact}
+          onSelect={() => onSelectSlot?.('equipmentNeck')}
         />
         <EquipmentSlot
           slotName="Peito"
@@ -72,6 +75,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           onClear={() => updateField('equipmentChest', '')}
           onAddClick={() => onOpenModal('armor', 'chest')}
           onImpact={onImpact}
+          onSelect={() => onSelectSlot?.('equipmentChest')}
         />
         <EquipmentSlot
           slotName="Luvas"
@@ -84,6 +88,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           onClear={() => updateField('equipmentGloves', '')}
           onAddClick={() => onOpenModal('armor', 'gloves')}
           onImpact={onImpact}
+          onSelect={() => onSelectSlot?.('equipmentGloves')}
         />
         <EquipmentSlot
           slotName="Cinto"
@@ -96,6 +101,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           onClear={() => updateField('equipmentBelt', '')}
           onAddClick={() => onOpenModal('armor', 'belt')}
           onImpact={onImpact}
+          onSelect={() => onSelectSlot?.('equipmentBelt')}
         />
         <EquipmentSlot
           slotName="Calças"
@@ -108,6 +114,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
           onClear={() => updateField('equipmentPants', '')}
           onAddClick={() => onOpenModal('armor', 'pants')}
           onImpact={onImpact}
+          onSelect={() => onSelectSlot?.('equipmentPants')}
         />
         <div className="col-span-2">
           <EquipmentSlot
@@ -121,6 +128,7 @@ export function BodyEquipmentSection({ onOpenModal, onImpact }: BodyEquipmentSec
             onClear={() => updateField('equipmentBoots', '')}
             onAddClick={() => onOpenModal('armor', 'boots')}
             onImpact={onImpact}
+            onSelect={() => onSelectSlot?.('equipmentBoots')}
           />
         </div>
       </div>

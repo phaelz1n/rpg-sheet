@@ -9,9 +9,10 @@ interface BeltSlotProps {
   description?: string;
   onClear?: () => void;
   onAddClick?: () => void;
+  onSelect?: () => void;
 }
 
-export function BeltSlot({ itemName, rarity, icon: Icon, imageUrl, description, onClear, onAddClick }: BeltSlotProps) {
+export function BeltSlot({ itemName, rarity, icon: Icon, imageUrl, description, onClear, onAddClick, onSelect }: BeltSlotProps) {
   const isEmpty = !itemName;
 
   const rarityColors: Record<string, string> = {
@@ -26,9 +27,9 @@ export function BeltSlot({ itemName, rarity, icon: Icon, imageUrl, description, 
     <div className={`relative ${
       isEmpty
         ? `bg-zinc-900/40 border-2 border-dashed ${borderClass} cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60`
-        : `bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 ${borderClass} shadow-lg`
+        : `bg-gradient-to-br from-zinc-900/80 to-black/90 border-2 ${borderClass} shadow-lg cursor-pointer`
     } rounded-lg p-3 transition-all aspect-square flex flex-col items-center justify-center group overflow-hidden`}
-    onClick={isEmpty ? onAddClick : undefined}>
+    onClick={isEmpty ? onAddClick : onSelect}>
 
       {!isEmpty && onClear && (
         <button
