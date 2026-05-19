@@ -1039,8 +1039,8 @@ export function AdminItemsPanel({ onClose }: AdminItemsPanelProps) {
                       { name: 'Terra', icon: '⛰️', color: 'text-yellow-700', strong: ['#raio', '#ácido', '#fogo'], weak: ['#água', '#gelo', '#planta'] },
                       { name: 'Planta', icon: '🌿', color: 'text-green-500', strong: ['#água', '#terra'], weak: ['#fogo', '#gelo', '#ácido'] },
                       { name: 'Ácido', icon: '🧪', color: 'text-lime-400', strong: ['#planta', '#balístico', '#contusão'], weak: ['#água', '#terra'] },
-                      { name: 'Luz', icon: '☀️', color: 'text-amber-300', strong: ['#trevas', '#mental'], weak: ['#trevas'] },
-                      { name: 'Trevas', icon: '🌙', color: 'text-purple-900', strong: ['#luz', '#mental'], weak: ['#luz'] },
+                      { name: 'Luz', icon: '☀️', color: 'text-amber-300', strong: ['#trevas'], weak: [] },
+                      { name: 'Trevas', icon: '🌙', color: 'text-purple-900', strong: ['#luz'], weak: [] },
                       { name: 'Mental', icon: '🧠', color: 'text-pink-400', strong: ['#balístico', '#corte', '#perfurante', '#contusão'], weak: ['#trevas', '#luz'] },
                       { name: 'Sonoro', icon: '🔊', color: 'text-cyan-500', strong: ['#mental', '#gelo'], weak: ['#terra'] },
                       { name: 'Explosão', icon: '💥', color: 'text-red-500', strong: ['#terra', '#contusão'], weak: ['#gelo', '#água'] }
