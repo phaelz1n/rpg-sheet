@@ -111,22 +111,22 @@ export function InventorySlot({
                 </div>
                 
                 {onQuantityChange && (
-                  <div className="absolute top-1 right-1 z-20 hidden group-hover:flex items-center h-6 bg-black/95 border border-amber-700/50 rounded-full shadow-2xl backdrop-blur-md">
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.max(1, quantity - 1)); }}
-                      className="h-full px-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-l-full flex items-center justify-center transition-colors"
-                    >
-                      -
-                    </button>
-                    <div className={`px-1 text-[10px] font-bold min-w-[16px] text-center ${quantity >= 5 ? 'text-emerald-400' : 'text-amber-300'}`}>
-                      {quantity}
-                    </div>
+                  <div className="absolute top-1 right-1 z-20 hidden group-hover:flex flex-col items-center w-6 bg-black/95 border border-amber-700/50 rounded-full shadow-2xl backdrop-blur-md">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.min(5, quantity + 1)); }}
-                      className={`h-full px-2 rounded-r-full flex items-center justify-center transition-colors ${quantity >= 5 ? 'text-zinc-600 cursor-not-allowed' : 'text-amber-400 hover:text-amber-200 hover:bg-amber-900/40'}`}
+                      className={`w-full h-5 rounded-t-full flex items-center justify-center transition-colors ${quantity >= 5 ? 'text-zinc-600 cursor-not-allowed' : 'text-amber-400 hover:text-amber-200 hover:bg-amber-900/40'}`}
                       disabled={quantity >= 5}
                     >
                       +
+                    </button>
+                    <div className={`py-0.5 text-[10px] font-bold w-full text-center border-y border-amber-900/30 ${quantity >= 5 ? 'text-emerald-400' : 'text-amber-300'}`}>
+                      {quantity}
+                    </div>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.max(1, quantity - 1)); }}
+                      className="w-full h-5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-b-full flex items-center justify-center transition-colors"
+                    >
+                      -
                     </button>
                   </div>
                 )}
