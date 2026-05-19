@@ -51,7 +51,7 @@ export function InventorySlot({
         isEmpty
           ? 'bg-zinc-900/40 border border-dashed border-zinc-700/40 cursor-pointer hover:border-amber-700/60 hover:bg-zinc-900/60'
           : 'bg-gradient-to-br from-zinc-900/80 to-black/90 border border-amber-900/40 shadow-lg'
-      } rounded-lg p-3 transition-all aspect-square flex flex-col items-center justify-center group overflow-hidden`}
+      } rounded-lg p-3 transition-all aspect-square flex flex-col items-center justify-center group`}
       onClick={isEmpty ? onAddClick : handleSelect}
     >
       <AnimatePresence mode="wait">
