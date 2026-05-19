@@ -12,7 +12,7 @@ interface ShopStore {
   deleteShop: (id: string) => Promise<void>;
   subscribeToShops: () => () => void;
   
-  buyItem: (shopId: string, itemId: string, buyerUsername: string) => Promise<{ success: boolean; error?: string }>;
+  buyItem: (shopId: string, itemId: string, buyerUsername: string, quantity?: number) => Promise<{ success: boolean; error?: string }>;
 }
 
 export const useShopStore = create<ShopStore>((set, get) => ({

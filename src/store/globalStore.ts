@@ -23,21 +23,21 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
         const convertedItems = response.items.map((item: any) => ({
           id: String(item.id || ''),
           name: String(item.name || ''),
-          attributeType: String(item.attributeType || 'dexterity'),
+          attributeType: String(item.attributeType || 'dexterity') as RPGItem['attributeType'],
           bonus: Number(item.bonus || 0),
           damage: String(item.damage || ''),
           category: (item.type === 'weapon' ? 'weapon' : 
                     item.type === 'armor' ? 'armor' :
                     item.type === 'material' ? 'material' : 
                     item.type === 'potion' ? 'potion' : 'consumable') as RPGItem['category'],
-          equipmentSlot: item.equipmentSlot ? String(item.equipmentSlot) : undefined,
+          equipmentSlot: item.equipmentSlot ? String(item.equipmentSlot) as RPGItem['equipmentSlot'] : undefined,
           corruptionLimitBonus: Number(item.corruptionLimitBonus || 0),
           statBonus: String(item.statBonus || ''),
           beltCapacity: Number(item.beltCapacity || 0),
           rarity: String(item.rarity || 'common').toLowerCase(),
           description: String(item.description || ''),
           imageUrl: item.imageUrl ? String(item.imageUrl) : undefined,
-          particles: item.particles ? String(item.particles) : undefined
+          particles: item.particles ? String(item.particles) as RPGItem['particles'] : undefined
         }));
         set({ rpgItems: convertedItems, isLoading: false });
       } else {
