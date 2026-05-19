@@ -49,9 +49,9 @@ export function BeltSlot({ itemName, rarity, icon: Icon, imageUrl, description, 
         </div>
       ) : (
         <>
-          <div className="relative flex-1 w-full flex items-center justify-center mb-1 rounded bg-black/20 border border-white/5 group/img overflow-hidden">
+          <div className="relative w-full h-12 sm:h-16 flex-shrink-0 flex items-center justify-center mb-1 rounded bg-black/20 border border-white/5 group/img overflow-hidden">
             {imageUrl ? (
-              <img src={imageUrl} alt="" className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
+              <img src={imageUrl} alt="" className="w-full h-full object-contain p-1 opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
             ) : Icon ? (
               <Icon className="w-6 h-6 text-amber-600 opacity-30" />
             ) : (

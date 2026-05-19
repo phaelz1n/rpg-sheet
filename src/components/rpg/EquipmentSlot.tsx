@@ -214,9 +214,9 @@ export function EquipmentSlot({
                 </div>
 
                 {/* Main Content: Item Illustration */}
-                <div className="relative flex-1 min-h-[50px] flex items-center justify-center my-1 rounded-md overflow-hidden bg-black/20 border border-white/5 group/img">
+                <div className="relative w-full h-16 sm:h-20 flex-shrink-0 flex items-center justify-center my-1 rounded-md overflow-hidden bg-black/20 border border-white/5 group/img">
                   {imageUrl ? (
-                    <img src={imageUrl} alt="" className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
+                    <img src={imageUrl} alt="" className="w-full h-full object-contain p-1.5 opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-110" />
                   ) : (
                     <Icon className={`w-6 h-6 ${isEmpty ? 'text-zinc-600' : rarity?.toLowerCase() === 'divine' ? 'text-red-500' : 'text-amber-600'} opacity-30 transition-colors`} />
                   )}

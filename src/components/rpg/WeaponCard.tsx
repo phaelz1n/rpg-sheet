@@ -194,9 +194,9 @@ export function WeaponCard({
               {/* New Side-by-Side Layout */}
               <div className="flex gap-4 flex-1">
                 {/* Left Side: Weapon Image */}
-                <div className="relative w-24 sm:w-32 bg-black/40 border border-white/5 rounded-xl overflow-hidden flex items-center justify-center group/img">
+                <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-black/40 border border-white/5 rounded-xl overflow-hidden flex items-center justify-center group/img">
                   {imageUrl ? (
-                    <img src={imageUrl} alt={name} className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-105" />
+                    <img src={imageUrl} alt={name} className="w-full h-full object-contain p-2 opacity-90 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover/img:scale-105" />
                   ) : (
                     <div className="text-zinc-800 opacity-20">
                       {slot === 'main' ? <Swords className="w-12 h-12" /> : <Hand className="w-12 h-12" />}
