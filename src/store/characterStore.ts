@@ -277,6 +277,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
 
     try {
       await ttrpgApi.saveCharacter(state.username, payload);
+      set({ lastActionSource: 'remote' });
     } catch (error) {
       console.error('Error saving character:', error);
     }
@@ -289,17 +290,19 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
         audioService.playSound('CORRUPTION_GAINED');
       });
     }
-    set((state) => ({ ...state, [field]: value, lastLocalUpdate: Date.now() }));
+    set((state) => ({ ...state, [field]: value, lastLocalUpdate: Date.now(), lastActionSource: 'local' }));
   },
 
   updateSkill: (skill, value) => set((state) => ({
     skills: { ...state.skills, [skill]: value },
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   updateGlobalAttribute: (attribute, value) => set((state) => ({
     globalAttributes: { ...state.globalAttributes, [attribute]: value },
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   equipWeapon: (slot, weapon) => set((state) => ({
@@ -332,40 +335,46 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     inventory: state.inventory.map(item => 
       item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
     ),
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   removeFromInventory: (id) => set((state) => ({
     inventory: state.inventory.filter(item => item.id !== id),
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
-  setInventory: (inventory) => set({ inventory, lastLocalUpdate: Date.now() }),
+  setInventory: (inventory) => set({ inventory, lastLocalUpdate: Date.now(), lastActionSource: 'local' }),
 
   addAbility: (ability) => set((state) => {
     if (state.abilities.length >= 4) return state;
-    return { abilities: [...state.abilities, ability], lastLocalUpdate: Date.now() };
+    return { abilities: [...state.abilities, ability], lastLocalUpdate: Date.now(), lastActionSource: 'local' };
   }),
 
   updateAbility: (id, field, value) => set((state) => ({
     abilities: state.abilities.map(a => 
       a.id === id ? { ...a, [field]: value } : a
     ),
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   removeAbility: (id) => set((state) => ({
     abilities: state.abilities.filter(a => a.id !== id),
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   addCoins: (amount) => set((state) => ({
     coinsBronze: state.coinsBronze + amount,
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   })),
 
   removeCoins: (amount) => set((state) => ({
     coinsBronze: Math.max(0, state.coinsBronze - amount),
-    lastLocalUpdate: Date.now()
+    lastLocalUpdate: Date.now(),
+    lastActionSource: 'local'
   }))
 }));

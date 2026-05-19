@@ -99,6 +99,8 @@ export function CharacterPage() {
   // Debounced auto-save
   useEffect(() => {
     if (!activeUsername || activeUsername === 'admin') return;
+    if (store.isLoading || store.lastActionSource !== 'local') return;
+
     const timer = setTimeout(() => {
       store.saveCharacter();
     }, 2000);
