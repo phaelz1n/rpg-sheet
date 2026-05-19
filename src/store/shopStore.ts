@@ -117,6 +117,7 @@ export const useShopStore = create<ShopStore>((set, get) => ({
          damage: rpgItem.damage,
          category: rpgItem.category,
          rarity: rpgItem.rarity,
+         particles: rpgItem.particles,
          imageUrl: rpgItem.imageUrl // Keep image
        };
        existingInventory.push(newInvItem as any);

@@ -33,7 +33,7 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
 
   // Fallback inteligente baseado no nome se o tipo não for especificado
   let fallbackType: ItemVFXProps['type'] = 'none';
-  if (isHighRarity) {
+  if (isHighRarity && (!type || type === 'none')) {
     const lowerName = name?.toLowerCase() || '';
     if (lowerName.includes('chama') || lowerName.includes('fogo') || lowerName.includes('brasa')) {
       fallbackType = 'embers';
@@ -44,16 +44,8 @@ export function ItemVFX({ type, rarity, name, className = "" }: ItemVFXProps) {
     }
   }
 
-  const finalType = type || fallbackType;
+  const finalType = type && type !== 'none' ? type : fallbackType;
   
-  // Se não for lendário/divino e for um efeito padrão, não mostra nada
-  if (!isHighRarity && finalType !== 'none') {
-    // Permite efeitos manuais mesmo em comuns se o usuário explicitamente setou? 
-    // O usuário disse: "os efeitos que vem nos itens padrões são somente pros lendários ta"
-    // Então vou forçar none se não for high rarity.
-    return null;
-  }
-
   if (finalType === 'none') return null;
 
   const renderParticles = () => {
