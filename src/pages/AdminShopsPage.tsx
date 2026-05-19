@@ -38,7 +38,28 @@ export function AdminShopsPage() {
     ]);
     
     if (shopsRes.shops) setShops(shopsRes.shops);
-    if (itemsRes.items) setAllItems(itemsRes.items);
+    if (itemsRes.items) {
+      const converted = itemsRes.items.map((item: any) => ({
+        id: String(item.id || ''),
+        name: String(item.name || ''),
+        attributeType: String(item.attributeType || 'dexterity') as RPGItem['attributeType'],
+        bonus: Number(item.bonus || 0),
+        damage: String(item.damage || ''),
+        category: (item.type === 'weapon' ? 'weapon' : 
+                  item.type === 'armor' ? 'armor' :
+                  item.type === 'material' ? 'material' : 
+                  item.type === 'potion' ? 'potion' : 'consumable') as RPGItem['category'],
+        equipmentSlot: item.equipmentSlot ? String(item.equipmentSlot) as RPGItem['equipmentSlot'] : undefined,
+        corruptionLimitBonus: Number(item.corruptionLimitBonus || 0),
+        statBonus: String(item.statBonus || ''),
+        beltCapacity: Number(item.beltCapacity || 0),
+        rarity: String(item.rarity || 'common').toLowerCase(),
+        description: String(item.description || ''),
+        imageUrl: item.imageUrl ? String(item.imageUrl) : undefined,
+        particles: item.particles ? String(item.particles) as RPGItem['particles'] : undefined
+      }));
+      setAllItems(converted);
+    }
     
     if (configRes.data) {
       setMarketTitle(configRes.data.marketTitle || 'Mercado de Valória');
@@ -360,6 +381,7 @@ export function AdminShopsPage() {
                             <option value="common">Comum</option>
                             <option value="rare">Raro</option>
                             <option value="legendary">Lendário</option>
+                            <option value="divine">Divino</option>
                           </select>
                           <select 
                             value={itemCategoryFilter}
@@ -369,8 +391,9 @@ export function AdminShopsPage() {
                             <option value="all">Categorias</option>
                             <option value="weapon">Arma</option>
                             <option value="armor">Armadura</option>
+                            <option value="potion">Poção</option>
                             <option value="consumable">Consumível</option>
-                            <option value="valuable">Valioso</option>
+                            <option value="material">Material / Outro</option>
                           </select>
                         </div>
                       </div>
