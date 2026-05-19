@@ -115,18 +115,14 @@ export function ShopPage() {
     const b = bronze % 10;
     return (
       <div className="flex items-center gap-2">
-        {g > 0 && (
-          <div className="flex items-center gap-1">
-            <img src={goldImg} alt="G" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" />
-            <span className="text-yellow-400 font-bold">{g}</span>
-          </div>
-        )}
-        {s > 0 && (
-          <div className="flex items-center gap-1">
-            <img src={silverImg} alt="S" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(212,212,216,0.4)]" />
-            <span className="text-zinc-300 font-bold">{s}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-1">
+          <img src={goldImg} alt="G" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" />
+          <span className="text-yellow-400 font-bold">{g}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <img src={silverImg} alt="S" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(212,212,216,0.4)]" />
+          <span className="text-zinc-300 font-bold">{s}</span>
+        </div>
         <div className="flex items-center gap-1">
           <img src={bronzeImg} alt="B" className="w-4 h-4 object-contain drop-shadow-[0_0_4px_rgba(234,88,12,0.4)]" />
           <span className="text-orange-500 font-bold">{b}</span>
