@@ -177,9 +177,10 @@ export function CharacterPage() {
     setItemSelectionModal({ isOpen: false, type: null });
   };
 
+  const equippedArmor = [store.equipmentHead, store.equipmentNeck, store.equipmentChest, store.equipmentGloves, store.equipmentBelt, store.equipmentPants, store.equipmentBoots];
   const corruptionBonus = rpgItems
     .filter(item => item.category === 'armor' && (item.corruptionLimitBonus ?? 0) > 0 &&
-      [store.equipmentHead, store.equipmentNeck, store.equipmentChest, store.equipmentGloves, store.equipmentBelt, store.equipmentPants, store.equipmentBoots].includes(item.name))
+      (equippedArmor.includes(item.id) || equippedArmor.includes(item.name)))
     .reduce((sum, item) => sum + (item.corruptionLimitBonus || 0), 0);
   
   const corruptionMax = store.corruptionBaseMax + corruptionBonus;
@@ -285,21 +286,12 @@ export function CharacterPage() {
 
             {/* Corruption Gauge */}
             <div className="w-full xl:w-64">
-              {(() => {
-                const corruptionBonus = rpgItems
-                  .filter(item => item.category === 'armor' && (item.corruptionLimitBonus ?? 0) > 0 &&
-                    [store.equipmentHead, store.equipmentNeck, store.equipmentChest, store.equipmentGloves, store.equipmentBelt, store.equipmentPants, store.equipmentBoots].includes(item.name))
-                  .reduce((sum, item) => sum + (item.corruptionLimitBonus || 0), 0);
-                
-                return (
-                  <CorruptionGauge
-                    current={Number(store.corruption || 0)}
-                    max={Number((store.corruptionBaseMax || 0) + corruptionBonus)}
-                    onCurrentChange={(val) => store.updateField('corruption', val)}
-                    onMaxChange={(val) => store.updateField('corruptionBaseMax', val - corruptionBonus)}
-                  />
-                );
-              })()}
+              <CorruptionGauge
+                current={Number(store.corruption || 0)}
+                max={Number((store.corruptionBaseMax || 0) + corruptionBonus)}
+                onCurrentChange={(val) => store.updateField('corruption', val)}
+                onMaxChange={(val) => store.updateField('corruptionBaseMax', val - corruptionBonus)}
+              />
             </div>
 
             {/* Inspiration */}
